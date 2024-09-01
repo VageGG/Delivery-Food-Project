@@ -1,9 +1,9 @@
 package com.fooddeliveryfinalproject.repository;
 
-import com.fooddeliveryfinalproject.entity.Customer;
+import com.fooddeliveryfinalproject.entity.PaymentMethod;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface CustomerRepo extends JpaRepository<Customer, Long> {
+public interface PaymentMethodRepo extends JpaRepository<PaymentMethod, Long> {
 }

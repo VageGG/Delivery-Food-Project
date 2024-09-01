@@ -1,4 +1,4 @@
 package com.fooddeliveryfinalproject.service;
 
-public class UserService {
+public class PaymentMethodService {
 }

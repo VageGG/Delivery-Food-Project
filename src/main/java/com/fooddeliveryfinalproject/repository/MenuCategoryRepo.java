@@ -1,4 +1,7 @@
 package com.fooddeliveryfinalproject.repository;
 
-public interface MenuCategoryRepo {
+import com.fooddeliveryfinalproject.entity.MenuCategory;
+import org.springframework.data.jpa.repository.JpaRepository;
+
+public interface MenuCategoryRepo extends JpaRepository<MenuCategory, Long> {
 }
