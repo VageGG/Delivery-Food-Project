@@ -2,10 +2,8 @@ package com.fooddeliveryfinalproject.model;
 
 import lombok.Data;
 
-import java.util.List;
-
 @Data
-public class CustomerDto {
+public class RestaurantManagerDto {
 
     private Long id;
 
@@ -15,9 +13,5 @@ public class CustomerDto {
 
     private String phoneNumber;
 
-    private List<OrderDto> orders;
-
-    private List<AddressDto> addresses;
-
-    private List<PaymentMethodDto> paymentMethods;
+    private RestaurantDto restaurant;
 }
