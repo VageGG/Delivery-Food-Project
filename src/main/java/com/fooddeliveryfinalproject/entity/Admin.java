@@ -9,7 +9,7 @@ import lombok.*;
 @EqualsAndHashCode(callSuper = true)
 @Entity
 @Table(name = "admins")
-public class Admin extends User{
+public class Admin extends User {
 
     @Builder
     public Admin(Long id, String username, String password, String email, String phoneNumber) {

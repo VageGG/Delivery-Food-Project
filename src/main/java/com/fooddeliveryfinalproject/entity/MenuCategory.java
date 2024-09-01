@@ -1,24 +1,27 @@
 package com.fooddeliveryfinalproject.entity;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
+
 import java.util.List;
 
-@Getter
-@Setter
+@Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
+@Table(name = "menu_categories")
 public class MenuCategory {
+
     @Id
     @GeneratedValue
+    @Column(name = "category_id")
     private long categoryId;
+
     private String name;
+
     @OneToMany(mappedBy = "category")
     private List<MenuItem> items;
+
     @ManyToOne
     @JoinColumn(name = "menu_id")
     private Menu menu;

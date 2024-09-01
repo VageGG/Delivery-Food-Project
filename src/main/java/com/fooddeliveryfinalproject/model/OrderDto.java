@@ -1,6 +1,5 @@
 package com.fooddeliveryfinalproject.model;
 
-import com.fooddeliveryfinalproject.OrderStatus;
 import com.fooddeliveryfinalproject.entity.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -17,5 +16,5 @@ public class OrderDto {
     private Customer customer;
     private List<MenuItem> items;
     private Delivery delivery;
-    private OrderStatus status;
+    private Order.OrderStatus status;
 }

@@ -8,7 +8,6 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.util.List;
-import java.util.Set;
 
 @Entity
 @Table(name = "restaurants")
@@ -20,10 +19,10 @@ public class Restaurant {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "rest_id")
+    @Column(name = "restaurant_id")
     private Long restId;
 
-    @Column(name = "rest_name", nullable = false)
+    @Column(name = "restaurant_name", nullable = false)
     private String restName;
 
     @OneToOne(cascade = CascadeType.ALL)
