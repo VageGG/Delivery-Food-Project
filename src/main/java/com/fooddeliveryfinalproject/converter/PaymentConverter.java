@@ -7,7 +7,7 @@ public class PaymentConverter implements Converter<Payment, PaymentDto> {
     @Override
     public Payment convertToEntity(PaymentDto paymentDto, Payment payment) {
         payment.setPaymentId(payment.getPaymentId());
-        payment.setOrder(paymentDto.getOrder());
+        payment.setOrder(paymentDto.getOrderDto());
         payment.setTotalAmount(paymentDto.getTotalAmount());
         payment.setPaymentMethod(paymentDto.getPaymentMethod());
         return payment;
@@ -16,7 +16,7 @@ public class PaymentConverter implements Converter<Payment, PaymentDto> {
     @Override
     public PaymentDto convertToModel(Payment payment, PaymentDto paymentDto) {
         paymentDto.setPaymentId(payment.getPaymentId());
-        paymentDto.setOrder(payment.getOrder());
+        paymentDto.setOrderDto(payment.getOrder());
         paymentDto.setTotalAmount(payment.getTotalAmount());
         paymentDto.setPaymentMethod(payment.getPaymentMethod());
         return paymentDto;

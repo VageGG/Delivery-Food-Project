@@ -11,7 +11,7 @@ public class MenuItemConverter implements Converter<MenuItem, MenuItemDto> {
 
         entity.setName(model.getName());
         entity.setPrice(model.getPrice());
-        entity.setMenu(model.getMenu());
+        entity.setMenu(model.getMenuDto());
         entity.setDescription(model.getDescription());
 
         return entity;
@@ -21,7 +21,7 @@ public class MenuItemConverter implements Converter<MenuItem, MenuItemDto> {
 
         model.setName(entity.getName());
         model.setPrice(entity.getPrice());
-        model.setMenu(entity.getMenu());
+        model.setMenuDto(entity.getMenu());
         model.setDescription(entity.getDescription());
 
         return model;
