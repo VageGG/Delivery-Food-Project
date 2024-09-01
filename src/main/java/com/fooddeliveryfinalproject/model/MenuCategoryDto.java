@@ -1,7 +1,7 @@
 package com.fooddeliveryfinalproject.model;
 
-import com.fooddeliveryfinalproject.OrderStatus;
-import com.fooddeliveryfinalproject.entity.*;
+import com.fooddeliveryfinalproject.entity.Menu;
+import com.fooddeliveryfinalproject.entity.MenuItem;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -12,10 +12,9 @@ import java.util.List;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class OrderDto {
-    private long orderId;
-    private Customer customer;
+public class MenuCategoryDto {
+    private long categoryId;
+    private String name;
     private List<MenuItem> items;
-    private Delivery delivery;
-    private OrderStatus status;
+    private Menu menu;
 }
