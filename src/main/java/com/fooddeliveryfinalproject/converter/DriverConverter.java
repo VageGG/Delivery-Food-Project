@@ -1,6 +1,8 @@
 package com.fooddeliveryfinalproject.converter;
 
+import com.fooddeliveryfinalproject.entity.Delivery;
 import com.fooddeliveryfinalproject.entity.Driver;
+import com.fooddeliveryfinalproject.model.DeliveryDto;
 import com.fooddeliveryfinalproject.model.DriverDto;
 import org.springframework.stereotype.Component;
 
@@ -23,12 +25,12 @@ public class DriverConverter implements Converter<Driver, DriverDto> {
         entity.setEmail(model.getEmail());
         entity.setPhoneNumber(model.getPhoneNumber());
 
-        if(model.getDeliveriesDto() != null) {
-            List <Delivery> deliveryList = new ArrayList<>();
-            for(DeliveryDto deliveryDto : model.getDeliveriesDto()) {
+        if (model.getDeliveriesDto() != null) {
+            List<Delivery> deliveryList = new ArrayList<>();
+            for (DeliveryDto deliveryDto : model.getDeliveriesDto()) {
                 deliveryList.add(deliveryConverter.convertToEntity(deliveryDto, new Delivery()));
             }
-            entity.setDeliveryList(deliveryList);
+            entity.setDeliveries(deliveryList);
         }
         return entity;
     }
@@ -40,12 +42,12 @@ public class DriverConverter implements Converter<Driver, DriverDto> {
         model.setEmail(entity.getEmail());
         model.setPhoneNumber(entity.getPhoneNumber());
 
-        if(entity.getDeliveries()!=null){
-         List <DeliveryDto> deliveryDtoList = new ArrayList<>();
-         for(Delivery delivery : entity.getDeliveries()){
-             deliveryDtoList.add(deliveryConverter.convertToModel(delivery, new DeliveryDto()));
-         }
-         model.setDeliveriesDto(deliveryDtoList);
+        if (entity.getDeliveries() != null) {
+            List<DeliveryDto> deliveryDtoList = new ArrayList<>();
+            for (Delivery delivery : entity.getDeliveries()) {
+                deliveryDtoList.add(deliveryConverter.convertToModel(delivery, new DeliveryDto()));
+            }
+            model.setDeliveriesDto(deliveryDtoList);
         }
         return model;
     }
