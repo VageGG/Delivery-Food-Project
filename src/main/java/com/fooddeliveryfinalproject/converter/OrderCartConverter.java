@@ -8,8 +8,8 @@ public class OrderCartConverter implements Converter<OrderCart, OrderCartDto> {
     @Override
     public OrderCart convertToEntity(OrderCartDto orderCartDto, OrderCart orderCart ) {
         orderCart.setCartId(orderCartDto.getCartId());
-        orderCart.setOrder(orderCartDto.getOrder());
-        orderCart.setItems(orderCartDto.getItems());
+        orderCart.setOrder(orderCartDto.getOrderDto());
+        orderCart.setItems(orderCartDto.getItemsDto());
         orderCart.setCount(orderCartDto.getCount());
         return orderCart;
     }
@@ -17,8 +17,8 @@ public class OrderCartConverter implements Converter<OrderCart, OrderCartDto> {
     @Override
     public OrderCartDto convertToModel(OrderCart orderCart, OrderCartDto orderCartDto) {
         orderCartDto.setCartId(orderCart.getCartId());
-        orderCartDto.setOrder(orderCartDto.getOrder());
-        orderCartDto.setItems(orderCartDto.getItems());
+        orderCartDto.setOrderDto(orderCartDto.getOrderDto());
+        orderCartDto.setItemsDto(orderCartDto.getItemsDto());
         orderCartDto.setCount(orderCart.getCount());
         return orderCartDto;
     }

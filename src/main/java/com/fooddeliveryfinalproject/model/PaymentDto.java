@@ -1,20 +1,16 @@
 package com.fooddeliveryfinalproject.model;
 
-import com.fooddeliveryfinalproject.entity.Order;
-
 import com.fooddeliveryfinalproject.entity.Payment;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
-@Getter
-@Setter
-@AllArgsConstructor
-@NoArgsConstructor
+@Data
 public class PaymentDto {
-    private long paymentId;
-    private Order order;
-    private double totalAmount;
+
+    private Long paymentId;
+
+    private OrderDto orderDto;
+
+    private Double totalAmount;
+
     private Payment.PaymentMethodType paymentMethod;
 }

@@ -23,7 +23,7 @@ public class RestaurantConverter implements Converter<Restaurant, RestaurantDto>
     public Restaurant convertToEntity(RestaurantDto model, Restaurant entity) {
 
         entity.setRestName(model.getRestName());
-        entity.setRestaurantManager(model.getRestaurantManager());
+        entity.setRestaurantManager(model.getRestaurantManagerDto());
 
         if (model.getBranchesDto() != null) {
             List<RestaurantBranch> restaurantBranches = new ArrayList<>();
@@ -41,7 +41,7 @@ public class RestaurantConverter implements Converter<Restaurant, RestaurantDto>
     @Override
     public RestaurantDto convertToModel(Restaurant entity, RestaurantDto model) {
         model.setRestName(entity.getRestName());
-        model.setRestaurantManager(entity.getRestaurantManager());
+        model.setRestaurantManagerDto(entity.getRestaurantManager());
 
         if (entity.getBranches() != null) {
             List<RestaurantBranchDto> restaurantBranchDtos = new ArrayList<>();
