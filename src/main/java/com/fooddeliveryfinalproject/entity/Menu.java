@@ -6,7 +6,6 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.Set;
 
 @Entity
 @Table(name = "menus")
@@ -15,6 +14,7 @@ import java.util.Set;
 @Builder
 @Data
 public class Menu {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "menu_id")
@@ -22,9 +22,6 @@ public class Menu {
 
     @OneToOne(mappedBy = "menu")
     private RestaurantBranch restaurantBranch;
-
-   // @OneToMany(mappedBy = "menu")
-   //   private Set<MenuItem> item;
 
     @ManyToOne
     @JoinColumn(name = "category_id")

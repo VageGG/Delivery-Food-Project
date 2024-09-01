@@ -1,26 +1,35 @@
 package com.fooddeliveryfinalproject.entity;
 
-import com.fooddeliveryfinalproject.PaymentMethod;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
-@Getter
-@Setter
+@Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "payment")
+@Table(name = "payments")
 public class Payment {
+
     @Id
     @GeneratedValue
+    @Column(name = "payment_id")
     private long paymentId;
+
     @ManyToOne
     @JoinColumn(name = "order_id")
     private Order order;
-    @Column(name = "total")
+
+    @Column(name = "total_price")
     private double totalAmount;
-    private PaymentMethod paymentMethod;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "payment_method_type")
+    private PaymentMethodType paymentMethod;
+
+    public enum PaymentMethodType {
+        CARD,
+        CASH,
+        IDRAM,
+        PAYPAL
+    }
 }

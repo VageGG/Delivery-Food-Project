@@ -1,8 +1,8 @@
 package com.fooddeliveryfinalproject.model;
 
-import com.fooddeliveryfinalproject.PaymentMethod;
-import com.fooddeliveryfinalproject.entity.Customer;
 import com.fooddeliveryfinalproject.entity.Order;
+
+import com.fooddeliveryfinalproject.entity.Payment;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -16,5 +16,5 @@ public class PaymentDto {
     private long paymentId;
     private Order order;
     private double totalAmount;
-    private PaymentMethod paymentMethod;
+    private Payment.PaymentMethodType paymentMethod;
 }
