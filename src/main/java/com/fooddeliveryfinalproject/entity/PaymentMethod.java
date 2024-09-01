@@ -1,5 +1,6 @@
 package com.fooddeliveryfinalproject.entity;
 
+
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -9,20 +10,18 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "addresses")
-public class Address {
+@Table(name = "payment_method")
+public class PaymentMethod {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "address_id")
     private Long id;
 
-    private String country;
-    private String city;
-    private String state;
-    private String street;
-    private String houseNumber;
-    private String apartmentNumber;
+    @Enumerated(EnumType.STRING)
+    @Column(name = "payment_method_type")
+    private PaymentMethodType paymentMethodType;
+
+    private String details;
 
     @ManyToOne
     @JoinColumn(name = "customer_id")
