@@ -1,27 +1,46 @@
 package com.fooddeliveryfinalproject.entity;
 
-import com.fooddeliveryfinalproject.DeliveryStatus;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 @Entity
-@Getter
-@Setter
+@Data
 @AllArgsConstructor
 @NoArgsConstructor
+@Table(name = "deliveries")
 public class Delivery {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "delivery_id")
     private Long deliveryId;
+
     @OneToOne(mappedBy = "delivery")
     private Order order;
+
     @ManyToOne
-    @JoinColumn(name = "deiver_id")
+    @JoinColumn(name = "driver_id")
     private Driver driver;
+
+    @Column(name = "tracking_number")
     private String trackingNumber;
+
+    @Enumerated(EnumType.STRING)
     private DeliveryStatus status;
+
+    @Column(name = "pickup_location")
     private String pickupLocation;
+
+    @Column(name = "delivery_location")
     private String deliveryLocation;
+
+    @Column(name = "delivery_time")
     private String dateTime;
+
+    public enum DeliveryStatus {
+        PREPARING,
+        PICKED_UP,
+        DELIVERING,
+        DELIVERED
+    }
 }

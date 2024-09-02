@@ -13,5 +13,5 @@ public class RestaurantManagerDto {
 
     private String phoneNumber;
 
-    private RestaurantDto restaurant;
+    private RestaurantDto restaurantDto;
 }

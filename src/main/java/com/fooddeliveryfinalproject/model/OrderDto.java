@@ -1,21 +1,20 @@
 package com.fooddeliveryfinalproject.model;
 
-import com.fooddeliveryfinalproject.OrderStatus;
 import com.fooddeliveryfinalproject.entity.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
+
 import java.util.List;
 
-@Getter
-@Setter
-@NoArgsConstructor
-@AllArgsConstructor
+@Data
 public class OrderDto {
-    private long orderId;
-    private Customer customer;
-    private List<MenuItem> items;
-    private Delivery delivery;
-    private OrderStatus status;
+
+    private Long orderId;
+
+    private CustomerDto customerDto;
+
+    private List<MenuItemDto> itemsDto;
+
+    private DeliveryDto deliveryDto;
+
+    private Order.OrderStatus status;
 }

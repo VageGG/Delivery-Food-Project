@@ -2,8 +2,10 @@ package com.fooddeliveryfinalproject.converter;
 
 import com.fooddeliveryfinalproject.entity.Restaurant;
 import com.fooddeliveryfinalproject.entity.RestaurantBranch;
+import com.fooddeliveryfinalproject.entity.RestaurantManager;
 import com.fooddeliveryfinalproject.model.RestaurantBranchDto;
 import com.fooddeliveryfinalproject.model.RestaurantDto;
+import com.fooddeliveryfinalproject.model.RestaurantManagerDto;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
@@ -15,20 +17,28 @@ public class RestaurantConverter implements Converter<Restaurant, RestaurantDto>
 
     private final RestaurantBranchConverter restaurantBranchConverter;
 
-    public RestaurantConverter(RestaurantBranchConverter restaurantBranchConverter) {
-        this.restaurantBranchConverter = restaurantBranchConverter;
+    private final RestManagerConverter restManagerConverter;
 
+    public RestaurantConverter(RestaurantBranchConverter restaurantBranchConverter,
+                               RestManagerConverter restManagerConverter) {
+        this.restaurantBranchConverter = restaurantBranchConverter;
+        this.restManagerConverter = restManagerConverter;
     }
+
     @Override
     public Restaurant convertToEntity(RestaurantDto model, Restaurant entity) {
-
+        entity.setRestId(model.getRestId());
         entity.setRestName(model.getRestName());
-        entity.setRestaurantManager(model.getRestaurantManager());
+
+        if (model.getRestaurantManagerDto() != null) {
+            entity.setRestaurantManager(restManagerConverter.convertToEntity(model.getRestaurantManagerDto(),
+                    new RestaurantManager()));
+        }
 
         if (model.getBranchesDto() != null) {
             List<RestaurantBranch> restaurantBranches = new ArrayList<>();
             for (RestaurantBranchDto restaurantBranchDto : model.getBranchesDto()) {
-                restaurantBranches.add(restaurantBranchConverter.convertToEntity(restaurantBranchDto,new RestaurantBranch()));
+                restaurantBranches.add(restaurantBranchConverter.convertToEntity(restaurantBranchDto, new RestaurantBranch()));
 
             }
             entity.setBranches(restaurantBranches);
@@ -40,8 +50,13 @@ public class RestaurantConverter implements Converter<Restaurant, RestaurantDto>
 
     @Override
     public RestaurantDto convertToModel(Restaurant entity, RestaurantDto model) {
+        model.setRestId(entity.getRestId());
         model.setRestName(entity.getRestName());
-        model.setRestaurantManager(entity.getRestaurantManager());
+
+        if (entity.getRestaurantManager() != null) {
+            model.setRestaurantManagerDto(restManagerConverter.convertToModel(entity.getRestaurantManager(),
+                    new RestaurantManagerDto()));
+        }
 
         if (entity.getBranches() != null) {
             List<RestaurantBranchDto> restaurantBranchDtos = new ArrayList<>();

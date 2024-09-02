@@ -14,13 +14,14 @@ public class PaymentMethodConverter implements Converter<PaymentMethod, PaymentM
     public PaymentMethodConverter(CustomerConverter customerConverter) {
         this.customerConverter = customerConverter;
     }
+
     @Override
     public PaymentMethod convertToEntity(PaymentMethodDto model, PaymentMethod entity) {
         entity.setId(model.getId());
         entity.setPaymentMethodType(entity.getPaymentMethodType());
         entity.setDetails(model.getDetails());
 
-        if(model.getCustomerDto() != null) {
+        if (model.getCustomerDto() != null) {
             entity.setCustomer(customerConverter.convertToEntity(model.getCustomerDto(), new Customer()));
         }
 
@@ -33,7 +34,7 @@ public class PaymentMethodConverter implements Converter<PaymentMethod, PaymentM
         model.setPaymentMethodType(entity.getPaymentMethodType());
         model.setDetails(entity.getDetails());
 
-        if(entity.getCustomer()!= null) {
+        if (entity.getCustomer() != null) {
             model.setCustomerDto(customerConverter.convertToModel(entity.getCustomer(), new CustomerDto()));
         }
 
