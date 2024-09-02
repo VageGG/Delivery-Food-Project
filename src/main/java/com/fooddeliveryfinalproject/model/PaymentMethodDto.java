@@ -1,5 +1,6 @@
 package com.fooddeliveryfinalproject.model;
 
+import com.fooddeliveryfinalproject.entity.Payment;
 import lombok.Data;
 
 @Data
@@ -7,7 +8,7 @@ public class PaymentMethodDto {
 
     private Long id;
 
-    private PaymentMethodType paymentMethodType;
+    private Payment.PaymentMethodType paymentMethodType;
 
     private String details;
 

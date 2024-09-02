@@ -34,25 +34,25 @@ public class CustomerConverter implements Converter<Customer, CustomerDto> {
         entity.setEmail(model.getEmail());
         entity.setPhoneNumber(model.getPhoneNumber());
 
-        if (model.getOrders() != null) {
+        if (model.getOrdersDto() != null) {
             List<Order> orders = new ArrayList<>();
-            for (OrderDto orderDto : model.getOrders()) {
+            for (OrderDto orderDto : model.getOrdersDto()) {
                 orders.add(orderConverter.convertToEntity(orderDto, new Order()));
             }
             entity.setOrders(orders);
         }
 
-        if (model.getAddresses() != null) {
+        if (model.getAddressesDto() != null) {
             List<Address> addresses = new ArrayList<>();
-            for (AddressDto addressDto : model.getAddresses()) {
+            for (AddressDto addressDto : model.getAddressesDto()) {
                 addresses.add(addressConverter.convertToEntity(addressDto, new Address()));
             }
             entity.setAddresses(addresses);
         }
 
-        if (model.getPaymentMethods() != null) {
+        if (model.getPaymentMethodsDto() != null) {
             List<PaymentMethod> paymentMethods = new ArrayList<>();
-            for (PaymentMethodDto paymentMethodDto : model.getPaymentMethods()) {
+            for (PaymentMethodDto paymentMethodDto : model.getPaymentMethodsDto()) {
                 paymentMethods.add(paymentMethodConverter.convertToEntity(paymentMethodDto, new PaymentMethod()));
             }
             entity.setPaymentMethods(paymentMethods);
@@ -73,7 +73,7 @@ public class CustomerConverter implements Converter<Customer, CustomerDto> {
             for (Order order : entity.getOrders()) {
                 orderDtos.add(orderConverter.convertToModel(order, new OrderDto()));
             }
-            model.setOrders(orderDtos);
+            model.setOrdersDto(orderDtos);
         }
 
         if (entity.getAddresses() != null) {
@@ -81,7 +81,7 @@ public class CustomerConverter implements Converter<Customer, CustomerDto> {
             for (Address address : entity.getAddresses()) {
                 addressDtos.add(addressConverter.convertToModel(address, new AddressDto()));
             }
-            model.setAddresses(addressDtos);
+            model.setAddressesDto(addressDtos);
         }
 
         if (entity.getPaymentMethods() != null) {
@@ -89,7 +89,7 @@ public class CustomerConverter implements Converter<Customer, CustomerDto> {
             for (PaymentMethod paymentMethod : entity.getPaymentMethods()) {
                 paymentMethodDtos.add(paymentMethodConverter.convertToModel(paymentMethod, new PaymentMethodDto()));
             }
-            model.setPaymentMethods(paymentMethodDtos);
+            model.setPaymentMethodsDto(paymentMethodDtos);
         }
         return model;
     }

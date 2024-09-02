@@ -6,10 +6,9 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.Set;
 
 @Entity
-@Table(name = "restaurantBraches")
+@Table(name = "restaurant_branches")
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
@@ -19,10 +18,10 @@ public class RestaurantBranch {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "rest_branch_id")
-    private Long restBrachId;
+    private Long restBranchId;
 
     @ManyToOne
-    @JoinColumn(name = "reastaurant_id")
+    @JoinColumn(name = "restaurant_id")
     private Restaurant restaurant;
 
 
@@ -32,6 +31,7 @@ public class RestaurantBranch {
 
     private String location;
 
+    @Column(name = "phone_number")
     private String phoneNumber;
 
 }

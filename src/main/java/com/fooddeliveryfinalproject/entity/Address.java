@@ -18,10 +18,17 @@ public class Address {
     private Long id;
 
     private String country;
+
     private String city;
+
     private String state;
+
     private String street;
+
+    @Column(name = "house_number")
     private String houseNumber;
+
+    @Column(name = "apartment_number")
     private String apartmentNumber;
 
     @ManyToOne

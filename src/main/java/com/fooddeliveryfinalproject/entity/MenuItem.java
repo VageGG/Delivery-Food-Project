@@ -13,6 +13,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @Data
 public class MenuItem {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "menu_item_id")
@@ -23,7 +24,9 @@ public class MenuItem {
     private Menu menu;
 
     private String name;
+
     private Double price;
+
     private String description;
 
 

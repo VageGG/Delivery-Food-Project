@@ -15,9 +15,9 @@ public class CustomerDto {
 
     private String phoneNumber;
 
-    private List<OrderDto> orders;
+    private List<OrderDto> ordersDto;
 
-    private List<AddressDto> addresses;
+    private List<AddressDto> addressesDto;
 
-    private List<PaymentMethodDto> paymentMethods;
+    private List<PaymentMethodDto> paymentMethodsDto;
 }
