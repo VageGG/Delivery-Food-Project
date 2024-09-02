@@ -7,26 +7,48 @@ import com.fooddeliveryfinalproject.repository.CustomerRepo;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 @Service
 public class CustomerService {
 
-    private CustomerRepo customerRepo;
+    private final CustomerRepo customerRepo;
 
-    private CustomerConverter customerConverter;
+    private final CustomerConverter customerConverter;
 
     public CustomerService(CustomerRepo customerRepo, CustomerConverter customerConverter) {
         this.customerRepo = customerRepo;
         this.customerConverter = customerConverter;
     }
 
+    public List<CustomerDto> getAllCustomer() {
+        return customerRepo.findAll().stream()
+                .map(customer -> customerConverter.convertToModel(customer, new CustomerDto()))
+                .collect(Collectors.toList());
+    }
     public CustomerDto getCustomer(Long id) {
-        return customerConverter.convertToModel(customerRepo.findById(id).orElse(null), new CustomerDto());
+        return customerConverter.convertToModel(customerRepo.findById(id)
+                .orElseThrow(() -> new RuntimeException("Customer not found")),
+                new CustomerDto());
     }
 
     @Transactional
-    public Customer createCustomer(Customer customer) {
-        return customerRepo.save(customer);
+    public void createCustomer(CustomerDto customerDto) {
+        Customer customer = customerConverter.convertToEntity(customerDto, new Customer());
+        customerRepo.save(customer);
     }
 
+    @Transactional
+    public void updateCustomer(Long id, CustomerDto customerDto) {
+        Customer customerEntity = customerRepo.findById(id)
+                .orElseThrow(() -> new RuntimeException("Customer not found"));
+        customerConverter.convertToEntity(customerDto, customerEntity);
+        customerRepo.save(customerEntity);
+    }
 
+    @Transactional
+    public void deleteCustomer(Long id) {
+        customerRepo.deleteById(id);
+    }
 }

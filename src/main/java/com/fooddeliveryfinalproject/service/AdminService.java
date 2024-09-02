@@ -7,42 +7,49 @@ import com.fooddeliveryfinalproject.repository.AdminRepo;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 @Service
 public class AdminService {
 
-    private AdminRepo adminRepo;
+    private final AdminRepo adminRepo;
 
-    private AdminConverter adminConverter;
+    private final AdminConverter adminConverter;
 
     public AdminService(AdminRepo adminRepo, AdminConverter adminConverter) {
         this.adminRepo = adminRepo;
         this.adminConverter = adminConverter;
     }
 
+    public List<AdminDto> getAllAdmins() {
+        return adminRepo.findAll().stream()
+                .map(admin -> adminConverter.convertToModel(admin, new AdminDto()))
+                .collect(Collectors.toList());
+    }
+
     public AdminDto getAdmin(Long id) {
-        return adminConverter.convertToModel(adminRepo.findById(id).orElse(null), new AdminDto());
+        return adminConverter.convertToModel(adminRepo.findById(id)
+                        .orElseThrow(() -> new RuntimeException("Admin not found")),
+                new AdminDto());
     }
 
     @Transactional
-    public Admin createAdmin(Admin admin) {
-        return adminRepo.save(admin);
+    public void createAdmin(AdminDto adminDto) {
+        Admin admin = adminConverter.convertToEntity(adminDto, new Admin());
+        adminRepo.save(admin);
     }
 
     @Transactional
-    public void updateAdmin(Long id, Admin admin) {
-        Admin adminEntity = adminRepo.findById(id).orElse(null);
-        if (adminEntity != null) {
-            adminRepo.save(adminEntity);
-        }
+    public void updateAdmin(Long id, AdminDto adminDto) {
+        Admin adminEntity = adminRepo.findById(id)
+                .orElseThrow(() -> new RuntimeException("Admin not found"));
+        adminConverter.convertToEntity(adminDto, adminEntity);
+        adminRepo.save(adminEntity);
     }
 
     @Transactional
     public void deleteAdmin(Long id) {
         adminRepo.deleteById(id);
-    }
-
-    public AdminDto loginAdmin(String username, String password) {
-        Admin admin = adminRepo.findByUserAndPassword(username, password);
-        return adminConverter.convertToModel(admin, new AdminDto());
     }
 }
