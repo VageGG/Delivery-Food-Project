@@ -5,10 +5,12 @@ import com.fooddeliveryfinalproject.entity.RestaurantBranch;
 import com.fooddeliveryfinalproject.model.RestaurantBranchDto;
 import com.fooddeliveryfinalproject.repository.RestaurantBranchRepo;
 import jakarta.transaction.Transactional;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
+@Service
 public class RestaurantBranchService {
     private final RestaurantBranchRepo restaurantBranchRepo;
 
