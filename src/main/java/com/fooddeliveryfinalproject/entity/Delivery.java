@@ -15,7 +15,8 @@ public class Delivery {
     @Column(name = "delivery_id")
     private Long deliveryId;
 
-    @OneToOne(mappedBy = "delivery")
+    @OneToOne
+    @JoinColumn(name = "order_id")
     private Order order;
 
     @ManyToOne
