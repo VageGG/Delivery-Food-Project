@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.data.annotation.Reference;
 
 @Entity
 @Table(name = "menu_items")
@@ -22,6 +23,10 @@ public class MenuItem {
     @ManyToOne
     @JoinColumn(name = "menu_category_id")
     private MenuCategory menuCategory;
+
+    @ManyToOne
+    @JoinColumn(name = "order_cart_id")
+    private OrderCart orderCart;
 
     private String name;
 

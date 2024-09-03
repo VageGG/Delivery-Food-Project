@@ -10,6 +10,8 @@ public class MenuItemDto {
 
     private MenuCategoryDto menuCategoryDto;
 
+    private OrderCartDto orderCartDto;
+
     private String name;
 
     private Double price;
