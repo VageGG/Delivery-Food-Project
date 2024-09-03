@@ -20,15 +20,13 @@ public class MenuItem {
     private Long menuItemId;
 
     @ManyToOne
-    @JoinColumn(name = "menu_id")
-    private Menu menu;
+    @JoinColumn(name = "menu_category_id")
+    private MenuCategory menuCategory;
 
     private String name;
 
     private Double price;
 
     private String description;
-
-
 
 }

@@ -1,9 +1,9 @@
 package com.fooddeliveryfinalproject.repository;
 
-import com.fooddeliveryfinalproject.entity.Admin;
+import com.fooddeliveryfinalproject.entity.Delivery;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface AdminRepo extends JpaRepository<Admin, Long> {
+public interface DeliveryRepo extends JpaRepository<Delivery, Long> {
 }

@@ -6,6 +6,8 @@ import com.fooddeliveryfinalproject.entity.OrderCart;
 import com.fooddeliveryfinalproject.model.MenuItemDto;
 import com.fooddeliveryfinalproject.model.OrderCartDto;
 import com.fooddeliveryfinalproject.model.OrderDto;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
@@ -14,13 +16,18 @@ import java.util.List;
 @Component
 public class OrderCartConverter implements Converter<OrderCart, OrderCartDto> {
 
-    private final OrderConverter orderConverter;
+    private OrderConverter orderConverter;
 
     private final MenuItemConverter menuItemConverter;
 
-    public OrderCartConverter(OrderConverter orderConverter, MenuItemConverter menuItemConverter) {
-        this.orderConverter = orderConverter;
+    public OrderCartConverter(MenuItemConverter menuItemConverter) {
         this.menuItemConverter = menuItemConverter;
+    }
+
+    @Autowired
+    @Lazy
+    public void setOrderConverter(OrderConverter orderConverter) {
+        this.orderConverter = orderConverter;
     }
 
     @Override

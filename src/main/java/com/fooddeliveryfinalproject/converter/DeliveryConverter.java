@@ -6,17 +6,20 @@ import com.fooddeliveryfinalproject.entity.Order;
 import com.fooddeliveryfinalproject.model.DeliveryDto;
 import com.fooddeliveryfinalproject.model.DriverDto;
 import com.fooddeliveryfinalproject.model.OrderDto;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
 
 @Component
 public class DeliveryConverter implements Converter<Delivery, DeliveryDto> {
 
-    private final OrderConverter orderConverter;
+    @Autowired
+    @Lazy
+    private OrderConverter orderConverter;
 
     private final DriverConverter driverConverter;
 
-    public DeliveryConverter(OrderConverter orderConverter, DriverConverter driverConverter) {
-        this.orderConverter = orderConverter;
+    public DeliveryConverter(DriverConverter driverConverter) {
         this.driverConverter = driverConverter;
     }
     @Override

@@ -3,12 +3,11 @@ package com.fooddeliveryfinalproject.entity;
 import jakarta.persistence.*;
 import lombok.*;
 
-import java.util.List;
-
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
+@Table(name = "orders")
 public class Order {
 
     @Id
@@ -16,12 +15,13 @@ public class Order {
     @Column(name = "order_id")
     private long orderId;
 
-    @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.DETACH})
+    @ManyToOne
     @JoinColumn(name = "customer_id")
     private Customer customer;
 
-    @OneToMany(mappedBy = "order")
-    private List<MenuItem> items;
+    @OneToOne(mappedBy = "order")
+    @JoinColumn(name = "order_cart_id")
+    private OrderCart orderCart;
 
     @OneToOne
     @JoinColumn(name = "delivery_id")

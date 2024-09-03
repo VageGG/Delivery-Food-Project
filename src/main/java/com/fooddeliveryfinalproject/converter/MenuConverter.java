@@ -6,20 +6,26 @@ import com.fooddeliveryfinalproject.entity.RestaurantBranch;
 import com.fooddeliveryfinalproject.model.MenuCategoryDto;
 import com.fooddeliveryfinalproject.model.MenuDto;
 import com.fooddeliveryfinalproject.model.RestaurantBranchDto;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Component
 public class MenuConverter implements Converter<Menu, MenuDto> {
 
-    private final MenuCategoryConverter menuCategoryConverter;
+    @Autowired
+    @Lazy
+    private MenuCategoryConverter menuCategoryConverter;
 
     private final RestaurantBranchConverter restaurantBranchConverter;
 
-    public MenuConverter(MenuCategoryConverter menuCategoryConverter,
-                         RestaurantBranchConverter restaurantBranchConverter) {
-        this.menuCategoryConverter = menuCategoryConverter;
+    public MenuConverter(RestaurantBranchConverter restaurantBranchConverter) {
         this.restaurantBranchConverter = restaurantBranchConverter;
     }
+
 
     @Override
     public Menu convertToEntity(MenuDto model, Menu entity) {
@@ -30,9 +36,12 @@ public class MenuConverter implements Converter<Menu, MenuDto> {
                     new RestaurantBranch()));
         }
 
-        if (model.getMenuCategoryDto() != null) {
-            entity.setMenuCategory(menuCategoryConverter.convertToEntity(model.getMenuCategoryDto(),
-                    new MenuCategory()));
+        if (model.getMenuCategoriesDto() != null) {
+            List<MenuCategory> menuCategories = new ArrayList<>();
+            for(MenuCategoryDto menuCategoryDto : model.getMenuCategoriesDto()) {
+                menuCategories.add(menuCategoryConverter.convertToEntity(menuCategoryDto, new MenuCategory()));
+            }
+            entity.setMenuCategories(menuCategories);
         }
 
         return entity;
@@ -47,9 +56,12 @@ public class MenuConverter implements Converter<Menu, MenuDto> {
                     new RestaurantBranchDto()));
         }
 
-        if (entity.getMenuCategory() != null) {
-            model.setMenuCategoryDto(menuCategoryConverter.convertToModel(entity.getMenuCategory(),
-                    new MenuCategoryDto()));
+        if (entity.getMenuCategories() != null) {
+            List<MenuCategoryDto> menuCategoryDtos = new ArrayList<>();
+            for (MenuCategory menuCategory : entity.getMenuCategories()) {
+                menuCategoryDtos.add(menuCategoryConverter.convertToModel(menuCategory, new MenuCategoryDto()));
+            }
+            model.setMenuCategoriesDto(menuCategoryDtos);
         }
 
         return model;

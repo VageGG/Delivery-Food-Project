@@ -1,18 +1,18 @@
 package com.fooddeliveryfinalproject.converter;
 
-import com.fooddeliveryfinalproject.entity.Menu;
+import com.fooddeliveryfinalproject.entity.MenuCategory;
 import com.fooddeliveryfinalproject.entity.MenuItem;
-import com.fooddeliveryfinalproject.model.MenuDto;
+import com.fooddeliveryfinalproject.model.MenuCategoryDto;
 import com.fooddeliveryfinalproject.model.MenuItemDto;
 import org.springframework.stereotype.Component;
 
 @Component
 public class MenuItemConverter implements Converter<MenuItem, MenuItemDto> {
 
-    private final MenuConverter menuConverter;
+    private final MenuCategoryConverter menuCategoryConverter;
 
-    public MenuItemConverter(MenuConverter menuConverter) {
-        this.menuConverter = menuConverter;
+    public MenuItemConverter(MenuCategoryConverter menuCategoryConverter) {
+        this.menuCategoryConverter = menuCategoryConverter;
     }
 
     @Override
@@ -21,8 +21,8 @@ public class MenuItemConverter implements Converter<MenuItem, MenuItemDto> {
         entity.setName(model.getName());
         entity.setPrice(model.getPrice());
 
-        if (model.getMenuDto() != null) {
-            entity.setMenu(menuConverter.convertToEntity(model.getMenuDto(), new Menu()));
+        if (model.getMenuCategoryDto() != null) {
+            entity.setMenuCategory(menuCategoryConverter.convertToEntity(model.getMenuCategoryDto(), new MenuCategory()));
         }
 
         entity.setDescription(model.getDescription());
@@ -36,8 +36,8 @@ public class MenuItemConverter implements Converter<MenuItem, MenuItemDto> {
         model.setName(entity.getName());
         model.setPrice(entity.getPrice());
 
-        if (entity.getMenu() != null) {
-            model.setMenuDto(menuConverter.convertToModel(entity.getMenu(), new MenuDto()));
+        if (entity.getMenuCategory() != null) {
+            model.setMenuCategoryDto(menuCategoryConverter.convertToModel(entity.getMenuCategory(), new MenuCategoryDto()));
         }
 
         model.setDescription(entity.getDescription());

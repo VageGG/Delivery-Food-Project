@@ -1,13 +1,9 @@
 package com.fooddeliveryfinalproject.converter;
 
-import com.fooddeliveryfinalproject.entity.Customer;
-import com.fooddeliveryfinalproject.entity.Delivery;
-import com.fooddeliveryfinalproject.entity.MenuItem;
-import com.fooddeliveryfinalproject.entity.Order;
-import com.fooddeliveryfinalproject.model.CustomerDto;
-import com.fooddeliveryfinalproject.model.DeliveryDto;
-import com.fooddeliveryfinalproject.model.MenuItemDto;
-import com.fooddeliveryfinalproject.model.OrderDto;
+import com.fooddeliveryfinalproject.entity.*;
+import com.fooddeliveryfinalproject.model.*;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
@@ -16,18 +12,22 @@ import java.util.List;
 @Component
 public class OrderConverter implements Converter<Order, OrderDto> {
 
-    private final CustomerConverter customerConverter;
+    private CustomerConverter customerConverter;
 
-    private final MenuItemConverter menuItemConverter;
+    private final OrderCartConverter orderCartConverter;
 
     private final DeliveryConverter deliveryConverter;
 
-    public OrderConverter(CustomerConverter customerConverter,
-                          MenuItemConverter menuItemConverter,
+    public OrderConverter(OrderCartConverter orderCartConverter,
                           DeliveryConverter deliveryConverter) {
-        this.customerConverter = customerConverter;
-        this.menuItemConverter = menuItemConverter;
+        this.orderCartConverter = orderCartConverter;
         this.deliveryConverter = deliveryConverter;
+    }
+
+    @Autowired
+    @Lazy
+    public void setCustomerConverter(CustomerConverter customerConverter) {
+        this.customerConverter = customerConverter;
     }
 
     @Override
@@ -38,12 +38,8 @@ public class OrderConverter implements Converter<Order, OrderDto> {
             entity.setCustomer(customerConverter.convertToEntity(model.getCustomerDto(), new Customer()));
         }
 
-        if (model.getItemsDto() != null) {
-            List<MenuItem> menuItems = new ArrayList<>();
-            for (MenuItemDto itemDto : model.getItemsDto()) {
-                menuItems.add(menuItemConverter.convertToEntity(itemDto, new MenuItem()));
-            }
-            entity.setItems(menuItems);
+        if (model.getOrderCartDto() != null) {
+            entity.setOrderCart(orderCartConverter.convertToEntity(model.getOrderCartDto(), new OrderCart()));
         }
 
         if (model.getDeliveryDto() != null) {
@@ -62,12 +58,8 @@ public class OrderConverter implements Converter<Order, OrderDto> {
             model.setCustomerDto(customerConverter.convertToModel(entity.getCustomer(), new CustomerDto()));
         }
 
-        if (entity.getItems() != null) {
-            List<MenuItemDto> menuItemsDto = new ArrayList<>();
-            for (MenuItem menuItem : entity.getItems()) {
-                menuItemsDto.add(menuItemConverter.convertToModel(menuItem, new MenuItemDto()));
-            }
-            model.setItemsDto(menuItemsDto);
+        if (entity.getOrderCart() != null) {
+            model.setOrderCartDto(orderCartConverter.convertToModel(entity.getOrderCart(), new OrderCartDto()));
         }
 
         if (entity.getDelivery() != null) {
