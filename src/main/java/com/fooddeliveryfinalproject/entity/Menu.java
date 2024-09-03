@@ -13,7 +13,6 @@ import java.util.List;
 @Table(name = "menus")
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder
 @Data
 public class Menu {
 
@@ -25,8 +24,7 @@ public class Menu {
     @OneToOne(mappedBy = "menu")
     private RestaurantBranch restaurantBranch;
 
-    @OneToMany
-    @JoinColumn(name = "category_id")
+    @OneToMany(mappedBy = "menu")
     private List<MenuCategory> menuCategories;
 }
 

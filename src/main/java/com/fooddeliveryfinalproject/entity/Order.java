@@ -19,7 +19,7 @@ public class Order {
     @JoinColumn(name = "customer_id")
     private Customer customer;
 
-    @OneToOne(mappedBy = "order")
+    @OneToOne
     @JoinColumn(name = "order_cart_id")
     private OrderCart orderCart;
 

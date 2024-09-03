@@ -17,12 +17,11 @@ public class OrderCart {
     @Column(name = "cart_id")
     private Long cartId;
 
-    @OneToOne
+    @OneToOne(mappedBy = "orderCart")
     @JoinColumn(name = "order_id")
     private Order order;
 
-    @OneToMany
-    @JoinColumn(name = "menu_item_id")
+    @OneToMany(mappedBy = "orderCart")
     private List<MenuItem> items;
 
     private Integer count;
