@@ -2,6 +2,7 @@ package com.fooddeliveryfinalproject.service;
 
 import com.fooddeliveryfinalproject.entity.Order;
 import com.fooddeliveryfinalproject.repository.OrderRepo;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -12,6 +13,7 @@ public class OrderService {
     @Autowired
     private DateTimeService dateTimeService;
 
+    @Transactional
     public Order createOrder(Order order) {
         String dateTime = dateTimeService.getFormattedCurrentDateTime();
         order.getDelivery().setDateTime(dateTime);
@@ -27,11 +29,13 @@ public class OrderService {
         return order;
     }
 
+    @Transactional
     public Order updateOrder(Order order) {
         getOrderById(order.getOrderId()); //checking if order exists
         return this.repo.save(order);
     }
 
+    @Transactional
     public void deleteOrder(long id) {
         Order order = getOrderById(id);
         this.repo.delete(order);
