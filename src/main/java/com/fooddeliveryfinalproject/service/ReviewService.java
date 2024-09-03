@@ -2,6 +2,7 @@ package com.fooddeliveryfinalproject.service;
 
 import com.fooddeliveryfinalproject.entity.Review;
 import com.fooddeliveryfinalproject.repository.ReviewRepo;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -10,6 +11,7 @@ public class ReviewService {
     @Autowired
     private ReviewRepo repo;
 
+    @Transactional
     public Review createReview(Review review) { //checks later for driver, restaurant...
         if (review.getRating() > 5 || review.getRating() < 1) {
             throw new RuntimeException("rating must be between 1 and 5");
@@ -30,6 +32,7 @@ public class ReviewService {
         return review;
     }
 
+    @Transactional
     public Review updateReview(Review review) {
         getReviewById(review.getReviewId());
 
@@ -40,6 +43,7 @@ public class ReviewService {
         return this.repo.save(review);
     }
 
+    @Transactional
     public void deleteReview(long id) {
         Review review = getReviewById(id);
         this.repo.delete(review);
