@@ -8,7 +8,7 @@ public class MenuItemDto {
 
     private Long menuItemId;
 
-    private MenuDto menuDto;
+    private MenuCategoryDto menuCategoryDto;
 
     private String name;
 

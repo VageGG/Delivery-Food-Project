@@ -6,19 +6,20 @@ import com.fooddeliveryfinalproject.entity.RestaurantBranch;
 import com.fooddeliveryfinalproject.model.MenuDto;
 import com.fooddeliveryfinalproject.model.RestaurantBranchDto;
 import com.fooddeliveryfinalproject.model.RestaurantDto;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
 
 @Component
 public class RestaurantBranchConverter implements Converter<RestaurantBranch, RestaurantBranchDto> {
 
-    private final RestaurantConverter restaurantConverter;
+    @Autowired
+    private RestaurantConverter restaurantConverter;
 
-    private final MenuConverter menuConverter;
+    @Autowired
+    @Lazy
+    private MenuConverter menuConverter;
 
-    public RestaurantBranchConverter(RestaurantConverter restaurantConverter, MenuConverter menuConverter) {
-        this.restaurantConverter = restaurantConverter;
-        this.menuConverter = menuConverter;
-    }
 
     @Override
     public RestaurantBranch convertToEntity(RestaurantBranchDto model, RestaurantBranch entity) {

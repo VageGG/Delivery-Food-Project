@@ -6,6 +6,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
+
 
 @Entity
 @Table(name = "menus")
@@ -23,8 +25,8 @@ public class Menu {
     @OneToOne(mappedBy = "menu")
     private RestaurantBranch restaurantBranch;
 
-    @ManyToOne
+    @OneToMany
     @JoinColumn(name = "category_id")
-    private MenuCategory menuCategory;
+    private List<MenuCategory> menuCategories;
 }
 

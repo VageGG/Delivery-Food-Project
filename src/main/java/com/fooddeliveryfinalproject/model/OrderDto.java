@@ -3,8 +3,6 @@ package com.fooddeliveryfinalproject.model;
 import com.fooddeliveryfinalproject.entity.*;
 import lombok.*;
 
-import java.util.List;
-
 @Data
 public class OrderDto {
 
@@ -12,7 +10,7 @@ public class OrderDto {
 
     private CustomerDto customerDto;
 
-    private List<MenuItemDto> itemsDto;
+    private OrderCartDto orderCartDto;
 
     private DeliveryDto deliveryDto;
 

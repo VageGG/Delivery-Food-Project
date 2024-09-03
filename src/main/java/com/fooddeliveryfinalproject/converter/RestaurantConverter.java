@@ -6,6 +6,8 @@ import com.fooddeliveryfinalproject.entity.RestaurantManager;
 import com.fooddeliveryfinalproject.model.RestaurantBranchDto;
 import com.fooddeliveryfinalproject.model.RestaurantDto;
 import com.fooddeliveryfinalproject.model.RestaurantManagerDto;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
@@ -15,16 +17,20 @@ import java.util.List;
 @Component
 public class RestaurantConverter implements Converter<Restaurant, RestaurantDto> {
 
-    private final RestaurantBranchConverter restaurantBranchConverter;
+    private RestaurantBranchConverter restaurantBranchConverter;
 
-    private final RestManagerConverter restManagerConverter;
+    private RestManagerConverter restManagerConverter;
 
-    public RestaurantConverter(RestaurantBranchConverter restaurantBranchConverter,
-                               RestManagerConverter restManagerConverter) {
-        this.restaurantBranchConverter = restaurantBranchConverter;
+    @Autowired
+    public void setRestManagerConverter(RestManagerConverter restManagerConverter) {
         this.restManagerConverter = restManagerConverter;
     }
 
+    @Autowired
+    @Lazy
+    public void setRestaurantBranchConverter(RestaurantBranchConverter restaurantBranchConverter) {
+        this.restaurantBranchConverter = restaurantBranchConverter;
+    }
     @Override
     public Restaurant convertToEntity(RestaurantDto model, Restaurant entity) {
         entity.setRestId(model.getRestId());

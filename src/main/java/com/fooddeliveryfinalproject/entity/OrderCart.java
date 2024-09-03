@@ -17,11 +17,11 @@ public class OrderCart {
     @Column(name = "cart_id")
     private Long cartId;
 
-    @ManyToOne
+    @OneToOne
     @JoinColumn(name = "order_id")
     private Order order;
 
-    @ManyToMany
+    @OneToMany
     @JoinColumn(name = "menu_item_id")
     private List<MenuItem> items;
 

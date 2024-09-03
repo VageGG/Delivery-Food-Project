@@ -1,6 +1,9 @@
 package com.fooddeliveryfinalproject.model;
 
 import lombok.Data;
+
+import java.util.List;
+
 @Data
 public class MenuDto {
 
@@ -10,5 +13,5 @@ public class MenuDto {
 
   //  private Set<MenuItem> menuItems;
 
-    private MenuCategoryDto menuCategoryDto;
+    private List<MenuCategoryDto> menuCategoriesDto;
 }

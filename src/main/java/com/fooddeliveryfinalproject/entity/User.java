@@ -11,8 +11,6 @@ import java.io.Serializable;
 @NoArgsConstructor
 @AllArgsConstructor
 @MappedSuperclass
-@Entity
-@Table(name = "users")
 public abstract class User implements Serializable {
 
     @Id
