@@ -17,7 +17,7 @@ public class OrderCart {
     @Column(name = "cart_id")
     private Long cartId;
 
-    @OneToOne(mappedBy = "orderCart")
+    @OneToOne
     @JoinColumn(name = "order_id")
     private Order order;
 

@@ -21,7 +21,8 @@ public class Menu {
     @Column(name = "menu_id")
     private Long menuId;
 
-    @OneToOne(mappedBy = "menu")
+    @OneToOne
+    @JoinColumn(name = "rest_branch_id")
     private RestaurantBranch restaurantBranch;
 
     @OneToMany(mappedBy = "menu")

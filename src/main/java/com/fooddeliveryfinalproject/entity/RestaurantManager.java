@@ -13,7 +13,7 @@ import lombok.*;
 @Table(name = "restaurant_managers")
 public class RestaurantManager extends User{
 
-    @ManyToOne
+    @OneToOne
     @JoinColumn(name = "restaurant_id", nullable = false)
     private Restaurant restaurant;
 
