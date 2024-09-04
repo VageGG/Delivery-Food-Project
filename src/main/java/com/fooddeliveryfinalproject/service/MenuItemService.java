@@ -20,7 +20,7 @@ public class MenuItemService {
     @Transactional
     public MenuItemDto createMenuItem(MenuItemDto menuItemDto) {
         MenuItem menuItem = this.converter.convertToEntity(menuItemDto, new MenuItem());
-        return this.converter.convertToModel(menuItem, new MenuItemDto());
+        return this.converter.convertToModel(this.repo.save(menuItem), new MenuItemDto());
     }
 
     public MenuItemDto getMenuItemById(Long id) {
