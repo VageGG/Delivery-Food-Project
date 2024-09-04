@@ -5,6 +5,8 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
+
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -31,7 +33,15 @@ public class Address {
     @Column(name = "apartment_number")
     private String apartmentNumber;
 
-    @ManyToOne
-    @JoinColumn(name = "customer_id")
-    private Customer customer;
+    @OneToMany(mappedBy = "address")
+    private List<CustomerAddress> customerAddresses;
+
+    @OneToOne(mappedBy = "address")
+    private RestaurantBranch restaurantBranch;
+
+    @OneToMany(mappedBy = "pickupLocation")
+    private List<Delivery> pickupLocation;
+
+    @OneToMany(mappedBy = "dropoffLocation")
+    private List<Delivery> dropoffLocation;
 }

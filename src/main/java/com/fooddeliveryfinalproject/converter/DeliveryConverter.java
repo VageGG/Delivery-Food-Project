@@ -37,7 +37,7 @@ public class DeliveryConverter implements Converter<Delivery, DeliveryDto> {
         entity.setTrackingNumber(model.getTrackingNumber());
         entity.setStatus(model.getStatus());
         entity.setPickupLocation(model.getPickupLocation());
-        entity.setDeliveryLocation(model.getDeliveryLocation());
+        entity.setDropoffLocation(model.getDeliveryLocation());
         entity.setDateTime(model.getDateTime());
         return entity;
     }
@@ -57,7 +57,7 @@ public class DeliveryConverter implements Converter<Delivery, DeliveryDto> {
         model.setTrackingNumber(entity.getTrackingNumber());
         model.setStatus(entity.getStatus());
         model.setPickupLocation(entity.getPickupLocation());
-        model.setDeliveryLocation(entity.getDeliveryLocation());
+        model.setDeliveryLocation(entity.getDropoffLocation());
         model.setDateTime(entity.getDateTime());
         return model;
     }

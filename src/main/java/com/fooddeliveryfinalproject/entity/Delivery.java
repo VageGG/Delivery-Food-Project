@@ -29,11 +29,13 @@ public class Delivery {
     @Enumerated(EnumType.STRING)
     private DeliveryStatus status;
 
-    @Column(name = "pickup_location")
-    private String pickupLocation;
+    @ManyToOne
+    @JoinColumn(name = "pickup_address_id")
+    private Address pickupLocation;
 
-    @Column(name = "delivery_location")
-    private String deliveryLocation;
+    @ManyToOne
+    @JoinColumn(name = "dropoff_address_id")
+    private Address dropoffLocation;
 
     @Column(name = "delivery_time")
     private String dateTime;
