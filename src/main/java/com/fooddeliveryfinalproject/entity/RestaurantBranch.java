@@ -29,7 +29,9 @@ public class RestaurantBranch {
     @JoinColumn(name = "menu_id")
     private Menu menu;
 
-    private String location;
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "address_id")
+    private Address address;
 
     @Column(name = "phone_number")
     private String phoneNumber;

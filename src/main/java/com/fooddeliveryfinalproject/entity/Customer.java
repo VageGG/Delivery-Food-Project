@@ -14,7 +14,7 @@ import java.util.List;
 public class Customer extends User {
 
     @OneToMany(mappedBy = "customer", cascade = CascadeType.ALL)
-    private List<Address> addresses;
+    private List<CustomerAddress> addresses;
 
     @OneToMany(mappedBy = "customer", cascade = CascadeType.ALL)
     private List<Order> orders;
@@ -24,7 +24,7 @@ public class Customer extends User {
 
     @Builder
     public Customer(Long id, String username, String password, String email, String phoneNumber, List<Order> orders,
-                    List<Address> addresses, List<PaymentMethod> paymentMethods) {
+                    List<CustomerAddress> addresses, List<PaymentMethod> paymentMethods) {
         super(id, username, password, email, phoneNumber, Role.CUSTOMER);
         this.orders = orders;
         this.addresses = addresses;
