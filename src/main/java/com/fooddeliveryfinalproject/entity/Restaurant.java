@@ -32,8 +32,8 @@ public class Restaurant {
     @OneToMany(mappedBy = "restaurant")
     private List<RestaurantBranch> branches;
 
-    @Column(name = "rating")
-    private Double rating;
+    @OneToMany(mappedBy = "restaurant")
+    private List<Review> reviews;
 
 
 

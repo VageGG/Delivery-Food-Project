@@ -13,8 +13,7 @@ import lombok.*;
 @Table(name = "restaurant_managers")
 public class RestaurantManager extends User{
 
-    @OneToOne
-    @JoinColumn(name = "restaurant_id", nullable = false)
+    @OneToOne(mappedBy = "restaurantManager")
     private Restaurant restaurant;
 
     @Builder
