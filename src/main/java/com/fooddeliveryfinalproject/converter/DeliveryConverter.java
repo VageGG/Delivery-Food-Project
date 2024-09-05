@@ -1,8 +1,10 @@
 package com.fooddeliveryfinalproject.converter;
 
+import com.fooddeliveryfinalproject.entity.Address;
 import com.fooddeliveryfinalproject.entity.Delivery;
 import com.fooddeliveryfinalproject.entity.Driver;
 import com.fooddeliveryfinalproject.entity.Order;
+import com.fooddeliveryfinalproject.model.AddressDto;
 import com.fooddeliveryfinalproject.model.DeliveryDto;
 import com.fooddeliveryfinalproject.model.DriverDto;
 import com.fooddeliveryfinalproject.model.OrderDto;
@@ -17,11 +19,16 @@ public class DeliveryConverter implements Converter<Delivery, DeliveryDto> {
     @Lazy
     private OrderConverter orderConverter;
 
+    @Autowired
+    @Lazy
+    private AddressConverter addressConverter;
+
     private final DriverConverter driverConverter;
 
     public DeliveryConverter(DriverConverter driverConverter) {
         this.driverConverter = driverConverter;
     }
+
     @Override
     public Delivery convertToEntity(DeliveryDto model, Delivery entity) {
         entity.setDeliveryId(model.getId());
@@ -36,8 +43,15 @@ public class DeliveryConverter implements Converter<Delivery, DeliveryDto> {
 
         entity.setTrackingNumber(model.getTrackingNumber());
         entity.setStatus(model.getStatus());
-        entity.setPickupLocation(model.getPickupLocation());
-        entity.setDropoffLocation(model.getDeliveryLocation());
+
+        if (model.getPickupLocation() != null) {
+            entity.setPickupLocation(addressConverter.convertToEntity(model.getPickupLocation(), new Address()));
+        }
+
+        if (model.getDropoffLocation() != null) {
+            entity.setDropoffLocation(addressConverter.convertToEntity(model.getDropoffLocation(), new Address()));
+        }
+
         entity.setDateTime(model.getDateTime());
         return entity;
     }
@@ -56,8 +70,15 @@ public class DeliveryConverter implements Converter<Delivery, DeliveryDto> {
 
         model.setTrackingNumber(entity.getTrackingNumber());
         model.setStatus(entity.getStatus());
-        model.setPickupLocation(entity.getPickupLocation());
-        model.setDeliveryLocation(entity.getDropoffLocation());
+
+        if (entity.getPickupLocation() != null) {
+            model.setPickupLocation(addressConverter.convertToModel(entity.getPickupLocation(), new AddressDto()));
+        }
+
+        if (entity.getDropoffLocation() != null) {
+            model.setDropoffLocation(addressConverter.convertToModel(entity.getDropoffLocation(), new AddressDto()));
+        }
+
         model.setDateTime(entity.getDateTime());
         return model;
     }
