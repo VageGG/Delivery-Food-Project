@@ -10,7 +10,7 @@ public class OrderDto {
 
     private CustomerDto customerDto;
 
-    private OrderCartDto orderCartDto;
+    private CartDto orderCartDto;
 
     private DeliveryDto deliveryDto;
 

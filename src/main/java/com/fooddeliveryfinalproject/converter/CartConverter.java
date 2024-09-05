@@ -2,9 +2,9 @@ package com.fooddeliveryfinalproject.converter;
 
 import com.fooddeliveryfinalproject.entity.MenuItem;
 import com.fooddeliveryfinalproject.entity.Order;
-import com.fooddeliveryfinalproject.entity.OrderCart;
+import com.fooddeliveryfinalproject.entity.Cart;
 import com.fooddeliveryfinalproject.model.MenuItemDto;
-import com.fooddeliveryfinalproject.model.OrderCartDto;
+import com.fooddeliveryfinalproject.model.CartDto;
 import com.fooddeliveryfinalproject.model.OrderDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
@@ -14,13 +14,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Component
-public class OrderCartConverter implements Converter<OrderCart, OrderCartDto> {
+public class CartConverter implements Converter<Cart, CartDto> {
 
     private OrderConverter orderConverter;
 
     private final MenuItemConverter menuItemConverter;
 
-    public OrderCartConverter(MenuItemConverter menuItemConverter) {
+    public CartConverter(MenuItemConverter menuItemConverter) {
         this.menuItemConverter = menuItemConverter;
     }
 
@@ -31,7 +31,7 @@ public class OrderCartConverter implements Converter<OrderCart, OrderCartDto> {
     }
 
     @Override
-    public OrderCart convertToEntity(OrderCartDto model, OrderCart entity) {
+    public Cart convertToEntity(CartDto model, Cart entity) {
         entity.setCartId(model.getCartId());
 
         if (model.getOrderDto() != null) {
@@ -51,7 +51,7 @@ public class OrderCartConverter implements Converter<OrderCart, OrderCartDto> {
     }
 
     @Override
-    public OrderCartDto convertToModel(OrderCart entity, OrderCartDto model) {
+    public CartDto convertToModel(Cart entity, CartDto model) {
         model.setCartId(entity.getCartId());
 
         if (entity.getOrder() != null) {

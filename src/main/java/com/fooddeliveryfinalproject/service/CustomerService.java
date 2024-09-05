@@ -14,7 +14,7 @@ import java.util.stream.Collectors;
 public class CustomerService {
 
     private final CustomerRepo customerRepo;
-    private final OrderCartRepo orderCartRepo;
+    private final CartRepo orderCartRepo;
     private final OrderRepo orderRepo;
     private final DeliveryRepo deliveryRepo;
     private final RestaurantRepo restaurantRepo;
@@ -23,7 +23,7 @@ public class CustomerService {
     private final PaymentMethodRepo paymentMethodRepo;
 
     private final CustomerConverter customerConverter;
-    private final OrderCartConverter orderCartConverter;
+    private final CartConverter orderCartConverter;
     private final OrderConverter orderConverter;
     private final DeliveryConverter deliveryConverter;
     private final RestaurantConverter restaurantConverter;
@@ -33,7 +33,7 @@ public class CustomerService {
 
     public CustomerService(CustomerRepo customerRepo,
                            CustomerConverter customerConverter,
-                           OrderCartRepo orderCartRepo,
+                           CartRepo orderCartRepo,
                            OrderRepo orderRepo,
                            DeliveryRepo deliveryRepo,
                            RestaurantRepo restaurantRepo,
@@ -41,7 +41,7 @@ public class CustomerService {
                            PaymentRepo paymentRepo,
                            PaymentMethodRepo paymentMethodRepo,
                            PaymentMethodConverter paymentMethodConverter,
-                           OrderCartConverter orderCartConverter,
+                           CartConverter orderCartConverter,
                            OrderConverter orderConverter,
                            DeliveryConverter deliveryConverter,
                            RestaurantConverter restaurantConverter,

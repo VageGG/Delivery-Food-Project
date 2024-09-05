@@ -6,19 +6,16 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
 
-import java.util.ArrayList;
-import java.util.List;
-
 @Component
 public class OrderConverter implements Converter<Order, OrderDto> {
 
     private CustomerConverter customerConverter;
 
-    private final OrderCartConverter orderCartConverter;
+    private final CartConverter orderCartConverter;
 
     private final DeliveryConverter deliveryConverter;
 
-    public OrderConverter(OrderCartConverter orderCartConverter,
+    public OrderConverter(CartConverter orderCartConverter,
                           DeliveryConverter deliveryConverter) {
         this.orderCartConverter = orderCartConverter;
         this.deliveryConverter = deliveryConverter;
@@ -39,7 +36,7 @@ public class OrderConverter implements Converter<Order, OrderDto> {
         }
 
         if (model.getOrderCartDto() != null) {
-            entity.setOrderCart(orderCartConverter.convertToEntity(model.getOrderCartDto(), new OrderCart()));
+            entity.setOrderCart(orderCartConverter.convertToEntity(model.getOrderCartDto(), new Cart()));
         }
 
         if (model.getDeliveryDto() != null) {
@@ -59,7 +56,7 @@ public class OrderConverter implements Converter<Order, OrderDto> {
         }
 
         if (entity.getOrderCart() != null) {
-            model.setOrderCartDto(orderCartConverter.convertToModel(entity.getOrderCart(), new OrderCartDto()));
+            model.setOrderCartDto(orderCartConverter.convertToModel(entity.getOrderCart(), new CartDto()));
         }
 
         if (entity.getDelivery() != null) {

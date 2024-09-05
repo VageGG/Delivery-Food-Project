@@ -2,10 +2,10 @@ package com.fooddeliveryfinalproject.converter;
 
 import com.fooddeliveryfinalproject.entity.MenuCategory;
 import com.fooddeliveryfinalproject.entity.MenuItem;
-import com.fooddeliveryfinalproject.entity.OrderCart;
+import com.fooddeliveryfinalproject.entity.Cart;
 import com.fooddeliveryfinalproject.model.MenuCategoryDto;
 import com.fooddeliveryfinalproject.model.MenuItemDto;
-import com.fooddeliveryfinalproject.model.OrderCartDto;
+import com.fooddeliveryfinalproject.model.CartDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
@@ -15,7 +15,7 @@ public class MenuItemConverter implements Converter<MenuItem, MenuItemDto> {
 
     private final MenuCategoryConverter menuCategoryConverter;
 
-    private OrderCartConverter orderCartConverter;
+    private CartConverter orderCartConverter;
 
     public MenuItemConverter(MenuCategoryConverter menuCategoryConverter) {
         this.menuCategoryConverter = menuCategoryConverter;
@@ -23,7 +23,7 @@ public class MenuItemConverter implements Converter<MenuItem, MenuItemDto> {
 
     @Autowired
     @Lazy
-    public void setOrderCartConverter(OrderCartConverter orderCartConverter) {
+    public void setOrderCartConverter(CartConverter orderCartConverter) {
         this.orderCartConverter = orderCartConverter;
     }
 
@@ -38,7 +38,7 @@ public class MenuItemConverter implements Converter<MenuItem, MenuItemDto> {
         }
 
         if (model.getOrderCartDto() != null) {
-            entity.setOrderCart(orderCartConverter.convertToEntity(model.getOrderCartDto(), new OrderCart()));
+            entity.setCarts(orderCartConverter.convertToEntity(model.getOrderCartDto(), new Cart()));
         }
 
         entity.setDescription(model.getDescription());
@@ -56,8 +56,8 @@ public class MenuItemConverter implements Converter<MenuItem, MenuItemDto> {
             model.setMenuCategoryDto(menuCategoryConverter.convertToModel(entity.getMenuCategory(), new MenuCategoryDto()));
         }
 
-        if (entity.getOrderCart()!= null) {
-            model.setOrderCartDto(orderCartConverter.convertToModel(entity.getOrderCart(), new OrderCartDto()));
+        if (entity.getCarts()!= null) {
+            model.setOrderCartDto(orderCartConverter.convertToModel(entity.getCarts(), new CartDto()));
         }
 
         model.setDescription(entity.getDescription());
