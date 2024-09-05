@@ -24,8 +24,7 @@ public class Order {
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL)
     private List<OrderItem> items;
 
-    @OneToOne
-    @JoinColumn(name = "delivery_id")
+    @OneToOne(mappedBy = "order")
     private Delivery delivery;
 
     @Enumerated(EnumType.STRING)
