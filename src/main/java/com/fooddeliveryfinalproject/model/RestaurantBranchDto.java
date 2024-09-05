@@ -14,7 +14,5 @@ public class RestaurantBranchDto {
 
     private String phoneNumber;
 
-    private String location;
-
-
+    private AddressDto addressDto;
 }

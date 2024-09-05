@@ -1,8 +1,10 @@
 package com.fooddeliveryfinalproject.converter;
 
+import com.fooddeliveryfinalproject.entity.Address;
 import com.fooddeliveryfinalproject.entity.Menu;
 import com.fooddeliveryfinalproject.entity.Restaurant;
 import com.fooddeliveryfinalproject.entity.RestaurantBranch;
+import com.fooddeliveryfinalproject.model.AddressDto;
 import com.fooddeliveryfinalproject.model.MenuDto;
 import com.fooddeliveryfinalproject.model.RestaurantBranchDto;
 import com.fooddeliveryfinalproject.model.RestaurantDto;
@@ -20,6 +22,10 @@ public class RestaurantBranchConverter implements Converter<RestaurantBranch, Re
     @Lazy
     private MenuConverter menuConverter;
 
+    @Autowired
+    @Lazy
+    private AddressConverter addressConverter;
+
 
     @Override
     public RestaurantBranch convertToEntity(RestaurantBranchDto model, RestaurantBranch entity) {
@@ -33,7 +39,10 @@ public class RestaurantBranchConverter implements Converter<RestaurantBranch, Re
             entity.setMenu(menuConverter.convertToEntity(model.getMenuDto(), new Menu()));
         }
 
-        entity.setLocation(model.getLocation());
+        if (model.getAddressDto() != null) {
+            entity.setAddress(addressConverter.convertToEntity(model.getAddressDto(), new Address()));
+        }
+
         entity.setPhoneNumber(model.getPhoneNumber());
         return entity;
     }
@@ -50,7 +59,10 @@ public class RestaurantBranchConverter implements Converter<RestaurantBranch, Re
             model.setMenuDto(menuConverter.convertToModel(entity.getMenu(), new MenuDto()));
         }
 
-        model.setLocation(entity.getLocation());
+        if (entity.getAddress() != null) {
+            model.setAddressDto(addressConverter.convertToModel(entity.getAddress(), new AddressDto()));
+        }
+
         model.setPhoneNumber(entity.getPhoneNumber());
         return model;
     }

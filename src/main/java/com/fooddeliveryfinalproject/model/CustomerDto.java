@@ -17,7 +17,7 @@ public class CustomerDto {
 
     private List<OrderDto> ordersDto;
 
-    private List<AddressDto> addressesDto;
+    private List<CustomerAddressDto> addressesDto;
 
     private List<PaymentMethodDto> paymentMethodsDto;
 }

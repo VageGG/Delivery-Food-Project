@@ -16,9 +16,9 @@ public class DeliveryDto {
 
     private Delivery.DeliveryStatus status;
 
-    private String pickupLocation;
+    private AddressDto pickupLocation;
 
-    private String deliveryLocation;
+    private AddressDto dropoffLocation;
 
     private String dateTime;
 }
