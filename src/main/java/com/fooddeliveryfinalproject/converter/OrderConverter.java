@@ -6,18 +6,20 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
 
+import java.util.List;
+
 @Component
 public class OrderConverter implements Converter<Order, OrderDto> {
 
     private CustomerConverter customerConverter;
 
-    private final CartConverter orderCartConverter;
+    @Autowired
+    @Lazy
+    private OrderItemConverter orderItemConverter;
 
     private final DeliveryConverter deliveryConverter;
 
-    public OrderConverter(CartConverter orderCartConverter,
-                          DeliveryConverter deliveryConverter) {
-        this.orderCartConverter = orderCartConverter;
+    public OrderConverter(DeliveryConverter deliveryConverter) {
         this.deliveryConverter = deliveryConverter;
     }
 
@@ -35,8 +37,9 @@ public class OrderConverter implements Converter<Order, OrderDto> {
             entity.setCustomer(customerConverter.convertToEntity(model.getCustomerDto(), new Customer()));
         }
 
-        if (model.getOrderCartDto() != null) {
-            entity.setOrderCart(orderCartConverter.convertToEntity(model.getOrderCartDto(), new Cart()));
+        if (model.getItemDtos() != null) {
+            List<OrderItem> orderItems = orderItemConverter.convertToEntityList(model.getItemDtos(), OrderItem::new);
+            entity.setItems(orderItems);
         }
 
         if (model.getDeliveryDto() != null) {
@@ -55,8 +58,9 @@ public class OrderConverter implements Converter<Order, OrderDto> {
             model.setCustomerDto(customerConverter.convertToModel(entity.getCustomer(), new CustomerDto()));
         }
 
-        if (entity.getOrderCart() != null) {
-            model.setOrderCartDto(orderCartConverter.convertToModel(entity.getOrderCart(), new CartDto()));
+        if (entity.getItems() != null) {
+            List<OrderItemDto> orderItemDtos = orderItemConverter.convertToModelList(entity.getItems(), OrderItemDto::new);
+            model.setItemDtos(orderItemDtos);
         }
 
         if (entity.getDelivery() != null) {

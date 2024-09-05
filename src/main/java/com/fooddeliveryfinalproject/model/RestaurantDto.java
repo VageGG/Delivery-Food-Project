@@ -16,5 +16,5 @@ public class RestaurantDto {
 
     private List<RestaurantBranchDto> branchesDto;
 
-    private double rating;
+    private List<ReviewDto> reviewDtos;
 }
