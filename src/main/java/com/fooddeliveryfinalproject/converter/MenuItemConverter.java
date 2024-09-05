@@ -1,21 +1,25 @@
 package com.fooddeliveryfinalproject.converter;
 
-import com.fooddeliveryfinalproject.entity.MenuCategory;
-import com.fooddeliveryfinalproject.entity.MenuItem;
-import com.fooddeliveryfinalproject.entity.Cart;
-import com.fooddeliveryfinalproject.model.MenuCategoryDto;
-import com.fooddeliveryfinalproject.model.MenuItemDto;
-import com.fooddeliveryfinalproject.model.CartDto;
+import com.fooddeliveryfinalproject.entity.*;
+import com.fooddeliveryfinalproject.model.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
+
+import java.util.List;
 
 @Component
 public class MenuItemConverter implements Converter<MenuItem, MenuItemDto> {
 
     private final MenuCategoryConverter menuCategoryConverter;
 
-    private CartConverter orderCartConverter;
+    @Autowired
+    @Lazy
+    private CartItemConverter cartItemConverter;
+
+    @Autowired
+    @Lazy
+    private OrderItemConverter orderItemConverter;
 
     public MenuItemConverter(MenuCategoryConverter menuCategoryConverter) {
         this.menuCategoryConverter = menuCategoryConverter;
@@ -24,7 +28,6 @@ public class MenuItemConverter implements Converter<MenuItem, MenuItemDto> {
     @Autowired
     @Lazy
     public void setOrderCartConverter(CartConverter orderCartConverter) {
-        this.orderCartConverter = orderCartConverter;
     }
 
     @Override
@@ -37,8 +40,14 @@ public class MenuItemConverter implements Converter<MenuItem, MenuItemDto> {
             entity.setMenuCategory(menuCategoryConverter.convertToEntity(model.getMenuCategoryDto(), new MenuCategory()));
         }
 
-        if (model.getOrderCartDto() != null) {
-            entity.setCarts(orderCartConverter.convertToEntity(model.getOrderCartDto(), new Cart()));
+        if (model.getCartDtos() != null) {
+            List<CartItem> cartItems = cartItemConverter.convertToEntityList(model.getCartDtos(), CartItem::new);
+            entity.setCarts(cartItems);
+        }
+
+        if (model.getOrderDtos() != null) {
+            List<OrderItem> orderItems = orderItemConverter.convertToEntityList(model.getOrderDtos(), OrderItem::new);
+            entity.setOrders(orderItems);
         }
 
         entity.setDescription(model.getDescription());
@@ -56,8 +65,14 @@ public class MenuItemConverter implements Converter<MenuItem, MenuItemDto> {
             model.setMenuCategoryDto(menuCategoryConverter.convertToModel(entity.getMenuCategory(), new MenuCategoryDto()));
         }
 
-        if (entity.getCarts()!= null) {
-            model.setOrderCartDto(orderCartConverter.convertToModel(entity.getCarts(), new CartDto()));
+        if (entity.getCarts() != null) {
+            List<CartItemDto> cartDtos = cartItemConverter.convertToModelList(entity.getCarts(), CartItemDto::new);
+            model.setCartDtos(cartDtos);
+        }
+
+        if (entity.getOrders() != null) {
+            List<OrderItemDto> orderDtos = orderItemConverter.convertToModelList(entity.getOrders(), OrderItemDto::new);
+            model.setOrderDtos(orderDtos);
         }
 
         model.setDescription(entity.getDescription());
