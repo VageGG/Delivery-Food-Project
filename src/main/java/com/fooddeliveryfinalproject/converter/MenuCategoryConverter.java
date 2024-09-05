@@ -36,10 +36,7 @@ public class MenuCategoryConverter implements Converter<MenuCategory, MenuCatego
         entity.setCategoryId(model.getCategoryId());
 
         if (model.getItemsDto() != null) {
-            List<MenuItem> menuItems = new ArrayList<>();
-            for (MenuItemDto menuItemDto : model.getItemsDto()) {
-                menuItems.add(menuItemConverter.convertToEntity(menuItemDto, new MenuItem()));
-            }
+            List<MenuItem> menuItems = menuItemConverter.convertToEntityList(model.getItemsDto(), MenuItem::new);
             entity.setItems(menuItems);
         }
 
@@ -57,10 +54,7 @@ public class MenuCategoryConverter implements Converter<MenuCategory, MenuCatego
         model.setCategoryId(entity.getCategoryId());
 
         if (entity.getItems() != null) {
-            List<MenuItemDto> menuItemDtos = new ArrayList<>();
-            for (MenuItem menuItem : entity.getItems()) {
-                menuItemDtos.add(menuItemConverter.convertToModel(menuItem, new MenuItemDto()));
-            }
+            List<MenuItemDto> menuItemDtos = menuItemConverter.convertToModelList(entity.getItems(), MenuItemDto::new);
             model.setItemsDto(menuItemDtos);
         }
 
