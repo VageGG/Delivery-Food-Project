@@ -1,8 +1,10 @@
 package com.fooddeliveryfinalproject.converter;
 
+import com.fooddeliveryfinalproject.entity.CartItem;
 import com.fooddeliveryfinalproject.entity.MenuItem;
 import com.fooddeliveryfinalproject.entity.Order;
 import com.fooddeliveryfinalproject.entity.Cart;
+import com.fooddeliveryfinalproject.model.CartItemDto;
 import com.fooddeliveryfinalproject.model.MenuItemDto;
 import com.fooddeliveryfinalproject.model.CartDto;
 import com.fooddeliveryfinalproject.model.OrderDto;
@@ -16,34 +18,19 @@ import java.util.List;
 @Component
 public class CartConverter implements Converter<Cart, CartDto> {
 
-    private OrderConverter orderConverter;
+    private final CartItemConverter cartItemConverter;
 
-    private final MenuItemConverter menuItemConverter;
-
-    public CartConverter(MenuItemConverter menuItemConverter) {
-        this.menuItemConverter = menuItemConverter;
-    }
-
-    @Autowired
-    @Lazy
-    public void setOrderConverter(OrderConverter orderConverter) {
-        this.orderConverter = orderConverter;
+    public CartConverter(CartItemConverter cartItemConverter) {
+        this.cartItemConverter = cartItemConverter;
     }
 
     @Override
     public Cart convertToEntity(CartDto model, Cart entity) {
         entity.setCartId(model.getCartId());
 
-        if (model.getOrderDto() != null) {
-            entity.setOrder(orderConverter.convertToEntity(model.getOrderDto(), new Order()));
-        }
-
         if (model.getItemsDto() != null) {
-            List<MenuItem> menuItems = new ArrayList<>();
-            for (MenuItemDto menuItemDto : model.getItemsDto()) {
-                menuItems.add(menuItemConverter.convertToEntity(menuItemDto, new MenuItem()));
-            }
-            entity.setItems(menuItems);
+            List<CartItem> cartItems = cartItemConverter.convertToEntityList(model.getItemsDto(), CartItem::new);
+            entity.setItems(cartItems);
         }
 
         entity.setCount(model.getCount());
@@ -54,16 +41,9 @@ public class CartConverter implements Converter<Cart, CartDto> {
     public CartDto convertToModel(Cart entity, CartDto model) {
         model.setCartId(entity.getCartId());
 
-        if (entity.getOrder() != null) {
-            model.setOrderDto(orderConverter.convertToModel(entity.getOrder(), new OrderDto()));
-        }
-
         if (entity.getItems() != null) {
-            List<MenuItemDto> menuItemsDto = new ArrayList<>();
-            for (MenuItem menuItem : entity.getItems()) {
-                menuItemsDto.add(menuItemConverter.convertToModel(menuItem, new MenuItemDto()));
-            }
-            model.setItemsDto(menuItemsDto);
+            List<CartItemDto> cartItemsDto = cartItemConverter.convertToModelList(entity.getItems(), CartItemDto::new);
+            model.setItemsDto(cartItemsDto);
         }
 
         model.setCount(entity.getCount());
