@@ -9,20 +9,16 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "order_carts")
-public class OrderCart {
+@Table(name = "carts")
+public class Cart {
 
     @Id
     @GeneratedValue
     @Column(name = "cart_id")
     private Long cartId;
 
-    @OneToOne
-    @JoinColumn(name = "order_id")
-    private Order order;
-
-    @OneToMany(mappedBy = "orderCart")
-    private List<MenuItem> items;
+    @OneToMany(mappedBy = "cart", cascade = CascadeType.ALL)
+    private List<CartItem> items;
 
     private Integer count;
 }

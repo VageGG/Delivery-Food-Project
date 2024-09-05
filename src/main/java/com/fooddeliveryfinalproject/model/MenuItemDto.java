@@ -10,7 +10,7 @@ public class MenuItemDto {
 
     private MenuCategoryDto menuCategoryDto;
 
-    private OrderCartDto orderCartDto;
+    private CartDto orderCartDto;
 
     private String name;
 

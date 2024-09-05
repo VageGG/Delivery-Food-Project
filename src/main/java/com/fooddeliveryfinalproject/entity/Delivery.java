@@ -29,10 +29,12 @@ public class Delivery {
     @Enumerated(EnumType.STRING)
     private DeliveryStatus status;
 
+    // Pickup location as the address of the restaurant branch
     @ManyToOne
     @JoinColumn(name = "pickup_address_id")
     private Address pickupLocation;
 
+    // Dropoff location as the address of the customer
     @ManyToOne
     @JoinColumn(name = "dropoff_address_id")
     private Address dropoffLocation;

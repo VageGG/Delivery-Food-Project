@@ -3,6 +3,8 @@ package com.fooddeliveryfinalproject.entity;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.List;
+
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -19,9 +21,8 @@ public class Order {
     @JoinColumn(name = "customer_id")
     private Customer customer;
 
-    @OneToOne
-    @JoinColumn(name = "order_cart_id")
-    private OrderCart orderCart;
+    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL)
+    private List<OrderItem> items;
 
     @OneToOne
     @JoinColumn(name = "delivery_id")
@@ -32,8 +33,8 @@ public class Order {
 
     public enum OrderStatus {
         PENDING,
-        CONFIRMED,
-        PREPARED,
+        PAID,
+        ASSIGNED,
         PICKED_UP,
         DELIVERED
     }

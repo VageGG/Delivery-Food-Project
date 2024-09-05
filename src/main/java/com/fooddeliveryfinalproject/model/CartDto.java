@@ -5,7 +5,7 @@ import lombok.*;
 import java.util.List;
 
 @Data
-public class OrderCartDto {
+public class CartDto {
 
     private Long cartId;
 
