@@ -27,10 +27,7 @@ public class DriverConverter implements Converter<Driver, DriverDto> {
         entity.setPhoneNumber(model.getPhoneNumber());
 
         if (model.getDeliveriesDto() != null) {
-            List<Delivery> deliveryList = new ArrayList<>();
-            for (DeliveryDto deliveryDto : model.getDeliveriesDto()) {
-                deliveryList.add(deliveryConverter.convertToEntity(deliveryDto, new Delivery()));
-            }
+            List<Delivery> deliveryList = deliveryConverter.convertToEntityList(model.getDeliveriesDto(), Delivery::new);
             entity.setDeliveries(deliveryList);
         }
         return entity;
@@ -44,10 +41,7 @@ public class DriverConverter implements Converter<Driver, DriverDto> {
         model.setPhoneNumber(entity.getPhoneNumber());
 
         if (entity.getDeliveries() != null) {
-            List<DeliveryDto> deliveryDtoList = new ArrayList<>();
-            for (Delivery delivery : entity.getDeliveries()) {
-                deliveryDtoList.add(deliveryConverter.convertToModel(delivery, new DeliveryDto()));
-            }
+            List<DeliveryDto> deliveryDtoList = deliveryConverter.convertToModelList(entity.getDeliveries(), DeliveryDto::new);
             model.setDeliveriesDto(deliveryDtoList);
         }
         return model;
