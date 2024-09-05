@@ -9,9 +9,7 @@ public class CartDto {
 
     private Long cartId;
 
-    private OrderDto orderDto;
-
-    private List<MenuItemDto> itemsDto;
+    private List<CartItemDto> itemsDto;
 
     private Integer count;
 }
