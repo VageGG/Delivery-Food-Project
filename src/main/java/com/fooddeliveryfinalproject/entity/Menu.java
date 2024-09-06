@@ -25,7 +25,7 @@ public class Menu {
     @JoinColumn(name = "rest_branch_id")
     private RestaurantBranch restaurantBranch;
 
-    @OneToMany(mappedBy = "menu")
+    @OneToMany(mappedBy = "menu", cascade = CascadeType.ALL)
     private List<MenuCategory> menuCategories;
 }
 

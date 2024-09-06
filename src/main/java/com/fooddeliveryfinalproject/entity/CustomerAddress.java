@@ -15,11 +15,17 @@ import lombok.NoArgsConstructor;
 public class CustomerAddress {
 
     @Id
+    @Column(name = "customer_id")
+    private Long customerId;
+
+    @Id
+    @Column(name = "address_id")
+    private Long addressId;
+
     @ManyToOne
     @JoinColumn(name = "customer_id")
     private Customer customer;
 
-    @Id
     @ManyToOne
     @JoinColumn(name = "address_id")
     private Address address;

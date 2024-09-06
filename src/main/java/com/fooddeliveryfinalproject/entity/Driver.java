@@ -13,7 +13,7 @@ import java.util.List;
 @EqualsAndHashCode(callSuper = true)
 public class Driver extends User {
 
-    @OneToMany(mappedBy="driver")
+    @OneToMany(mappedBy="driver", cascade = CascadeType.ALL)
     private List<Delivery> deliveries;
 
     @Builder
