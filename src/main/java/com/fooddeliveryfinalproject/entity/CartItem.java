@@ -14,11 +14,17 @@ import lombok.NoArgsConstructor;
 public class CartItem {
 
     @Id
+    @Column(name = "cart_id")
+    private Long cartId;
+
+    @Id
+    @Column(name = "menu_item_id")
+    private Long menuItemId;
+
     @ManyToOne
     @JoinColumn(name = "cart_id")
     private Cart cart;
 
-    @Id
     @ManyToOne
     @JoinColumn(name = "menu_item_id")
     private MenuItem menuItem;

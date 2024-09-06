@@ -14,11 +14,17 @@ import lombok.NoArgsConstructor;
 public class OrderItem {
 
     @Id
+    @Column(name = "order_id")
+    private Long orderId;
+
+    @Id
+    @Column(name = "menu_item_id")
+    private Long menuItemId;
+
     @ManyToOne
     @JoinColumn(name = "order_id")
     private Order order;
 
-    @Id
     @ManyToOne
     @JoinColumn(name = "menu_item_id")
     private MenuItem menuItem;
