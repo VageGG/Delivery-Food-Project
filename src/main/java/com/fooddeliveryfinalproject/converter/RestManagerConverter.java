@@ -22,7 +22,9 @@ public class RestManagerConverter implements Converter<RestaurantManager, Restau
         entity.setId(model.getId());
         entity.setUsername(model.getUsername());
         entity.setEmail(model.getEmail());
+        entity.setPassword(model.getPassword());
         entity.setPhoneNumber(model.getPhoneNumber());
+        entity.setRole(model.getRole());
 
         if (model.getRestaurantDto() != null) {
             entity.setRestaurant(restaurantConverter.convertToEntity(model.getRestaurantDto(), new Restaurant()));
@@ -36,7 +38,9 @@ public class RestManagerConverter implements Converter<RestaurantManager, Restau
         model.setId(entity.getId());
         model.setUsername(entity.getUsername());
         model.setEmail(entity.getEmail());
+        model.setPassword(entity.getPassword());
         model.setPhoneNumber(entity.getPhoneNumber());
+        model.setRole(entity.getRole());
 
         if (entity.getRestaurant() != null) {
             model.setRestaurantDto(restaurantConverter.convertToModel(entity.getRestaurant(), new RestaurantDto()));

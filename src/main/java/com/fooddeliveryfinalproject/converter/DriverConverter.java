@@ -24,7 +24,9 @@ public class DriverConverter implements Converter<Driver, DriverDto> {
         entity.setId(model.getId());
         entity.setUsername(model.getUsername());
         entity.setEmail(model.getEmail());
+        entity.setPassword(model.getPassword());
         entity.setPhoneNumber(model.getPhoneNumber());
+        entity.setRole(model.getRole());
 
         if (model.getDeliveriesDto() != null) {
             List<Delivery> deliveryList = deliveryConverter.convertToEntityList(model.getDeliveriesDto(), Delivery::new);
@@ -38,7 +40,9 @@ public class DriverConverter implements Converter<Driver, DriverDto> {
         model.setId(entity.getId());
         model.setUsername(entity.getUsername());
         model.setEmail(entity.getEmail());
+        model.setPassword(entity.getPassword());
         model.setPhoneNumber(entity.getPhoneNumber());
+        model.setRole(entity.getRole());
 
         if (entity.getDeliveries() != null) {
             List<DeliveryDto> deliveryDtoList = deliveryConverter.convertToModelList(entity.getDeliveries(), DeliveryDto::new);
