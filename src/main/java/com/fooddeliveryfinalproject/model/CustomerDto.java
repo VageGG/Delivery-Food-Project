@@ -19,5 +19,7 @@ public class CustomerDto {
 
     private List<CustomerAddressDto> addressesDto;
 
+    private CartDto cartDto;
+
     private List<PaymentMethodDto> paymentMethodsDto;
 }
