@@ -1,5 +1,6 @@
 package com.fooddeliveryfinalproject.model;
 
+import com.fooddeliveryfinalproject.entity.User;
 import lombok.Data;
 
 @Data
@@ -11,7 +12,11 @@ public class RestaurantManagerDto {
 
     private String email;
 
+    private String password;
+
     private String phoneNumber;
+
+    private User.Role role;
 
     private RestaurantDto restaurantDto;
 }

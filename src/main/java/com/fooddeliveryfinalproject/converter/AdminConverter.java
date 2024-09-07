@@ -12,7 +12,9 @@ public class AdminConverter implements Converter<Admin, AdminDto> {
         entity.setId(model.getId());
         entity.setUsername(model.getUsername());
         entity.setEmail(model.getEmail());
+        entity.setPassword(model.getPassword());
         entity.setPhoneNumber(model.getPhoneNumber());
+        entity.setRole(model.getRole());
         return entity;
     }
 
@@ -21,7 +23,9 @@ public class AdminConverter implements Converter<Admin, AdminDto> {
         model.setId(entity.getId());
         model.setUsername(entity.getUsername());
         model.setEmail(entity.getEmail());
+        model.setPassword(entity.getPassword());
         model.setPhoneNumber(entity.getPhoneNumber());
+        model.setRole(entity.getRole());
         return model;
     }
 }

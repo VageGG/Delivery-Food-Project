@@ -33,7 +33,9 @@ public class CustomerConverter implements Converter<Customer, CustomerDto> {
         entity.setId(model.getId());
         entity.setUsername(model.getUsername());
         entity.setEmail(model.getEmail());
+        entity.setPassword(model.getPassword());
         entity.setPhoneNumber(model.getPhoneNumber());
+        entity.setRole(model.getRole());
 
         if (model.getOrdersDto() != null) {
             List<Order> orders = orderConverter.convertToEntityList(model.getOrdersDto(), Order::new);
@@ -62,7 +64,9 @@ public class CustomerConverter implements Converter<Customer, CustomerDto> {
         model.setId(entity.getId());
         model.setUsername(entity.getUsername());
         model.setEmail(entity.getEmail());
+        model.setPassword(entity.getPassword());
         model.setPhoneNumber(entity.getPhoneNumber());
+        model.setRole(entity.getRole());
 
         if (entity.getOrders() != null) {
             List<OrderDto> orderDtos = orderConverter.convertToModelList(entity.getOrders(), OrderDto::new);
