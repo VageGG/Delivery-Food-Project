@@ -3,6 +3,8 @@ package com.fooddeliveryfinalproject.model;
 import com.fooddeliveryfinalproject.entity.Delivery;
 import lombok.Data;
 
+import java.time.LocalDateTime;
+
 @Data
 public class DeliveryDto {
 
@@ -20,5 +22,9 @@ public class DeliveryDto {
 
     private AddressDto dropoffLocation;
 
-    private String dateTime;
+    private LocalDateTime orderTime;
+
+    private LocalDateTime pickupTime;
+
+    private LocalDateTime dropoffTime;
 }
