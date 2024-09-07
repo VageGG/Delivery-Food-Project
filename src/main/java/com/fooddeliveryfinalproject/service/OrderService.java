@@ -6,6 +6,8 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
+
 @Service
 public class OrderService {
     @Autowired
@@ -15,8 +17,8 @@ public class OrderService {
 
     @Transactional
     public Order createOrder(Order order) {
-        String dateTime = dateTimeService.getFormattedCurrentDateTime();
-        order.getDelivery().setDateTime(dateTime);
+        LocalDateTime dateTime = LocalDateTime.now();
+        order.getDelivery().setOrderTime(dateTime);
         return this.repo.save(order);
     }
 

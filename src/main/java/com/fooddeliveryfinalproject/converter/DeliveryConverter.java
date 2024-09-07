@@ -52,7 +52,12 @@ public class DeliveryConverter implements Converter<Delivery, DeliveryDto> {
             entity.setDropoffLocation(addressConverter.convertToEntity(model.getDropoffLocation(), new Address()));
         }
 
-        entity.setDateTime(model.getDateTime());
+        entity.setOrderTime(model.getOrderTime());
+
+        entity.setPickupTime(model.getPickupTime());
+
+        entity.setDropoffTime(model.getDropoffTime());
+
         return entity;
     }
 
@@ -79,7 +84,12 @@ public class DeliveryConverter implements Converter<Delivery, DeliveryDto> {
             model.setDropoffLocation(addressConverter.convertToModel(entity.getDropoffLocation(), new AddressDto()));
         }
 
-        model.setDateTime(entity.getDateTime());
+        model.setOrderTime(entity.getOrderTime());
+
+        model.setPickupTime(entity.getPickupTime());
+
+        model.setDropoffTime(entity.getDropoffTime());
+
         return model;
     }
 }
