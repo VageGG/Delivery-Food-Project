@@ -1,13 +1,7 @@
 package com.fooddeliveryfinalproject.converter;
 
-import com.fooddeliveryfinalproject.entity.CartItem;
-import com.fooddeliveryfinalproject.entity.MenuItem;
-import com.fooddeliveryfinalproject.entity.Order;
-import com.fooddeliveryfinalproject.entity.Cart;
-import com.fooddeliveryfinalproject.model.CartItemDto;
-import com.fooddeliveryfinalproject.model.MenuItemDto;
-import com.fooddeliveryfinalproject.model.CartDto;
-import com.fooddeliveryfinalproject.model.OrderDto;
+import com.fooddeliveryfinalproject.entity.*;
+import com.fooddeliveryfinalproject.model.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
@@ -19,6 +13,10 @@ import java.util.List;
 public class CartConverter implements Converter<Cart, CartDto> {
 
     private final CartItemConverter cartItemConverter;
+
+    @Autowired
+    @Lazy
+    private CustomerConverter customerConverter;
 
     public CartConverter(CartItemConverter cartItemConverter) {
         this.cartItemConverter = cartItemConverter;
@@ -33,6 +31,10 @@ public class CartConverter implements Converter<Cart, CartDto> {
             entity.setItems(cartItems);
         }
 
+        if (model.getCustomerDto() != null) {
+            entity.setCustomer(customerConverter.convertToEntity(model.getCustomerDto(), new Customer()));
+        }
+
         entity.setCount(model.getCount());
         return entity;
     }
@@ -44,6 +46,10 @@ public class CartConverter implements Converter<Cart, CartDto> {
         if (entity.getItems() != null) {
             List<CartItemDto> cartItemsDto = cartItemConverter.convertToModelList(entity.getItems(), CartItemDto::new);
             model.setItemsDto(cartItemsDto);
+        }
+
+        if (entity.getCustomer()!= null) {
+            model.setCustomerDto(customerConverter.convertToModel(entity.getCustomer(), new CustomerDto()));
         }
 
         model.setCount(entity.getCount());

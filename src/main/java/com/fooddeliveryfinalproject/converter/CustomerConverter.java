@@ -2,6 +2,8 @@ package com.fooddeliveryfinalproject.converter;
 
 import com.fooddeliveryfinalproject.entity.*;
 import com.fooddeliveryfinalproject.model.*;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
@@ -13,6 +15,10 @@ public class CustomerConverter implements Converter<Customer, CustomerDto> {
     private final OrderConverter orderConverter;
     private final CustomerAddressConvertor customerAddressConvertor;
     private final PaymentMethodConverter paymentMethodConverter;
+
+    @Autowired
+    @Lazy
+    private CartConverter cartConverter;
 
     public CustomerConverter(OrderConverter orderConverter,
                              CustomerAddressConvertor addressConverter,
@@ -39,6 +45,10 @@ public class CustomerConverter implements Converter<Customer, CustomerDto> {
             entity.setAddresses(addresses);
         }
 
+        if (model.getCartDto()!= null) {
+            entity.setCart(cartConverter.convertToEntity(model.getCartDto(), new Cart()));
+        }
+
         if (model.getPaymentMethodsDto() != null) {
             List<PaymentMethod> paymentMethods = paymentMethodConverter.convertToEntityList(model.getPaymentMethodsDto(), PaymentMethod::new);
             entity.setPaymentMethods(paymentMethods);
@@ -62,6 +72,10 @@ public class CustomerConverter implements Converter<Customer, CustomerDto> {
         if (entity.getAddresses() != null) {
             List<CustomerAddressDto> addressDtos = customerAddressConvertor.convertToModelList(entity.getAddresses(), CustomerAddressDto::new);
             model.setAddressesDto(addressDtos);
+        }
+
+        if (entity.getCart()!= null) {
+            model.setCartDto(cartConverter.convertToModel(entity.getCart(), new CartDto()));
         }
 
         if (entity.getPaymentMethods() != null) {

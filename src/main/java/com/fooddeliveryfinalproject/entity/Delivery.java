@@ -3,6 +3,8 @@ package com.fooddeliveryfinalproject.entity;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.time.LocalDateTime;
+
 @Entity
 @Data
 @AllArgsConstructor
@@ -39,8 +41,14 @@ public class Delivery {
     @JoinColumn(name = "dropoff_address_id")
     private Address dropoffLocation;
 
-    @Column(name = "delivery_time")
-    private String dateTime;
+    @Column(name = "order_time")
+    private LocalDateTime orderTime;
+
+    @Column(name = "pickup_time")
+    private LocalDateTime pickupTime;
+
+    @Column(name = "dropoff_time")
+    private LocalDateTime dropoffTime;
 
     public enum DeliveryStatus {
         PREPARING,
