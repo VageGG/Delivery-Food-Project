@@ -1,12 +1,8 @@
 package com.fooddeliveryfinalproject.service;
 
 import com.fooddeliveryfinalproject.converter.MenuConverter;
-import com.fooddeliveryfinalproject.converter.MenuItemConverter;
 import com.fooddeliveryfinalproject.entity.Menu;
-import com.fooddeliveryfinalproject.entity.MenuItem;
 import com.fooddeliveryfinalproject.model.MenuDto;
-import com.fooddeliveryfinalproject.model.MenuItemDto;
-import com.fooddeliveryfinalproject.repository.MenuItemRepo;
 import com.fooddeliveryfinalproject.repository.MenuRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
