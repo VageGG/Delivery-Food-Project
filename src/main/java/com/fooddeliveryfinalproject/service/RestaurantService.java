@@ -23,18 +23,22 @@ public class RestaurantService {
         this.restaurantConverter = restaurantConverter;
     }
 
-    @Transactional
+
     public RestaurantDto getRestaurant(Long id) {
         return restaurantConverter.convertToModel(restaurantRepo.findById(id)
                 .orElseThrow(()->new RuntimeException("Could not find Restaurant")),
                 new RestaurantDto());
     }
 
-    @Transactional
+
     public List<RestaurantDto> getAllRestaurants() {
         return restaurantRepo.findAll().stream()
                 .map(restaurants -> restaurantConverter.convertToModel(restaurants, new RestaurantDto()))
                 .collect(Collectors.toList());
+    }
+    // addPoint search
+    public RestaurantDto searchRest(String name) {
+        return restaurantConverter.convertToModel(restaurantRepo.findByName(name), new RestaurantDto());
     }
 
     @Transactional

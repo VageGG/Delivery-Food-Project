@@ -22,16 +22,20 @@ public class RestaurantBranchService {
         this.restaurantBranchConverter = restaurantBranchConverter;
     }
 
-    @Transactional
     public RestaurantBranchDto getRestaurantBranch(Long id) {
         return restaurantBranchConverter.convertToModel(restaurantBranchRepo.findById(id)
                         .orElseThrow(()->new RuntimeException("Could not find RestaurantBranch")),
                 new RestaurantBranchDto());
     }
 
-    @Transactional
     public List<RestaurantBranchDto> getAllRestaurantBranches() {
         return restaurantBranchRepo.findAll().stream()
+                .map(restaurantBranches -> restaurantBranchConverter.convertToModel(restaurantBranches, new RestaurantBranchDto()))
+                .collect(Collectors.toList());
+    }
+    // addPoint get all branch by id restaurant
+    public List<RestaurantBranchDto> getAllRestaurantBranches(Long id) {
+        return restaurantBranchRepo.findAllByRestaurantId(id).stream()
                 .map(restaurantBranches -> restaurantBranchConverter.convertToModel(restaurantBranches, new RestaurantBranchDto()))
                 .collect(Collectors.toList());
     }
