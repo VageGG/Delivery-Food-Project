@@ -33,15 +33,15 @@ public class Address {
     @Column(name = "apartment_number")
     private String apartmentNumber;
 
-    @OneToMany(mappedBy = "address", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "address")
     private List<CustomerAddress> customerAddresses;
 
-    @OneToOne(mappedBy = "address", cascade = CascadeType.ALL)
+    @OneToOne(mappedBy = "address")
     private RestaurantBranch restaurantBranch;
 
-    @OneToMany(mappedBy = "pickupLocation", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "pickupLocation")
     private List<Delivery> pickupLocation;
 
-    @OneToMany(mappedBy = "dropoffLocation", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "dropoffLocation")
     private List<Delivery> dropoffLocation;
 }

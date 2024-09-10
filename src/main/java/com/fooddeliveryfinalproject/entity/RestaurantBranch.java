@@ -25,7 +25,7 @@ public class RestaurantBranch {
     private Restaurant restaurant;
 
 
-    @OneToOne(mappedBy = "restaurantBranch", cascade = CascadeType.ALL)
+    @OneToOne(mappedBy = "restaurantBranch")
     private Menu menu;
 
     @OneToOne(cascade = CascadeType.ALL)

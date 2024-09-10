@@ -14,55 +14,13 @@ import java.util.stream.Collectors;
 public class CustomerService {
 
     private final CustomerRepo customerRepo;
-    private final CartRepo orderCartRepo;
-    private final OrderRepo orderRepo;
-    private final DeliveryRepo deliveryRepo;
-    private final RestaurantRepo restaurantRepo;
-    private final ReviewRepo reviewRepo;
-    private final PaymentRepo paymentRepo;
-    private final PaymentMethodRepo paymentMethodRepo;
 
     private final CustomerConverter customerConverter;
-    private final CartConverter orderCartConverter;
-    private final OrderConverter orderConverter;
-    private final DeliveryConverter deliveryConverter;
-    private final RestaurantConverter restaurantConverter;
-    private final ReviewConverter reviewConverter;
-    private final PaymentConverter paymentConverter;
-    private final PaymentMethodConverter paymentMethodConverter;
 
     public CustomerService(CustomerRepo customerRepo,
-                           CustomerConverter customerConverter,
-                           CartRepo orderCartRepo,
-                           OrderRepo orderRepo,
-                           DeliveryRepo deliveryRepo,
-                           RestaurantRepo restaurantRepo,
-                           ReviewRepo reviewRepo,
-                           PaymentRepo paymentRepo,
-                           PaymentMethodRepo paymentMethodRepo,
-                           PaymentMethodConverter paymentMethodConverter,
-                           CartConverter orderCartConverter,
-                           OrderConverter orderConverter,
-                           DeliveryConverter deliveryConverter,
-                           RestaurantConverter restaurantConverter,
-                           ReviewConverter reviewConverter,
-                           PaymentConverter paymentConverter) {
+                           CustomerConverter customerConverter) {
         this.customerRepo = customerRepo;
         this.customerConverter = customerConverter;
-        this.orderCartRepo = orderCartRepo;
-        this.orderRepo = orderRepo;
-        this.deliveryRepo = deliveryRepo;
-        this.restaurantRepo = restaurantRepo;
-        this.reviewRepo = reviewRepo;
-        this.paymentRepo = paymentRepo;
-        this.paymentMethodRepo = paymentMethodRepo;
-        this.paymentMethodConverter = paymentMethodConverter;
-        this.orderCartConverter = orderCartConverter;
-        this.orderConverter = orderConverter;
-        this.deliveryConverter = deliveryConverter;
-        this.restaurantConverter = restaurantConverter;
-        this.reviewConverter = reviewConverter;
-        this.paymentConverter = paymentConverter;
     }
 
     public List<CustomerDto> getAllCustomer() {

@@ -13,7 +13,7 @@ import lombok.*;
 @Table(name = "restaurant_managers")
 public class RestaurantManager extends User{
 
-    @OneToOne(mappedBy = "restaurantManager", cascade = CascadeType.ALL)
+    @OneToOne(mappedBy = "restaurantManager")
     private Restaurant restaurant;
 
     @Builder
