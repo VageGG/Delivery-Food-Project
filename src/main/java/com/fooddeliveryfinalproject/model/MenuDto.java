@@ -11,7 +11,5 @@ public class MenuDto {
 
     private RestaurantBranchDto restaurantBranchDto;
 
-  //  private Set<MenuItem> menuItems;
-
     private List<MenuCategoryDto> menuCategoriesDto;
 }
