@@ -25,10 +25,10 @@ public class MenuItem {
     @JoinColumn(name = "menu_category_id")
     private MenuCategory menuCategory;
 
-    @OneToMany(mappedBy = "menuItem", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "menuItem")
     private List<CartItem> carts;
 
-    @OneToMany(mappedBy = "menuItem", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "menuItem")
     private List<OrderItem> orders;
 
     private String name;
