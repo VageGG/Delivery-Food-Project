@@ -29,10 +29,10 @@ public class Restaurant {
     @JoinColumn(name = "manager_id")
     private RestaurantManager restaurantManager;
 
-    @OneToMany(mappedBy = "restaurant", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "restaurant")
     private List<RestaurantBranch> branches;
 
-    @OneToMany(mappedBy = "restaurant", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "restaurant")
     private List<Review> reviews;
 
 

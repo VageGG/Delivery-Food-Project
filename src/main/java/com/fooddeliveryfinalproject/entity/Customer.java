@@ -13,16 +13,16 @@ import java.util.List;
 @Table(name = "customers")
 public class Customer extends User {
 
-    @OneToMany(mappedBy = "customer", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "customer")
     private List<CustomerAddress> addresses;
 
-    @OneToOne(mappedBy = "customer", cascade = CascadeType.ALL)
+    @OneToOne(mappedBy = "customer")
     private Cart cart;
 
-    @OneToMany(mappedBy = "customer", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "customer")
     private List<Order> orders;
 
-    @OneToMany(mappedBy = "customer", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "customer")
     private List<PaymentMethod> paymentMethods;
 
     @Builder

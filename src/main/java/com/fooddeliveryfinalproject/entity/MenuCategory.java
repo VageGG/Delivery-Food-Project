@@ -19,7 +19,7 @@ public class MenuCategory {
 
     private String name;
 
-    @OneToMany(mappedBy = "menuCategory", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "menuCategory")
     private List<MenuItem> items;
 
     @ManyToOne
