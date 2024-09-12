@@ -1,15 +1,18 @@
 package com.fooddeliveryfinalproject.service;
 
-import com.fooddeliveryfinalproject.entity.Cart;
+import com.fooddeliveryfinalproject.entity.*;
 import com.fooddeliveryfinalproject.repository.CartRepo;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import java.util.List;
 
 @Service
 public class CartService {
     @Autowired
     private CartRepo repo;
+    @Autowired
+    private MenuItemService menuItemService;
 
     @Transactional
     public Cart createOrderCart(Cart orderCart) {
@@ -23,6 +26,21 @@ public class CartService {
         }
 
         return orderCart;
+    }
+
+    public Double calculateTotal(long customerId) {
+        List<CartItem> items = this.repo.findByCustomerId(customerId).getItems();
+
+        if (items.size() == 0) {
+            throw new RuntimeException("cart is empty");
+        }
+
+        double total = 0;
+        for (CartItem cartItem: items) {
+            total+= total + this.menuItemService.getMenuItemById(cartItem.getMenuItemId()).getPrice();
+        }
+
+        return total;
     }
 
     @Transactional

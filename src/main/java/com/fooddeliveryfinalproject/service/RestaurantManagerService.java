@@ -4,6 +4,7 @@ import com.fooddeliveryfinalproject.converter.RestManagerConverter;
 import com.fooddeliveryfinalproject.entity.RestaurantManager;
 import com.fooddeliveryfinalproject.model.RestaurantManagerDto;
 import com.fooddeliveryfinalproject.repository.RestaurantManagerRepo;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -17,6 +18,7 @@ public class RestaurantManagerService {
 
     private final RestManagerConverter restManagerConverter;
 
+    @Autowired
     public RestaurantManagerService(RestaurantManagerRepo restaurantManagerRepo, RestManagerConverter restManagerConverter) {
         this.restaurantManagerRepo = restaurantManagerRepo;
         this.restManagerConverter = restManagerConverter;
