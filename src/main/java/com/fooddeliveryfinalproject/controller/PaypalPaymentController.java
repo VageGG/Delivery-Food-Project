@@ -1,6 +1,7 @@
 package com.fooddeliveryfinalproject.controller;
 
 import com.fooddeliveryfinalproject.service.CartService;
+import com.fooddeliveryfinalproject.service.OrderService;
 import com.paypal.api.payments.Links;
 import com.paypal.api.payments.Payment;
 import com.paypal.base.rest.PayPalRESTException;
@@ -19,11 +20,11 @@ public class PaypalPaymentController {
     @Autowired
     private PaypalPaymentService paypalService;
     @Autowired
-    private CartService cartService;
+    private OrderService orderService;
 
     @PostMapping("/paypal/payment/create")
-    public RedirectView createPayment(@RequestParam long customerId) throws PayPalRESTException {
-        double total = this.cartService.calculateTotal(customerId);
+    public RedirectView createPayment(@RequestParam long orderId) throws PayPalRESTException {
+        double total = this.orderService.calculateTotal(orderId);
 
         String cancelUrl = "http://localhost:8081/paypal/payment/cancel";
         String successUrl = "http://localhost:8081/paypal/payment/success";

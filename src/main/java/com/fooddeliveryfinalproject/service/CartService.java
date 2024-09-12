@@ -28,21 +28,6 @@ public class CartService {
         return orderCart;
     }
 
-    public Double calculateTotal(long customerId) {
-        List<CartItem> items = this.repo.findByCustomerId(customerId).getItems();
-
-        if (items.size() == 0) {
-            throw new RuntimeException("cart is empty");
-        }
-
-        double total = 0;
-        for (CartItem cartItem: items) {
-            total+= total + this.menuItemService.getMenuItemById(cartItem.getMenuItemId()).getPrice();
-        }
-
-        return total;
-    }
-
     @Transactional
     public Cart updateOrderCart(Cart orderCart) {
         getOrderCartById(orderCart.getCartId()); //checking if orderCart exists
