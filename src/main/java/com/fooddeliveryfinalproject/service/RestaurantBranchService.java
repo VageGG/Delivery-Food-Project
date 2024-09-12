@@ -5,8 +5,8 @@ import com.fooddeliveryfinalproject.entity.RestaurantBranch;
 import com.fooddeliveryfinalproject.model.RestaurantBranchDto;
 import com.fooddeliveryfinalproject.repository.RestaurantBranchRepo;
 import jakarta.transaction.Transactional;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -16,7 +16,7 @@ public class RestaurantBranchService {
 
     private final RestaurantBranchConverter restaurantBranchConverter;
 
-
+    @Autowired
     public RestaurantBranchService(RestaurantBranchRepo restaurantBranchRepo, RestaurantBranchConverter restaurantBranchConverter) {
         this.restaurantBranchRepo = restaurantBranchRepo;
         this.restaurantBranchConverter = restaurantBranchConverter;

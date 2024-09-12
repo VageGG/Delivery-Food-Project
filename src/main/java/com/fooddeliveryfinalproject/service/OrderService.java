@@ -1,12 +1,15 @@
 package com.fooddeliveryfinalproject.service;
 
+import com.fooddeliveryfinalproject.entity.CartItem;
 import com.fooddeliveryfinalproject.entity.Order;
+import com.fooddeliveryfinalproject.entity.OrderItem;
 import com.fooddeliveryfinalproject.repository.OrderRepo;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Service
 public class OrderService {
@@ -29,6 +32,21 @@ public class OrderService {
         }
         
         return order;
+    }
+
+    public Double calculateTotal(long orderId) {
+        List<OrderItem> items = this.repo.findById(orderId).get().getItems();
+
+        if (items.size() == 0) {
+            throw new RuntimeException("cart is empty");
+        }
+
+        double total = 0;
+        for (OrderItem orderItem: items) {
+            total+= total + orderItem.getMenuItem().getPrice();
+        }
+
+        return total;
     }
 
     @Transactional
