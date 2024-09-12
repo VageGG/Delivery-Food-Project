@@ -26,18 +26,6 @@ public class CustomerController {
     @Autowired
     private CustomerService customerService;
 
-    @Autowired
-    private PasswordEncoder passwordEncoder;
-
-    @GetMapping("/secured")
-    public String secured() {
-        return "secured";
-    }
-
-    @GetMapping("/home")
-    public String home () {
-        return "home";
-    }
 
     @PostMapping("/register")
     public ResponseEntity<HttpStatus> register(@RequestBody CustomerDto customerDto) {
