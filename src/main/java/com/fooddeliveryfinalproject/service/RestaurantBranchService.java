@@ -33,12 +33,6 @@ public class RestaurantBranchService {
                 .map(restaurantBranches -> restaurantBranchConverter.convertToModel(restaurantBranches, new RestaurantBranchDto()))
                 .collect(Collectors.toList());
     }
-    // addPoint get all branch by id restaurant
-    public List<RestaurantBranchDto> getAllRestaurantBranches(Long id) {
-        return restaurantBranchRepo.findAllByRestaurantId(id).stream()
-                .map(restaurantBranches -> restaurantBranchConverter.convertToModel(restaurantBranches, new RestaurantBranchDto()))
-                .collect(Collectors.toList());
-    }
 
     @Transactional
     public void createRestaurantBranch (RestaurantBranchDto restaurantBranchDto){

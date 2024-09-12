@@ -9,6 +9,6 @@ import java.util.Arrays;
 import java.util.List;
 
 @Repository
-public interface RestaurantBranchRepo extends JpaRepository<RestaurantBranch,Long> {
-    List<RestaurantBranch> findAllByRestaurantId(Long id);
+public interface RestaurantBranchRepo extends JpaRepository<RestaurantBranch, Long> {
+
 }

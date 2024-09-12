@@ -23,7 +23,7 @@ public class Restaurant {
     private Long restId;
 
     @Column(name = "restaurant_name", nullable = false, unique = true)
-    private String restName;
+    private String name;
 
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "manager_id")
