@@ -10,7 +10,7 @@ public class RestaurantDto {
 
     private Long restId;
 
-    private String restName;
+    private String name;
 
     private RestaurantManagerDto restaurantManagerDto;
 

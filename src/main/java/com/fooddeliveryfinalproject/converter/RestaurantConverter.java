@@ -12,7 +12,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
 
-import java.util.ArrayList;
 import java.util.List;
 
 
@@ -45,7 +44,7 @@ public class RestaurantConverter implements Converter<Restaurant, RestaurantDto>
     @Override
     public Restaurant convertToEntity(RestaurantDto model, Restaurant entity) {
         entity.setRestId(model.getRestId());
-        entity.setRestName(model.getRestName());
+        entity.setName(model.getName());
 
         if (model.getRestaurantManagerDto() != null) {
             entity.setRestaurantManager(restManagerConverter.convertToEntity(model.getRestaurantManagerDto(),
@@ -67,7 +66,7 @@ public class RestaurantConverter implements Converter<Restaurant, RestaurantDto>
     @Override
     public RestaurantDto convertToModel(Restaurant entity, RestaurantDto model) {
         model.setRestId(entity.getRestId());
-        model.setRestName(entity.getRestName());
+        model.setName(entity.getName());
 
         if (entity.getRestaurantManager() != null) {
             model.setRestaurantManagerDto(restManagerConverter.convertToModel(entity.getRestaurantManager(),

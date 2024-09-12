@@ -1,4 +1,4 @@
-package com.fooddeliveryfinalproject;
+package com.fooddeliveryfinalproject.config;
 
 
 import org.springframework.beans.factory.annotation.Autowired;
