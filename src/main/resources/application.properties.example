@@ -8,9 +8,12 @@ spring.jpa.properties.hibernate.dialect=org.hibernate.dialect.PostgreSQLDialect
 server.port=8080
 management.endpoints.web.exposure.include=*
 
-#paypal
+#for paypal
 paypal.client.id= YOUR_CLIENT_ID
 paypal.client.secret= YOUR_CLIENT_SECRET
 paypal.mode=sandbox
 paypal.api.url=https://api-m.sandbox.paypal.com
 logging.level.com.paypal=DEBUG
+
+#for springSecurity
+logging.level.org.springframework.security=TRACE

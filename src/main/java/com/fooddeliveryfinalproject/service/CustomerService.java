@@ -4,6 +4,8 @@ import com.fooddeliveryfinalproject.converter.*;
 import com.fooddeliveryfinalproject.entity.Customer;
 import com.fooddeliveryfinalproject.model.CustomerDto;
 import com.fooddeliveryfinalproject.repository.*;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -16,6 +18,9 @@ public class CustomerService {
     private final CustomerRepo customerRepo;
 
     private final CustomerConverter customerConverter;
+
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
     public CustomerService(CustomerRepo customerRepo,
                            CustomerConverter customerConverter) {
@@ -36,7 +41,12 @@ public class CustomerService {
 
     @Transactional
     public void createCustomer(CustomerDto customerDto) {
-        Customer customer = customerConverter.convertToEntity(customerDto, new Customer());
+        Customer customer = new Customer();
+        customer.setUsername(customerDto.getUsername());
+        customer.setEmail(customerDto.getEmail());
+        customer.setPassword(passwordEncoder.encode(customerDto.getPassword()));
+        customer.setPhoneNumber(customerDto.getPhoneNumber());
+        customer.setRole(customerDto.getRole());
         customerRepo.save(customer);
     }
 
