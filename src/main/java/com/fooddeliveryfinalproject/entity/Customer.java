@@ -15,7 +15,7 @@ import java.util.List;
 @EqualsAndHashCode(callSuper = true)
 @Entity
 @Table(name = "customers")
-public class Customer extends User implements UserDetails {
+public class Customer extends User {
 
     @OneToMany(mappedBy = "customer")
     private List<CustomerAddress> addresses;
@@ -36,30 +36,5 @@ public class Customer extends User implements UserDetails {
         this.orders = orders;
         this.addresses = addresses;
         this.paymentMethods = paymentMethods;
-    }
-
-    @Override
-    public Collection<? extends GrantedAuthority> getAuthorities() {
-        return List.of(new SimpleGrantedAuthority(getRole().name()));
-    }
-
-    @Override
-    public boolean isAccountNonExpired() {
-        return UserDetails.super.isAccountNonExpired();
-    }
-
-    @Override
-    public boolean isAccountNonLocked() {
-        return UserDetails.super.isAccountNonLocked();
-    }
-
-    @Override
-    public boolean isCredentialsNonExpired() {
-        return UserDetails.super.isCredentialsNonExpired();
-    }
-
-    @Override
-    public boolean isEnabled() {
-        return UserDetails.super.isEnabled();
     }
 }
