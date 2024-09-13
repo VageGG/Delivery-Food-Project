@@ -2,19 +2,20 @@ package com.fooddeliveryfinalproject.controller;
 
 import com.fooddeliveryfinalproject.model.CustomerDto;
 import com.fooddeliveryfinalproject.service.CustomerService;
+import com.fooddeliveryfinalproject.service.JWTUtilService;
+import com.fooddeliveryfinalproject.service.UserService;
 import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContext;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.web.bind.annotation.*;
+
+import java.security.NoSuchAlgorithmException;
 
 @RestController
 @RequestMapping(value = "/customers")
@@ -26,26 +27,38 @@ public class CustomerController {
     @Autowired
     private CustomerService customerService;
 
+    @Autowired
+    private JWTUtilService jwtUtil;
+
+    @Autowired
+    private UserDetailsService userDetailsService;
+
+    @Autowired
+    private UserService userService;
+
 
     @PostMapping("/register")
     public ResponseEntity<HttpStatus> register(@RequestBody CustomerDto customerDto) {
-        customerService.createCustomer(customerDto);
+        try {
+            customerService.addCustomer(customerDto);
+        } catch (NoSuchAlgorithmException e) {
+            throw new RuntimeException(e);
+        }
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @PostMapping("/login")
-    public ResponseEntity<HttpStatus> login (@RequestBody CustomerDto customerDto, HttpServletRequest request) throws Exception {
+    public ResponseEntity<?> login(@RequestBody CustomerDto customerDto) throws Exception {
         try {
-            Authentication authObject = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(customerDto.getEmail(), customerDto.getPassword()));
-            SecurityContext securityContext = SecurityContextHolder.getContext();
-            securityContext.setAuthentication(authObject);
-
-            // Create a new session and add the security context.
-            HttpSession session = request.getSession(true);
-            session.setAttribute("SPRING_SECURITY_CONTEXT", securityContext);
+            authenticationManager.authenticate(
+                    new UsernamePasswordAuthenticationToken(customerDto.getEmail(), customerDto.getPassword()));
         } catch (BadCredentialsException e) {
-            throw new Exception("Invalid credentials");
+            throw new Exception("Incorrect username or password", e);
         }
-        return new ResponseEntity<>(HttpStatus.OK);
+
+        final UserDetails userDetails = userService.loadUserByUsername(customerDto.getEmail());
+        final String jwt = jwtUtil.generateToken(userDetails);
+
+        return ResponseEntity.ok(jwt);
     }
 }
