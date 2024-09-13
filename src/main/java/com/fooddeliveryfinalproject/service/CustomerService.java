@@ -5,22 +5,23 @@ import com.fooddeliveryfinalproject.entity.Customer;
 import com.fooddeliveryfinalproject.model.CustomerDto;
 import com.fooddeliveryfinalproject.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.security.NoSuchAlgorithmException;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
-public class CustomerService {
+public class CustomerService implements ValidEmailAndPassword {
 
     private final CustomerRepo customerRepo;
 
     private final CustomerConverter customerConverter;
 
-    @Autowired
-    private PasswordEncoder passwordEncoder;
 
     public CustomerService(CustomerRepo customerRepo,
                            CustomerConverter customerConverter) {
@@ -33,6 +34,7 @@ public class CustomerService {
                 .map(customer -> customerConverter.convertToModel(customer, new CustomerDto()))
                 .collect(Collectors.toList());
     }
+
     public CustomerDto getCustomer(Long id) {
         return customerConverter.convertToModel(customerRepo.findById(id)
                 .orElseThrow(() -> new RuntimeException("Customer not found")),
@@ -40,14 +42,27 @@ public class CustomerService {
     }
 
     @Transactional
-    public void createCustomer(CustomerDto customerDto) {
-        Customer customer = new Customer();
-        customer.setUsername(customerDto.getUsername());
-        customer.setEmail(customerDto.getEmail());
-        customer.setPassword(passwordEncoder.encode(customerDto.getPassword()));
-        customer.setPhoneNumber(customerDto.getPhoneNumber());
-        customer.setRole(customerDto.getRole());
-        customerRepo.save(customer);
+    public void addCustomer(CustomerDto customerDto) throws NoSuchAlgorithmException {
+        Optional<Customer> existingUser = customerRepo.findByEmail(customerDto.getEmail());
+        if (existingUser.isPresent()) {
+            throw new RuntimeException("Email has already been used");
+        }
+
+        if (!isEmailValid(customerDto.getEmail())) {
+            throw new RuntimeException("email is invalid");
+        }
+
+        if (!isPasswordValid(customerDto.getPassword())) {
+            throw new RuntimeException("password is invalid");
+        }
+
+        if (customerDto.getUsername() == null) {
+            throw new RuntimeException("name must be specified");
+        }
+        String pw_hash = BCrypt.hashpw(customerDto.getPassword(), BCrypt.gensalt(12));
+        customerDto.setPassword(pw_hash);
+
+        customerRepo.save(customerConverter.convertToEntity(customerDto, new Customer()));
     }
 
     @Transactional

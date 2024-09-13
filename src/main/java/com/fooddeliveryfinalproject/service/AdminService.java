@@ -2,16 +2,21 @@ package com.fooddeliveryfinalproject.service;
 
 import com.fooddeliveryfinalproject.converter.AdminConverter;
 import com.fooddeliveryfinalproject.entity.Admin;
+import com.fooddeliveryfinalproject.entity.Customer;
 import com.fooddeliveryfinalproject.model.AdminDto;
+import com.fooddeliveryfinalproject.model.CustomerDto;
 import com.fooddeliveryfinalproject.repository.AdminRepo;
+import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.security.NoSuchAlgorithmException;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
-public class AdminService {
+public class AdminService implements ValidEmailAndPassword {
 
     private final AdminRepo adminRepo;
 
@@ -35,9 +40,27 @@ public class AdminService {
     }
 
     @Transactional
-    public void createAdmin(AdminDto adminDto) {
-        Admin admin = adminConverter.convertToEntity(adminDto, new Admin());
-        adminRepo.save(admin);
+    public void addCustomer(AdminDto adminDto) throws NoSuchAlgorithmException {
+        Optional<Admin> existingUser = adminRepo.findByEmail(adminDto.getEmail());
+        if (existingUser.isPresent()) {
+            throw new RuntimeException("Email has already been used");
+        }
+
+        if (!isEmailValid(adminDto.getEmail())) {
+            throw new RuntimeException("email is invalid");
+        }
+
+        if (!isPasswordValid(adminDto.getPassword())) {
+            throw new RuntimeException("password is invalid");
+        }
+
+        if (adminDto.getUsername() == null) {
+            throw new RuntimeException("name must be specified");
+        }
+        String pw_hash = BCrypt.hashpw(adminDto.getPassword(), BCrypt.gensalt(12));
+        adminDto.setPassword(pw_hash);
+
+        adminRepo.save(adminConverter.convertToEntity(adminDto, new Admin()));
     }
 
     @Transactional
