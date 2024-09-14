@@ -2,9 +2,7 @@ package com.fooddeliveryfinalproject.service;
 
 import com.fooddeliveryfinalproject.converter.AdminConverter;
 import com.fooddeliveryfinalproject.entity.Admin;
-import com.fooddeliveryfinalproject.entity.Customer;
 import com.fooddeliveryfinalproject.model.AdminDto;
-import com.fooddeliveryfinalproject.model.CustomerDto;
 import com.fooddeliveryfinalproject.repository.AdminRepo;
 import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.stereotype.Service;
@@ -16,7 +14,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
-public class AdminService implements ValidEmailAndPassword {
+public class AdminService implements ValidUser<AdminDto> {
 
     private final AdminRepo adminRepo;
 
@@ -39,8 +37,9 @@ public class AdminService implements ValidEmailAndPassword {
                 new AdminDto());
     }
 
+    @Override
     @Transactional
-    public void addCustomer(AdminDto adminDto) throws NoSuchAlgorithmException {
+    public void addUser(AdminDto adminDto) throws NoSuchAlgorithmException {
         Optional<Admin> existingUser = adminRepo.findByEmail(adminDto.getEmail());
         if (existingUser.isPresent()) {
             throw new RuntimeException("Email has already been used");

@@ -1,9 +1,7 @@
 package com.fooddeliveryfinalproject.service;
 
 import com.fooddeliveryfinalproject.converter.RestManagerConverter;
-import com.fooddeliveryfinalproject.entity.Customer;
 import com.fooddeliveryfinalproject.entity.RestaurantManager;
-import com.fooddeliveryfinalproject.model.CustomerDto;
 import com.fooddeliveryfinalproject.model.RestaurantManagerDto;
 import com.fooddeliveryfinalproject.repository.RestaurantManagerRepo;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,7 +15,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
-public class RestaurantManagerService implements ValidEmailAndPassword {
+public class RestaurantManagerService implements ValidUser<RestaurantManagerDto> {
 
     private final RestaurantManagerRepo restaurantManagerRepo;
 
@@ -42,8 +40,9 @@ public class RestaurantManagerService implements ValidEmailAndPassword {
                 new RestaurantManagerDto());
     }
 
+    @Override
     @Transactional
-    public void addRestManager(RestaurantManagerDto restaurantManagerDto) throws NoSuchAlgorithmException {
+    public void addUser(RestaurantManagerDto restaurantManagerDto) throws NoSuchAlgorithmException {
         Optional<RestaurantManager> existingUser = restaurantManagerRepo.findByEmail(restaurantManagerDto.getEmail());
         if (existingUser.isPresent()) {
             throw new RuntimeException("Email has already been used");

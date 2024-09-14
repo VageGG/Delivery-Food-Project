@@ -15,7 +15,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
-public class DriverService implements ValidEmailAndPassword {
+public class DriverService implements ValidUser<DriverDto> {
 
     private final DriverRepo driverRepo;
 
@@ -38,8 +38,9 @@ public class DriverService implements ValidEmailAndPassword {
                 new DriverDto());
     }
 
+    @Override
     @org.springframework.transaction.annotation.Transactional
-    public void addDriver(DriverDto driverDto) throws NoSuchAlgorithmException {
+    public void addUser(DriverDto driverDto) throws NoSuchAlgorithmException {
         Optional<Driver> existingUser = driverRepo.findByEmail(driverDto.getEmail());
         if (existingUser.isPresent()) {
             throw new RuntimeException("Email has already been used");

@@ -20,43 +20,12 @@ import java.security.NoSuchAlgorithmException;
 
 @RestController
 @RequestMapping(value = "/managers")
-public class RestaurantManagerController {
+public class RestaurantManagerController extends LoginImplController<RestaurantManagerService, RestaurantManagerDto> {
 
-    @Autowired
-    private AuthenticationManager authenticationManager;
-
-    @Autowired
-    private RestaurantManagerService restaurantManagerService;
-
-    @Autowired
-    private JWTUtilService jwtUtil;
-
-    @Autowired
-    private UserService userService;
-
-
-    @PostMapping("/register")
-    public ResponseEntity<HttpStatus> register(@RequestBody RestaurantManagerDto restaurantManagerDto) {
-        try {
-            restaurantManagerService.addRestManager(restaurantManagerDto);
-        } catch (NoSuchAlgorithmException e) {
-            throw new RuntimeException(e);
-        }
-        return new ResponseEntity<>(HttpStatus.OK);
-    }
-
-    @PostMapping("/login")
-    public ResponseEntity<?> login(@RequestBody RestaurantManagerDto restaurantManagerDto) throws Exception {
-        try {
-            authenticationManager.authenticate(
-                    new UsernamePasswordAuthenticationToken(restaurantManagerDto.getEmail(), restaurantManagerDto.getPassword()));
-        } catch (BadCredentialsException e) {
-            throw new Exception("Incorrect username or password", e);
-        }
-
-        final UserDetails userDetails = userService.loadUserByUsername(restaurantManagerDto.getEmail());
-        final String jwt = jwtUtil.generateToken(userDetails);
-
-        return ResponseEntity.ok(jwt);
+    public RestaurantManagerController(AuthenticationManager authenticationManager,
+                                       JWTUtilService jwtUtilService,
+                                       UserService userService,
+                                       RestaurantManagerService service) {
+        super(authenticationManager, jwtUtilService, userService, service);
     }
 }
