@@ -1,9 +1,14 @@
 package com.fooddeliveryfinalproject.service;
 
+import com.fooddeliveryfinalproject.model.UserDto;
+
+import java.security.NoSuchAlgorithmException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public interface ValidEmailAndPassword {
+public interface ValidUser<T extends UserDto> {
+
+    void addUser(T dto) throws NoSuchAlgorithmException;
 
     default boolean isEmailValid(String email) {
         String regex = "^(?=.{1,64}@)[A-Za-z0-9_-]+(\\.[A-Za-z0-9_-]+)*@"

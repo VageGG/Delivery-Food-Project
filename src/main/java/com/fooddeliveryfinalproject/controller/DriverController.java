@@ -1,6 +1,5 @@
 package com.fooddeliveryfinalproject.controller;
 
-import com.fooddeliveryfinalproject.model.CustomerDto;
 import com.fooddeliveryfinalproject.model.DriverDto;
 import com.fooddeliveryfinalproject.service.DriverService;
 import com.fooddeliveryfinalproject.service.JWTUtilService;
@@ -21,43 +20,13 @@ import java.security.NoSuchAlgorithmException;
 
 @RestController
 @RequestMapping(value = "/drivers")
-public class DriverController {
+public class DriverController extends LoginImplController<DriverService, DriverDto> {
 
-    @Autowired
-    private AuthenticationManager authenticationManager;
-
-    @Autowired
-    private DriverService driverService;
-
-    @Autowired
-    private JWTUtilService jwtUtil;
-
-    @Autowired
-    private UserService userService;
-
-
-    @PostMapping("/register")
-    public ResponseEntity<HttpStatus> register(@RequestBody DriverDto driverDto) {
-        try {
-            driverService.addDriver(driverDto);
-        } catch (NoSuchAlgorithmException e) {
-            throw new RuntimeException(e);
-        }
-        return new ResponseEntity<>(HttpStatus.OK);
+    public DriverController(AuthenticationManager authenticationManager,
+                            JWTUtilService jwtUtilService,
+                            UserService userService,
+                            DriverService service) {
+        super(authenticationManager, jwtUtilService, userService, service);
     }
 
-    @PostMapping("/login")
-    public ResponseEntity<?> login(@RequestBody DriverDto driverDto) throws Exception {
-        try {
-            authenticationManager.authenticate(
-                    new UsernamePasswordAuthenticationToken(driverDto.getEmail(), driverDto.getPassword()));
-        } catch (BadCredentialsException e) {
-            throw new Exception("Incorrect username or password", e);
-        }
-
-        final UserDetails userDetails = userService.loadUserByUsername(driverDto.getEmail());
-        final String jwt = jwtUtil.generateToken(userDetails);
-
-        return ResponseEntity.ok(jwt);
-    }
 }

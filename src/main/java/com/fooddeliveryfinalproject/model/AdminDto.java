@@ -2,19 +2,10 @@ package com.fooddeliveryfinalproject.model;
 
 import com.fooddeliveryfinalproject.entity.User;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 @Data
-public class AdminDto {
+@EqualsAndHashCode
+public class AdminDto extends UserDto {
 
-    private Long id;
-
-    private String username;
-
-    private String email;
-
-    private String password;
-
-    private String phoneNumber;
-
-    private User.Role role;
 }

@@ -2,21 +2,11 @@ package com.fooddeliveryfinalproject.model;
 
 import com.fooddeliveryfinalproject.entity.User;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 @Data
-public class RestaurantManagerDto {
-
-    private Long id;
-
-    private String username;
-
-    private String email;
-
-    private String password;
-
-    private String phoneNumber;
-
-    private User.Role role;
+@EqualsAndHashCode
+public class RestaurantManagerDto extends  UserDto{
 
     private RestaurantDto restaurantDto;
 }

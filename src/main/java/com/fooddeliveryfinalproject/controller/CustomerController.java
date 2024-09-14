@@ -20,43 +20,12 @@ import java.security.NoSuchAlgorithmException;
 
 @RestController
 @RequestMapping(value = "/customers")
-public class CustomerController {
-
-    @Autowired
-    private AuthenticationManager authenticationManager;
-
-    @Autowired
-    private CustomerService customerService;
-
-    @Autowired
-    private JWTUtilService jwtUtil;
-
-    @Autowired
-    private UserService userService;
-
-
-    @PostMapping("/register")
-    public ResponseEntity<HttpStatus> register(@RequestBody CustomerDto customerDto) {
-        try {
-            customerService.addCustomer(customerDto);
-        } catch (NoSuchAlgorithmException e) {
-            throw new RuntimeException(e);
-        }
-        return new ResponseEntity<>(HttpStatus.OK);
+public class CustomerController extends LoginImplController<CustomerService, CustomerDto>{
+    public CustomerController(AuthenticationManager authenticationManager,
+                              JWTUtilService jwtUtilService,
+                              UserService userService,
+                              CustomerService service) {
+        super(authenticationManager, jwtUtilService, userService, service);
     }
 
-    @PostMapping("/login")
-    public ResponseEntity<?> login(@RequestBody CustomerDto customerDto) throws Exception {
-        try {
-            authenticationManager.authenticate(
-                    new UsernamePasswordAuthenticationToken(customerDto.getEmail(), customerDto.getPassword()));
-        } catch (BadCredentialsException e) {
-            throw new Exception("Incorrect username or password", e);
-        }
-
-        final UserDetails userDetails = userService.loadUserByUsername(customerDto.getEmail());
-        final String jwt = jwtUtil.generateToken(userDetails);
-
-        return ResponseEntity.ok(jwt);
-    }
 }

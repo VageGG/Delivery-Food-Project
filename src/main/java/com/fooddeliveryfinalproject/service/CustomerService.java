@@ -4,9 +4,7 @@ import com.fooddeliveryfinalproject.converter.*;
 import com.fooddeliveryfinalproject.entity.Customer;
 import com.fooddeliveryfinalproject.model.CustomerDto;
 import com.fooddeliveryfinalproject.repository.*;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCrypt;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -16,7 +14,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
-public class CustomerService implements ValidEmailAndPassword {
+public class CustomerService implements ValidUser<CustomerDto> {
 
     private final CustomerRepo customerRepo;
 
@@ -41,8 +39,9 @@ public class CustomerService implements ValidEmailAndPassword {
                 new CustomerDto());
     }
 
+    @Override
     @Transactional
-    public void addCustomer(CustomerDto customerDto) throws NoSuchAlgorithmException {
+    public void addUser(CustomerDto customerDto) throws NoSuchAlgorithmException {
         Optional<Customer> existingUser = customerRepo.findByEmail(customerDto.getEmail());
         if (existingUser.isPresent()) {
             throw new RuntimeException("Email has already been used");
