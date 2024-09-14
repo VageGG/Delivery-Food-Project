@@ -1,18 +1,23 @@
 package com.fooddeliveryfinalproject.service;
 
 import com.fooddeliveryfinalproject.converter.RestManagerConverter;
+import com.fooddeliveryfinalproject.entity.Customer;
 import com.fooddeliveryfinalproject.entity.RestaurantManager;
+import com.fooddeliveryfinalproject.model.CustomerDto;
 import com.fooddeliveryfinalproject.model.RestaurantManagerDto;
 import com.fooddeliveryfinalproject.repository.RestaurantManagerRepo;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.security.NoSuchAlgorithmException;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
-public class RestaurantManagerService {
+public class RestaurantManagerService implements ValidEmailAndPassword {
 
     private final RestaurantManagerRepo restaurantManagerRepo;
 
@@ -38,10 +43,27 @@ public class RestaurantManagerService {
     }
 
     @Transactional
-    public void createRestaurantManager(RestaurantManagerDto restaurantManagerDto) {
-        RestaurantManager restaurantManager = restManagerConverter.convertToEntity(restaurantManagerDto,
-                new RestaurantManager());
-        restaurantManagerRepo.save(restaurantManager);
+    public void addRestManager(RestaurantManagerDto restaurantManagerDto) throws NoSuchAlgorithmException {
+        Optional<RestaurantManager> existingUser = restaurantManagerRepo.findByEmail(restaurantManagerDto.getEmail());
+        if (existingUser.isPresent()) {
+            throw new RuntimeException("Email has already been used");
+        }
+
+        if (!isEmailValid(restaurantManagerDto.getEmail())) {
+            throw new RuntimeException("email is invalid");
+        }
+
+        if (!isPasswordValid(restaurantManagerDto.getPassword())) {
+            throw new RuntimeException("password is invalid");
+        }
+
+        if (restaurantManagerDto.getUsername() == null) {
+            throw new RuntimeException("name must be specified");
+        }
+        String pw_hash = BCrypt.hashpw(restaurantManagerDto.getPassword(), BCrypt.gensalt(12));
+        restaurantManagerDto.setPassword(pw_hash);
+
+        restaurantManagerRepo.save(restManagerConverter.convertToEntity(restaurantManagerDto, new RestaurantManager()));
     }
 
     @Transactional
