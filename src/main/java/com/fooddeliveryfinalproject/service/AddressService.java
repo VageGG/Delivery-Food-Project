@@ -2,6 +2,7 @@ package com.fooddeliveryfinalproject.service;
 
 import com.fooddeliveryfinalproject.converter.AddressConverter;
 import com.fooddeliveryfinalproject.entity.Address;
+import com.fooddeliveryfinalproject.entity.Customer;
 import com.fooddeliveryfinalproject.model.AddressDto;
 import com.fooddeliveryfinalproject.repository.AddressRepo;
 import org.springframework.stereotype.Service;
@@ -22,12 +23,14 @@ public class AddressService {
         this.addressConverter = addressConverter;
     }
 
+    @Transactional(readOnly = true)
     public List<AddressDto> getAllAddresses() {
         return addressRepo.findAll().stream()
                 .map(address -> addressConverter.convertToModel(address, new AddressDto()))
                 .collect(Collectors.toList());
     }
 
+    @Transactional(readOnly = true)
     public AddressDto getAddress(Long id) {
         return addressConverter.convertToModel(addressRepo.findById(id)
                 .orElseThrow(() -> new RuntimeException("Address not found")),
@@ -35,9 +38,9 @@ public class AddressService {
     }
 
     @Transactional
-    public void createAddress(AddressDto addressDto) {
+    public Address createAddress(AddressDto addressDto) {
         Address address = addressConverter.convertToEntity(addressDto, new Address());
-        addressRepo.save(address);
+        return addressRepo.save(address);
     }
 
     @Transactional

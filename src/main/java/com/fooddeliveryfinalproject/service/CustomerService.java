@@ -1,17 +1,19 @@
 package com.fooddeliveryfinalproject.service;
 
-import com.fooddeliveryfinalproject.converter.*;
+import com.fooddeliveryfinalproject.converter.CustomerConverter;
+import com.fooddeliveryfinalproject.entity.Address;
 import com.fooddeliveryfinalproject.entity.Customer;
+import com.fooddeliveryfinalproject.model.AddressDto;
 import com.fooddeliveryfinalproject.model.CustomerDto;
-import com.fooddeliveryfinalproject.repository.*;
+import com.fooddeliveryfinalproject.repository.CustomerRepo;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.security.NoSuchAlgorithmException;
-import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Service
 public class CustomerService implements ValidUser<CustomerDto> {
@@ -20,19 +22,41 @@ public class CustomerService implements ValidUser<CustomerDto> {
 
     private final CustomerConverter customerConverter;
 
+    private final CustomerAddressService customerAddressService;
+
+    private final AddressService addressService;
+
+    private final PaymentMethodService paymentMethodService;
+
+    private final CartService cartService;
+
+    private final OrderService orderService;
+
 
     public CustomerService(CustomerRepo customerRepo,
-                           CustomerConverter customerConverter) {
+                           CustomerConverter customerConverter,
+                           AddressService addressService,
+                           PaymentMethodService paymentMethodService,
+                           CartService cartService,
+                           OrderService orderService,
+                           CustomerAddressService customerAddressService) {
         this.customerRepo = customerRepo;
         this.customerConverter = customerConverter;
+        this.addressService = addressService;
+        this.paymentMethodService = paymentMethodService;
+        this.cartService = cartService;
+        this.orderService = orderService;
+        this.customerAddressService = customerAddressService;
     }
 
-    public List<CustomerDto> getAllCustomer() {
-        return customerRepo.findAll().stream()
-                .map(customer -> customerConverter.convertToModel(customer, new CustomerDto()))
-                .collect(Collectors.toList());
+    @Transactional(readOnly = true)
+    public Page<CustomerDto> getAllCustomer(Pageable pageable) {
+        return customerRepo.findAll(pageable).map(customer ->
+                customerConverter.convertToModel(customer, new CustomerDto())
+        );
     }
 
+    @Transactional(readOnly = true)
     public CustomerDto getCustomer(Long id) {
         return customerConverter.convertToModel(customerRepo.findById(id)
                 .orElseThrow(() -> new RuntimeException("Customer not found")),
@@ -76,4 +100,30 @@ public class CustomerService implements ValidUser<CustomerDto> {
     public void deleteCustomer(Long id) {
         customerRepo.deleteById(id);
     }
+
+//    @Transactional(readOnly = true)
+//    public Page<OrderDto> getCustomerOrders(Long customerId, Pageable pageable) {
+//        Customer customer = customerRepo.findById(customerId).orElseThrow(() -> new RuntimeException("Customer not found"));
+//        return orderService.getOrdersByCustomer(customerId, pageable);
+//    }
+//
+//    @Transactional(readOnly = true)
+//    public CartDto getCustomerCart(Long customerId) {
+//        Customer customer = customerRepo.findById(customerId).orElseThrow(() -> new RuntimeException("Customer not found"));
+//        return cartService.getCartByCustomerId(customerId);
+//    }
+
+    @Transactional
+    public void addAddress(Long customerId, AddressDto addressDto) {
+        Customer customer = customerRepo.findById(customerId).orElseThrow(() -> new RuntimeException("Customer not found"));
+        Address newAddress = addressService.createAddress(addressDto);
+        customerRepo.save(customer);
+        //customerAddressService.createCustomerAddress(customer, newAddress);
+    }
+
+//    @Transactional
+//    public void addPaymentMethod(Long customerId, PaymentMethodDto paymentMethodDto) {
+//        Customer customer = customerRepo.findById(customerId).orElseThrow(() -> new RuntimeException("Customer not found"));
+//        paymentMethodService.addPaymentMethod(customer, paymentMethodDto);
+//    }
 }
