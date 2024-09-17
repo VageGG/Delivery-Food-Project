@@ -24,7 +24,7 @@ public abstract class LoginImplController<S extends ValidUser, T extends UserDto
 
     private UserService userService;
 
-    private S service;
+    public S service;
     @PostMapping("/register")
     public ResponseEntity<HttpStatus> register(@RequestBody T dto) {
         try {
