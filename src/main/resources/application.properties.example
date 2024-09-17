@@ -17,3 +17,7 @@ logging.level.com.paypal=DEBUG
 
 #for springSecurity
 logging.level.org.springframework.security=TRACE
+
+#for github
+spring.security.oauth2.client.registration.github.client-id= YOUR_CLIENT_ID
+spring.security.oauth2.client.registration.github.client-secret= YOUR_CLIENT_SECRET
