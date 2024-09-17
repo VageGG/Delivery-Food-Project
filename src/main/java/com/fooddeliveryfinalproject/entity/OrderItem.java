@@ -14,18 +14,27 @@ import lombok.NoArgsConstructor;
 public class OrderItem {
 
     @Id
-    @Column(name = "order_id")
+    @Column(name = "order_id", insertable = false, updatable = false)
     private Long orderId;
 
     @Id
-    @Column(name = "menu_item_id")
+    @Column(name = "menu_item_id", insertable = false, updatable = false)
     private Long menuItemId;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.ALL)
+    @MapsId("orderId")
     @JoinColumn(name = "order_id")
     private Order order;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.ALL)
+    @MapsId("menuItemId")
     @JoinColumn(name = "menu_item_id")
     private MenuItem menuItem;
+
+    public OrderItem(Order order, MenuItem menuItem) {
+        this.orderId = order.getOrderId();
+        this.menuItemId = menuItem.getMenuItemId();
+        this.order = order;
+        this.menuItem = menuItem;
+    }
 }

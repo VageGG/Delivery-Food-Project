@@ -114,11 +114,10 @@ public class CustomerService implements ValidUser<CustomerDto> {
 //    }
 
     @Transactional
-    public void addAddress(Long customerId, AddressDto addressDto) {
+    public void addAddressForCustomer(Long customerId, AddressDto addressDto) {
         Customer customer = customerRepo.findById(customerId).orElseThrow(() -> new RuntimeException("Customer not found"));
         Address newAddress = addressService.createAddress(addressDto);
-        customerRepo.save(customer);
-        //customerAddressService.createCustomerAddress(customer, newAddress);
+        customerAddressService.createCustomerAddress(customer, newAddress);
     }
 
 //    @Transactional

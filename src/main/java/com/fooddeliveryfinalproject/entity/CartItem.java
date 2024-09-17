@@ -14,18 +14,27 @@ import lombok.NoArgsConstructor;
 public class CartItem {
 
     @Id
-    @Column(name = "cart_id")
+    @Column(name = "cart_id", insertable = false, updatable = false)
     private Long cartId;
 
     @Id
-    @Column(name = "menu_item_id")
+    @Column(name = "menu_item_id", insertable = false, updatable = false)
     private Long menuItemId;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.ALL)
+    @MapsId("cartId")
     @JoinColumn(name = "cart_id")
     private Cart cart;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.ALL)
+    @MapsId("menuItemId")
     @JoinColumn(name = "menu_item_id")
     private MenuItem menuItem;
+
+    public CartItem(Cart cart, MenuItem menuItem) {
+        this.cartId = cart.getCartId();
+        this.menuItemId = menuItem.getMenuItemId();
+        this.cart = cart;
+        this.menuItem = menuItem;
+    }
 }

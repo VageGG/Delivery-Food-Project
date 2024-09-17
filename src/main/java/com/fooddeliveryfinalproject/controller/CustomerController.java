@@ -22,7 +22,7 @@ public class CustomerController extends LoginImplController<CustomerService, Cus
 
     @PutMapping(value = "/address/{customerId}")
     public ResponseEntity<HttpStatus> addAddress(@PathVariable("customerId") Long customerId, @RequestBody AddressDto addressDto) {
-        service.addAddress(customerId, addressDto);
+        service.addAddressForCustomer(customerId, addressDto);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 }
