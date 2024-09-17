@@ -1,9 +1,13 @@
 package com.fooddeliveryfinalproject.service;
 
+import com.fooddeliveryfinalproject.converter.OrderConverter;
 import com.fooddeliveryfinalproject.entity.CartItem;
 import com.fooddeliveryfinalproject.entity.Order;
 import com.fooddeliveryfinalproject.entity.OrderItem;
+import com.fooddeliveryfinalproject.model.OrderDto;
 import com.fooddeliveryfinalproject.repository.OrderRepo;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -17,6 +21,9 @@ public class OrderService {
     private OrderRepo repo;
     @Autowired
     private DateTimeService dateTimeService;
+
+    @Autowired
+    private OrderConverter orderConverter;
 
     @Transactional
     public Order createOrder(Order order) {
@@ -59,5 +66,10 @@ public class OrderService {
     public void deleteOrder(long id) {
         Order order = getOrderById(id);
         this.repo.delete(order);
+    }
+
+    public Page<OrderDto> getOrdersByCustomer(Long customerId, Pageable pageable) {
+        // TODO: implement logic to fetch orders by customer and map to OrderDto
+        return null; // Placeholder for actual implementation
     }
 }

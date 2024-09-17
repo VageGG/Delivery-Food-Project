@@ -3,8 +3,7 @@ package com.fooddeliveryfinalproject.service;
 import com.fooddeliveryfinalproject.converter.CustomerConverter;
 import com.fooddeliveryfinalproject.entity.Address;
 import com.fooddeliveryfinalproject.entity.Customer;
-import com.fooddeliveryfinalproject.model.AddressDto;
-import com.fooddeliveryfinalproject.model.CustomerDto;
+import com.fooddeliveryfinalproject.model.*;
 import com.fooddeliveryfinalproject.repository.CustomerRepo;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -101,17 +100,17 @@ public class CustomerService implements ValidUser<CustomerDto> {
         customerRepo.deleteById(id);
     }
 
-//    @Transactional(readOnly = true)
-//    public Page<OrderDto> getCustomerOrders(Long customerId, Pageable pageable) {
-//        Customer customer = customerRepo.findById(customerId).orElseThrow(() -> new RuntimeException("Customer not found"));
-//        return orderService.getOrdersByCustomer(customerId, pageable);
-//    }
-//
-//    @Transactional(readOnly = true)
-//    public CartDto getCustomerCart(Long customerId) {
-//        Customer customer = customerRepo.findById(customerId).orElseThrow(() -> new RuntimeException("Customer not found"));
-//        return cartService.getCartByCustomerId(customerId);
-//    }
+    @Transactional(readOnly = true)
+    public Page<OrderDto> getCustomerOrders(Long customerId, Pageable pageable) {
+        Customer customer = customerRepo.findById(customerId).orElseThrow(() -> new RuntimeException("Customer not found"));
+        return orderService.getOrdersByCustomer(customerId, pageable);
+    }
+
+    @Transactional(readOnly = true)
+    public CartDto getCustomerCart(Long customerId) {
+        Customer customer = customerRepo.findById(customerId).orElseThrow(() -> new RuntimeException("Customer not found"));
+        return cartService.getCartByCustomerId(customerId);
+    }
 
     @Transactional
     public void addAddressForCustomer(Long customerId, AddressDto addressDto) {
@@ -120,9 +119,9 @@ public class CustomerService implements ValidUser<CustomerDto> {
         customerAddressService.createCustomerAddress(customer, newAddress);
     }
 
-//    @Transactional
-//    public void addPaymentMethod(Long customerId, PaymentMethodDto paymentMethodDto) {
-//        Customer customer = customerRepo.findById(customerId).orElseThrow(() -> new RuntimeException("Customer not found"));
-//        paymentMethodService.addPaymentMethod(customer, paymentMethodDto);
-//    }
+    @Transactional
+    public void addPaymentMethod(Long customerId, PaymentMethodDto paymentMethodDto) {
+        Customer customer = customerRepo.findById(customerId).orElseThrow(() -> new RuntimeException("Customer not found"));
+        paymentMethodService.addPaymentMethod(customer, paymentMethodDto);
+    }
 }

@@ -1,6 +1,8 @@
 package com.fooddeliveryfinalproject.service;
 
+import com.fooddeliveryfinalproject.converter.CartConverter;
 import com.fooddeliveryfinalproject.entity.*;
+import com.fooddeliveryfinalproject.model.CartDto;
 import com.fooddeliveryfinalproject.repository.CartRepo;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,11 +16,15 @@ public class CartService {
     @Autowired
     private MenuItemService menuItemService;
 
+    @Autowired
+    private CartConverter cartConverter;
+
     @Transactional
     public Cart createOrderCart(Cart orderCart) {
         return this.repo.save(orderCart);
     }
 
+    @Transactional(readOnly = true)
     public Cart getOrderCartById(long id) {
         Cart orderCart = this.repo.findById(id).get();
         if (orderCart == null) {
@@ -38,5 +44,14 @@ public class CartService {
     public void deleteOrderCart(long id) {
         Cart orderCart = getOrderCartById(id);
         this.repo.delete(orderCart);
+    }
+
+    @Transactional(readOnly = true)
+    public CartDto getCartByCustomerId(Long customerId) {
+        Cart cart = this.repo.findByCustomerId(customerId);
+        if (cart == null) {
+            throw new RuntimeException("cart not found");
+        }
+        return cartConverter.convertToModel(cart, new CartDto());
     }
 }
