@@ -18,9 +18,11 @@ public class CustomerAddressService {
 
     @Transactional
     public void createCustomerAddress(Customer customer, Address address) {
-        CustomerAddress customerAddress = new CustomerAddress();
-        customerAddress.setCustomer(customer);
-        customerAddress.setAddress(address);
+        if (customerAddressRepo.existsByCustomerAndAddress(customer, address)) {
+            throw new RuntimeException("CustomerAddress already exists");
+        }
+
+        CustomerAddress customerAddress = new CustomerAddress(customer, address);
         customerAddressRepo.save(customerAddress);
     }
 }
