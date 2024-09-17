@@ -1,6 +1,7 @@
 package com.fooddeliveryfinalproject.service;
 
 import com.fooddeliveryfinalproject.converter.PaymentMethodConverter;
+import com.fooddeliveryfinalproject.entity.Customer;
 import com.fooddeliveryfinalproject.entity.PaymentMethod;
 import com.fooddeliveryfinalproject.model.PaymentMethodDto;
 import com.fooddeliveryfinalproject.repository.PaymentMethodRepo;
@@ -51,5 +52,12 @@ public class PaymentMethodService {
     @Transactional
     public void deletePaymentMethod(Long id) {
         paymentMethodRepo.deleteById(id);
+    }
+
+    @Transactional
+    public void addPaymentMethod(Customer customer, PaymentMethodDto paymentMethodDto) {
+        PaymentMethod paymentMethod = paymentMethodConverter.convertToEntity(paymentMethodDto, new PaymentMethod());
+        paymentMethod.setCustomer(customer);
+        paymentMethodRepo.save(paymentMethod);
     }
 }
