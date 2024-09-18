@@ -55,21 +55,14 @@ public class SpringSecurityConfig {
         return http
                 .csrf(customizer -> customizer.disable())
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/customers/register", "/customers/login", "/customers/login/github").permitAll()
-                        .requestMatchers("/admins/register", "/admins/login", "/admins/login/github").permitAll()
-                        .requestMatchers("/managers/register", "/managers/login", "/managers/login/github").permitAll()
-                        .requestMatchers("/drivers/register", "/drivers/login", "/drivers/login/github").permitAll()
+                        .requestMatchers("/customers/register", "/customers/login").permitAll()
+                        .requestMatchers("/admins/register", "/admins/login").permitAll()
+                        .requestMatchers("/managers/register", "/managers/login").permitAll()
+                        .requestMatchers("/drivers/register", "/drivers/login").permitAll()
                         .anyRequest().authenticated()
                 )
                 .httpBasic(withDefaults())
-                .oauth2Login(auth -> auth
-                        .loginPage("/oauth2/authorization/github")
-                        .defaultSuccessUrl("/loginSuccess", true))
-                .logout(logout -> logout
-                        .logoutUrl("/logout")
-                        .logoutSuccessUrl("/login?logout")
-                        .permitAll()
-                )
+                .logout(withDefaults())
                 .sessionManagement(sess -> sess.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class)
                 .build();
