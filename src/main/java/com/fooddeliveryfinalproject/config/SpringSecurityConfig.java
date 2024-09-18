@@ -63,9 +63,13 @@ public class SpringSecurityConfig {
                 )
                 .httpBasic(withDefaults())
                 .oauth2Login(auth -> auth
-                        .loginPage("/login/github")
-                        .defaultSuccessUrl("/"))
-                .logout(withDefaults())
+                        .loginPage("/oauth2/authorization/github")
+                        .defaultSuccessUrl("/loginSuccess", true))
+                .logout(logout -> logout
+                        .logoutUrl("/logout")
+                        .logoutSuccessUrl("/login?logout")
+                        .permitAll()
+                )
                 .sessionManagement(sess -> sess.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class)
                 .build();
