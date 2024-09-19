@@ -3,12 +3,14 @@ package com.fooddeliveryfinalproject.model;
 import com.fooddeliveryfinalproject.entity.User;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public abstract class UserDto {
+@EqualsAndHashCode
+public class AllUserDto {
 
     private Long id;
 

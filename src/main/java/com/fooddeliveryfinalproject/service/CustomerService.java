@@ -65,7 +65,7 @@ public class CustomerService implements ValidUser<CustomerDto> {
     @Override
     @Transactional
     public void addUser(CustomerDto customerDto) throws NoSuchAlgorithmException {
-        Optional<Customer> existingUser = customerRepo.findByEmail(customerDto.getEmail());
+        Optional<Customer> existingUser = customerRepo.findByUsername(customerDto.getEmail());
         if (existingUser.isPresent()) {
             throw new RuntimeException("Email has already been used");
         }

@@ -9,7 +9,8 @@ import java.util.List;
 @Table(name = "drivers")
 @NoArgsConstructor
 @AllArgsConstructor
-@Data
+@Getter
+@Setter
 @EqualsAndHashCode(callSuper = true)
 public class Driver extends User {
 
