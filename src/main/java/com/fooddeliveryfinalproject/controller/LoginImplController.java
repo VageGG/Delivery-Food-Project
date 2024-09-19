@@ -38,12 +38,12 @@ public abstract class LoginImplController<S extends ValidUser, T extends UserDto
     public ResponseEntity<?> login(@RequestBody T dto) throws Exception {
         try {
             authenticationManager.authenticate(
-                    new UsernamePasswordAuthenticationToken(dto.getEmail(), dto.getPassword()));
+                    new UsernamePasswordAuthenticationToken(dto.getUsername(), dto.getPassword()));
         } catch (BadCredentialsException e) {
             throw new Exception("Incorrect username or password", e);
         }
 
-        final UserDetails userDetails = userService.loadUserByUsername(dto.getEmail());
+        final UserDetails userDetails = userService.loadUserByUsername(dto.getUsername());
         final String jwt = jwtUtilService.generateToken(userDetails);
 
         return ResponseEntity.ok(jwt);

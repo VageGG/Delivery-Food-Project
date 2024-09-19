@@ -41,7 +41,7 @@ public class DriverService implements ValidUser<DriverDto> {
     @Override
     @org.springframework.transaction.annotation.Transactional
     public void addUser(DriverDto driverDto) throws NoSuchAlgorithmException {
-        Optional<Driver> existingUser = driverRepo.findByEmail(driverDto.getEmail());
+        Optional<Driver> existingUser = driverRepo.findByUsername(driverDto.getEmail());
         if (existingUser.isPresent()) {
             throw new RuntimeException("Email has already been used");
         }

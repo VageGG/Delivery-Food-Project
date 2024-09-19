@@ -3,7 +3,8 @@ package com.fooddeliveryfinalproject.entity;
 import jakarta.persistence.*;
 import lombok.*;
 
-@Data
+@Getter
+@Setter
 @NoArgsConstructor
 @EqualsAndHashCode(callSuper = true)
 @Entity

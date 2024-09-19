@@ -1,6 +1,5 @@
 package com.fooddeliveryfinalproject.model;
 
-import com.fooddeliveryfinalproject.entity.User;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
@@ -8,7 +7,7 @@ import java.util.List;
 
 
 @Data
-@EqualsAndHashCode
+@EqualsAndHashCode(callSuper = true)
 public class DriverDto extends UserDto {
 
     private List<DeliveryDto> deliveriesDto;

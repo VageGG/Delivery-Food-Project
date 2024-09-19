@@ -40,7 +40,7 @@ public class AdminService implements ValidUser<AdminDto> {
     @Override
     @Transactional
     public void addUser(AdminDto adminDto) throws NoSuchAlgorithmException {
-        Optional<Admin> existingUser = adminRepo.findByEmail(adminDto.getEmail());
+        Optional<Admin> existingUser = adminRepo.findByUsername(adminDto.getEmail());
         if (existingUser.isPresent()) {
             throw new RuntimeException("Email has already been used");
         }
