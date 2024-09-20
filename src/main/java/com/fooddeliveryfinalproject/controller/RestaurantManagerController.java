@@ -25,27 +25,27 @@ public class RestaurantManagerController extends LoginImplController<RestaurantM
 
     @PreAuthorize("hasRole('ADMIN')")
     @GetMapping(value = "/list")
-    public ResponseEntity<Iterable<RestaurantManagerDto>> getAllCustomers(@RequestParam(value = "page", defaultValue = "0") int page,
+    public ResponseEntity<Iterable<RestaurantManagerDto>> getAllManagers(@RequestParam(value = "page", defaultValue = "0") int page,
                                                                @RequestParam(value = "size", defaultValue = "10") int size) {
         return new ResponseEntity<>(service.getAllManagers(PageRequest.of(page, size)).getContent(), HttpStatus.OK);
     }
 
     @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/{id}")
-    public ResponseEntity<RestaurantManagerDto> getDriver(@PathVariable("id") Long id) {
+    public ResponseEntity<RestaurantManagerDto> getManager(@PathVariable("id") Long id) {
         return new ResponseEntity<>(service.getRestaurantManager(id), HttpStatus.OK);
     }
 
     @PreAuthorize("hasRole('ADMIN')")
     @PutMapping(value = "/update/{id}")
-    public ResponseEntity<HttpStatus> updateCustomer(@PathVariable("id") Long id, @RequestBody RestaurantManagerDto restaurantManagerDto) {
+    public ResponseEntity<HttpStatus> updateManager(@PathVariable("id") Long id, @RequestBody RestaurantManagerDto restaurantManagerDto) {
         service.updateRestaurantManager(id, restaurantManagerDto);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("/delete/{id}")
-    public ResponseEntity<HttpStatus> deleteCustomer(@PathVariable("id") Long id) {
+    public ResponseEntity<HttpStatus> deleteManager(@PathVariable("id") Long id) {
         service.deleteRestaurantManager(id);
         return new ResponseEntity<>(HttpStatus.OK);
     }

@@ -31,13 +31,15 @@ public class PaymentMethodService {
         this.customerRepo = customerRepo;
     }
 
+    @Transactional(readOnly = true)
     public List<PaymentMethodDto> getAllPaymentMethod() {
         return paymentMethodRepo.findAll().stream()
                 .map(paymentMethod -> paymentMethodConverter.convertToModel(paymentMethod, new PaymentMethodDto()))
                 .collect(Collectors.toList());
     }
 
-    public PaymentMethodDto getPaymentMethods(Long id) {
+    @Transactional(readOnly = true)
+    public PaymentMethodDto getPaymentMethod(Long id) {
         return paymentMethodRepo.findById(id)
                 .map(paymentMethod -> paymentMethodConverter.convertToModel(paymentMethod, new PaymentMethodDto()))
                .orElseThrow(() -> new RuntimeException("Payment method not found"));
@@ -69,14 +71,16 @@ public class PaymentMethodService {
         paymentMethodRepo.save(paymentMethod);
     }
 
-    public List<PaymentMethod> listPaymentMethods(String email) {
-        return customerRepo.findByUsername(email)
+    @Transactional(readOnly = true)
+    public List<PaymentMethod> listPaymentMethods(String username) {
+        return customerRepo.findByUsername(username)
                 .map(Customer::getPaymentMethods)
                 .orElse(Collections.emptyList());
     }
 
-    public Optional<PaymentMethod> createPaymentMethod(String email, PaymentMethodDto paymentMethodDto) {
-        Optional<Customer> customer = customerRepo.findByUsername(email);
+    @Transactional
+    public Optional<PaymentMethod> createPaymentMethod(String username, PaymentMethodDto paymentMethodDto) {
+        Optional<Customer> customer = customerRepo.findByUsername(username);
         if (customer.isPresent()) {
             Customer cust = customer.get();
             PaymentMethod payment = paymentMethodConverter.convertToEntity(paymentMethodDto, new PaymentMethod());
@@ -86,15 +90,17 @@ public class PaymentMethodService {
         return Optional.empty();
     }
 
-    public Optional<PaymentMethod> getPaymentMethods(String email, Long paymentMethodId) {
-        return customerRepo.findByUsername(email)
+    @Transactional(readOnly = true)
+    public Optional<PaymentMethod> getPaymentMethods(String username, Long paymentMethodId) {
+        return customerRepo.findByUsername(username)
                 .flatMap(customer -> customer.getPaymentMethods().stream()
                         .filter(pm -> pm.getId().equals(paymentMethodId))
                         .findFirst());
     }
 
-    public Optional<PaymentMethod> updatePaymentMethod(String email, Long paymentMethodId, PaymentMethodDto updatedPaymentMethod) {
-        Optional<PaymentMethod> paymentMethodOptional = getPaymentMethods(email, paymentMethodId);
+    @Transactional
+    public Optional<PaymentMethod> updatePaymentMethod(String username, Long paymentMethodId, PaymentMethodDto updatedPaymentMethod) {
+        Optional<PaymentMethod> paymentMethodOptional = getPaymentMethods(username, paymentMethodId);
         if (paymentMethodOptional.isPresent()) {
             PaymentMethod paymentMethod = paymentMethodOptional.get();
             paymentMethod.setPaymentMethodType(updatedPaymentMethod.getPaymentMethodType());
@@ -104,7 +110,8 @@ public class PaymentMethodService {
         return paymentMethodOptional;
     }
 
-    public void deletePaymentMethod(String email, Long paymentMethodId) {
-        getPaymentMethods(email, paymentMethodId).ifPresent(paymentMethodRepo::delete);
+    @Transactional
+    public void deletePaymentMethod(String username, Long paymentMethodId) {
+        getPaymentMethods(username, paymentMethodId).ifPresent(paymentMethodRepo::delete);
     }
 }

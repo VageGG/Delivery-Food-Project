@@ -26,7 +26,7 @@ public class DriverController extends LoginImplController<DriverService, DriverD
 
     @PreAuthorize("hasRole('ADMIN')")
     @GetMapping(value = "/list")
-    public ResponseEntity<Iterable<DriverDto>> getAllCustomers(@RequestParam(value = "page", defaultValue = "0") int page,
+    public ResponseEntity<Iterable<DriverDto>> getAllDrivers(@RequestParam(value = "page", defaultValue = "0") int page,
                                                                  @RequestParam(value = "size", defaultValue = "10") int size) {
         return new ResponseEntity<>(service.getAllDriver(PageRequest.of(page, size)).getContent(), HttpStatus.OK);
     }
@@ -39,14 +39,14 @@ public class DriverController extends LoginImplController<DriverService, DriverD
 
     @PreAuthorize("hasRole('ADMIN')")
     @PutMapping(value = "/update/{id}")
-    public ResponseEntity<HttpStatus> updateCustomer(@PathVariable("id") Long id, @RequestBody DriverDto driverDto) {
+    public ResponseEntity<HttpStatus> updateDriver(@PathVariable("id") Long id, @RequestBody DriverDto driverDto) {
         service.updateDriver(id, driverDto);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("/delete/{id}")
-    public ResponseEntity<HttpStatus> deleteCustomer(@PathVariable("id") Long id) {
+    public ResponseEntity<HttpStatus> deleteDriver(@PathVariable("id") Long id) {
         service.deleteDriver(id);
         return new ResponseEntity<>(HttpStatus.OK);
     }
