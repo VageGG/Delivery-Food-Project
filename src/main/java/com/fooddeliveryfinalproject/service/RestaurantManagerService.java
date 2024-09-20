@@ -2,9 +2,12 @@ package com.fooddeliveryfinalproject.service;
 
 import com.fooddeliveryfinalproject.converter.RestManagerConverter;
 import com.fooddeliveryfinalproject.entity.RestaurantManager;
+import com.fooddeliveryfinalproject.model.CustomerDto;
 import com.fooddeliveryfinalproject.model.RestaurantManagerDto;
 import com.fooddeliveryfinalproject.repository.RestaurantManagerRepo;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -27,13 +30,14 @@ public class RestaurantManagerService implements ValidUser<RestaurantManagerDto>
         this.restManagerConverter = restManagerConverter;
     }
 
-    public List<RestaurantManagerDto> getAllManagers() {
-        return restaurantManagerRepo.findAll().stream()
-                .map(restaurantManager -> restManagerConverter.convertToModel(restaurantManager,
-                        new RestaurantManagerDto()))
-                .collect(Collectors.toList());
+    @Transactional(readOnly = true)
+    public Page<RestaurantManagerDto> getAllManagers(Pageable pageable) {
+        return restaurantManagerRepo.findAll(pageable).map(restaurantManager ->
+                restManagerConverter.convertToModel(restaurantManager, new RestaurantManagerDto())
+        );
     }
 
+    @Transactional(readOnly = true)
     public RestaurantManagerDto getRestaurantManager(Long id) {
         return restManagerConverter.convertToModel(restaurantManagerRepo.findById(id)
                         .orElseThrow(() -> new RuntimeException("Manager not found")),

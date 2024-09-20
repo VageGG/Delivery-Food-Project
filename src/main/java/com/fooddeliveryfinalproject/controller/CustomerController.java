@@ -29,11 +29,13 @@ public class CustomerController extends LoginImplController<CustomerService, Cus
         return new ResponseEntity<>(service.getAllCustomer(PageRequest.of(page, size)).getContent(), HttpStatus.OK);
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/{id}")
     public ResponseEntity<CustomerDto> getCustomer(@PathVariable("id") Long id) {
         return new ResponseEntity<>(service.getCustomer(id), HttpStatus.OK);
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @PutMapping(value = "/update/{id}")
     public ResponseEntity<HttpStatus> updateCustomer(@PathVariable("id") Long id, @RequestBody CustomerDto customerDto) {
         service.updateCustomer(id, customerDto);
@@ -47,29 +49,11 @@ public class CustomerController extends LoginImplController<CustomerService, Cus
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @PutMapping(value = "/address/{customerId}")
     public ResponseEntity<HttpStatus> addAddress(@PathVariable("customerId") Long customerId, @RequestBody AddressDto addressDto) {
         service.addAddressForCustomer(customerId, addressDto);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
-    @PostMapping(value = "/payment-method/{customerId}")
-    public ResponseEntity<HttpStatus> addPaymentMethod(@PathVariable("customerId") Long customerId, @RequestBody PaymentMethodDto paymentMethodDto) {
-        service.addPaymentMethod(customerId, paymentMethodDto);
-        return new ResponseEntity<>(HttpStatus.OK);
-    }
-
-    @GetMapping(value = "/order/{id}")
-    public ResponseEntity<Iterable<OrderDto>> getCustomerOrders(@PathVariable("id") Long customerId,
-                                                                @RequestParam(value = "page", defaultValue = "0") int page,
-                                                                @RequestParam(value = "size", defaultValue = "10") int size) {
-        return new ResponseEntity<>(service.getCustomerOrders(customerId,
-                PageRequest.of(page, size)).getContent(),
-        HttpStatus.OK);
-    }
-
-    @GetMapping(value = "/cart/{id}")
-    public ResponseEntity<CartDto> getCustomerCart(@PathVariable("id") Long customerId) {
-        return new ResponseEntity<>(service.getCustomerCart(customerId), HttpStatus.OK);
-    }
 }

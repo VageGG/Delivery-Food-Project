@@ -62,7 +62,7 @@ public class SpringSecurityConfig {
                         .anyRequest().authenticated()
                 )
                 .httpBasic(withDefaults())
-                .logout(withDefaults())
+                .logout(logout -> logout.logoutUrl("/logout").logoutSuccessUrl("/").invalidateHttpSession(true).clearAuthentication(true))
                 .sessionManagement(sess -> sess.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class)
                 .build();

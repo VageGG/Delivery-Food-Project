@@ -25,26 +25,15 @@ public class CustomerService implements ValidUser<CustomerDto> {
 
     private final AddressService addressService;
 
-    private final PaymentMethodService paymentMethodService;
-
-    private final CartService cartService;
-
-    private final OrderService orderService;
 
 
     public CustomerService(CustomerRepo customerRepo,
                            CustomerConverter customerConverter,
                            AddressService addressService,
-                           PaymentMethodService paymentMethodService,
-                           CartService cartService,
-                           OrderService orderService,
                            CustomerAddressService customerAddressService) {
         this.customerRepo = customerRepo;
         this.customerConverter = customerConverter;
         this.addressService = addressService;
-        this.paymentMethodService = paymentMethodService;
-        this.cartService = cartService;
-        this.orderService = orderService;
         this.customerAddressService = customerAddressService;
     }
 
@@ -65,9 +54,9 @@ public class CustomerService implements ValidUser<CustomerDto> {
     @Override
     @Transactional
     public void addUser(CustomerDto customerDto) throws NoSuchAlgorithmException {
-        Optional<Customer> existingUser = customerRepo.findByUsername(customerDto.getEmail());
+        Optional<Customer> existingUser = customerRepo.findByUsername(customerDto.getUsername());
         if (existingUser.isPresent()) {
-            throw new RuntimeException("Email has already been used");
+            throw new RuntimeException("Username has already been used");
         }
 
         if (!isEmailValid(customerDto.getEmail())) {
@@ -100,28 +89,10 @@ public class CustomerService implements ValidUser<CustomerDto> {
         customerRepo.deleteById(id);
     }
 
-    @Transactional(readOnly = true)
-    public Page<OrderDto> getCustomerOrders(Long customerId, Pageable pageable) {
-        Customer customer = customerRepo.findById(customerId).orElseThrow(() -> new RuntimeException("Customer not found"));
-        return orderService.getOrdersByCustomer(customerId, pageable);
-    }
-
-    @Transactional(readOnly = true)
-    public CartDto getCustomerCart(Long customerId) {
-        Customer customer = customerRepo.findById(customerId).orElseThrow(() -> new RuntimeException("Customer not found"));
-        return cartService.getCartByCustomerId(customerId);
-    }
-
     @Transactional
     public void addAddressForCustomer(Long customerId, AddressDto addressDto) {
         Customer customer = customerRepo.findById(customerId).orElseThrow(() -> new RuntimeException("Customer not found"));
         Address newAddress = addressService.createAddress(addressDto);
         customerAddressService.createCustomerAddress(customer, newAddress);
-    }
-
-    @Transactional
-    public void addPaymentMethod(Long customerId, PaymentMethodDto paymentMethodDto) {
-        Customer customer = customerRepo.findById(customerId).orElseThrow(() -> new RuntimeException("Customer not found"));
-        paymentMethodService.addPaymentMethod(customer, paymentMethodDto);
     }
 }

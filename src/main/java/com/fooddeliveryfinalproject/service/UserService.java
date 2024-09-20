@@ -3,17 +3,15 @@ package com.fooddeliveryfinalproject.service;
 import com.fooddeliveryfinalproject.converter.AddressConverter;
 import com.fooddeliveryfinalproject.entity.*;
 import com.fooddeliveryfinalproject.model.AddressDto;
-import com.fooddeliveryfinalproject.model.AdminDto;
 import com.fooddeliveryfinalproject.model.AllUserDto;
-import com.fooddeliveryfinalproject.model.UserDto;
 import com.fooddeliveryfinalproject.repository.*;
 import jakarta.persistence.EntityNotFoundException;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Collections;
 import java.util.List;
@@ -25,32 +23,42 @@ import java.util.stream.Collectors;
 @Service
 public class UserService implements UserDetailsService {
 
-    @Autowired
-    private CustomerRepo customerRepo;
+    private final CustomerRepo customerRepo;
 
-    @Autowired
-    private AdminRepo adminRepo;
+    private final AdminRepo adminRepo;
 
-    @Autowired
-    private DriverRepo driverRepo;
+    private final DriverRepo driverRepo;
 
-    @Autowired
-    private RestaurantManagerRepo restaurantManagerRepo;
+    private final RestaurantManagerRepo restaurantManagerRepo;
 
-    @Autowired
-    private AddressRepo addressRepo;
+    private final AddressRepo addressRepo;
 
-    @Autowired
-    private CustomerAddressRepo customerAddressRepo;
+    private final CustomerAddressRepo customerAddressRepo;
 
-    @Autowired
-    private AddressConverter addressConverter;
+    private final AddressConverter addressConverter;
+
+    public UserService(CustomerRepo customerRepo,
+                       AdminRepo adminRepo,
+                       DriverRepo driverRepo,
+                       AddressConverter addressConverter,
+                       RestaurantManagerRepo restaurantManagerRepo,
+                       AddressRepo addressRepo,
+                       CustomerAddressRepo customerAddressRepo) {
+        this.customerRepo = customerRepo;
+        this.adminRepo = adminRepo;
+        this.driverRepo = driverRepo;
+        this.restaurantManagerRepo = restaurantManagerRepo;
+        this.addressRepo = addressRepo;
+        this.customerAddressRepo = customerAddressRepo;
+        this.addressConverter = addressConverter;
+    }
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         return findUserByUsername(username)
                 .orElseThrow(() -> new UsernameNotFoundException("User not found with username: " + username));
     }
+
 
     protected Optional<? extends User> findUserByUsername(String username) {
         Optional<Customer> customer = customerRepo.findByUsername(username);
@@ -76,10 +84,12 @@ public class UserService implements UserDetailsService {
         return Optional.empty();
     }
 
+    @Transactional(readOnly = true)
     public Optional<? extends User> getProfile(String username) {
         return findUserByUsername(username);
     }
 
+    @Transactional
     public Optional<? extends User> updateProfile(String username, AllUserDto updatedUser) {
         Optional<? extends User> userOptional = findUserByUsername(username);
         if (userOptional.isPresent()) {
@@ -101,6 +111,7 @@ public class UserService implements UserDetailsService {
         return userOptional;
     }
 
+    @Transactional(readOnly = true)
     public List<Address> getCustomerAddressesList(String username) {
         return findUserByUsername(username)
                 .filter(user -> user instanceof Customer)
@@ -114,6 +125,7 @@ public class UserService implements UserDetailsService {
                 .orElse(Collections.emptyList());
     }
 
+    @Transactional(readOnly = true)
     public Optional<Address> getAddress(String username, Long addressId) {
         Optional<Customer> customer = customerRepo.findByUsername(username);
         return customer.flatMap(c ->
@@ -124,6 +136,7 @@ public class UserService implements UserDetailsService {
         );
     }
 
+    @Transactional
     public Address addAddress(String username, AddressDto newAddress) {
         Optional<Customer> customerOptional = customerRepo.findByUsername(username);
 
@@ -143,6 +156,7 @@ public class UserService implements UserDetailsService {
         throw new EntityNotFoundException("Customer not found");
     }
 
+    @Transactional
     public void updateAddress(String username, Long addressId, AddressDto updatedAddress) {
         Optional<Address> addressOptional = getAddress(username, addressId);
 
@@ -157,6 +171,7 @@ public class UserService implements UserDetailsService {
         });
     }
 
+    @Transactional
     public void deleteAddress(String username, Long addressId) {
         getAddress(username, addressId).ifPresent(address -> addressRepo.delete(address));
     }
