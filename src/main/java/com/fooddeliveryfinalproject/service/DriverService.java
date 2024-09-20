@@ -3,9 +3,12 @@ package com.fooddeliveryfinalproject.service;
 
 import com.fooddeliveryfinalproject.converter.DriverConverter;
 import com.fooddeliveryfinalproject.entity.Driver;
+import com.fooddeliveryfinalproject.model.CustomerDto;
 import com.fooddeliveryfinalproject.model.DriverDto;
 import com.fooddeliveryfinalproject.repository.DriverRepo;
-import jakarta.transaction.Transactional;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.stereotype.Service;
 
@@ -26,12 +29,14 @@ public class DriverService implements ValidUser<DriverDto> {
         this.driverConverter = driverConverter;
     }
 
-    public List<DriverDto> getAllDrivers() {
-        return driverRepo.findAll().stream()
-                .map(drivers -> driverConverter.convertToModel(drivers, new DriverDto()))
-                .collect(Collectors.toList());
+    @Transactional(readOnly = true)
+    public Page<DriverDto> getAllDriver(Pageable pageable) {
+        return driverRepo.findAll(pageable).map(driver ->
+                driverConverter.convertToModel(driver, new DriverDto())
+        );
     }
 
+    @Transactional(readOnly = true)
     public DriverDto getDriverById(Long id) {
         return driverConverter.convertToModel(driverRepo.findById(id)
                 .orElseThrow(() -> new RuntimeException("Could not find driver")),
@@ -39,11 +44,11 @@ public class DriverService implements ValidUser<DriverDto> {
     }
 
     @Override
-    @org.springframework.transaction.annotation.Transactional
+    @Transactional
     public void addUser(DriverDto driverDto) throws NoSuchAlgorithmException {
-        Optional<Driver> existingUser = driverRepo.findByUsername(driverDto.getEmail());
+        Optional<Driver> existingUser = driverRepo.findByUsername(driverDto.getUsername());
         if (existingUser.isPresent()) {
-            throw new RuntimeException("Email has already been used");
+            throw new RuntimeException("Username has already been used");
         }
 
         if (!isEmailValid(driverDto.getEmail())) {

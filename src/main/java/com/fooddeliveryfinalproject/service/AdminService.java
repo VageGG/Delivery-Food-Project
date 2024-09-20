@@ -4,14 +4,14 @@ import com.fooddeliveryfinalproject.converter.AdminConverter;
 import com.fooddeliveryfinalproject.entity.Admin;
 import com.fooddeliveryfinalproject.model.AdminDto;
 import com.fooddeliveryfinalproject.repository.AdminRepo;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.security.NoSuchAlgorithmException;
-import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Service
 public class AdminService implements ValidUser<AdminDto> {
@@ -25,12 +25,14 @@ public class AdminService implements ValidUser<AdminDto> {
         this.adminConverter = adminConverter;
     }
 
-    public List<AdminDto> getAllAdmins() {
-        return adminRepo.findAll().stream()
-                .map(admin -> adminConverter.convertToModel(admin, new AdminDto()))
-                .collect(Collectors.toList());
+    @Transactional(readOnly = true)
+    public Page<AdminDto> getAllAdmins(Pageable pageable) {
+        return adminRepo.findAll(pageable).map(admin ->
+                adminConverter.convertToModel(admin, new AdminDto())
+        );
     }
 
+    @Transactional(readOnly = true)
     public AdminDto getAdmin(Long id) {
         return adminConverter.convertToModel(adminRepo.findById(id)
                         .orElseThrow(() -> new RuntimeException("Admin not found")),
@@ -40,9 +42,9 @@ public class AdminService implements ValidUser<AdminDto> {
     @Override
     @Transactional
     public void addUser(AdminDto adminDto) throws NoSuchAlgorithmException {
-        Optional<Admin> existingUser = adminRepo.findByUsername(adminDto.getEmail());
+        Optional<Admin> existingUser = adminRepo.findByUsername(adminDto.getUsername());
         if (existingUser.isPresent()) {
-            throw new RuntimeException("Email has already been used");
+            throw new RuntimeException("Username has already been used");
         }
 
         if (!isEmailValid(adminDto.getEmail())) {

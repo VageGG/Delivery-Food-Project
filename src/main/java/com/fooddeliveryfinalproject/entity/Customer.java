@@ -19,7 +19,7 @@ import java.util.List;
 @Table(name = "customers")
 public class Customer extends User {
 
-    @OneToMany(mappedBy = "customer")
+    @OneToMany(mappedBy = "customer", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<CustomerAddress> addresses;
 
     @OneToOne(mappedBy = "customer")

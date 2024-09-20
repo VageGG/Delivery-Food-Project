@@ -22,19 +22,17 @@ public class CustomerAddress {
     @Column(name = "address_id", insertable = false, updatable = false)
     private Long addressId;
 
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne
     @MapsId("customerId")
     @JoinColumn(name = "customer_id")
     private Customer customer;
 
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne
     @MapsId("addressId")
     @JoinColumn(name = "address_id")
     private Address address;
 
     public CustomerAddress(Customer customer, Address address) {
-        this.customerId = customer.getId();
-        this.addressId = address.getId();
         this.customer = customer;
         this.address = address;
     }

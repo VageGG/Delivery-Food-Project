@@ -33,7 +33,7 @@ public class Address {
     @Column(name = "apartment_number")
     private String apartmentNumber;
 
-    @OneToMany(mappedBy = "address")
+    @OneToMany(mappedBy = "address", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<CustomerAddress> customerAddresses;
 
     @OneToOne(mappedBy = "address")

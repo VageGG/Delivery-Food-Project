@@ -1,5 +1,6 @@
 package com.fooddeliveryfinalproject.config;
 
+import com.fooddeliveryfinalproject.service.BlacklistService;
 import com.fooddeliveryfinalproject.service.JWTUtilService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -28,6 +29,9 @@ public class JWTRequestFilter extends OncePerRequestFilter {
     @Autowired
     private JWTUtilService jwtUtil;
 
+    @Autowired
+    private BlacklistService blacklistService;
+
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain)
             throws ServletException, IOException {
@@ -47,11 +51,11 @@ public class JWTRequestFilter extends OncePerRequestFilter {
                 logger.error("Error parsing JWT Token", e);
             }
         }
-
+        // Проверяем, что токен валиден и не находится в черном списке
         if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
             UserDetails userDetails = this.userDetailsService.loadUserByUsername(username);
 
-            if (jwtUtil.validateToken(jwt, userDetails)) {
+            if (jwtUtil.validateToken(jwt, userDetails) && !blacklistService.isBlacklisted(jwt)) {
 
                 UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = new UsernamePasswordAuthenticationToken(
                         userDetails, null, userDetails.getAuthorities());
