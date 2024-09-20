@@ -24,20 +24,20 @@ public class AdminController extends LoginImplController<AdminService, AdminDto>
 
     @PreAuthorize("hasRole('ADMIN')")
     @GetMapping(value = "/list")
-    public ResponseEntity<Iterable<AdminDto>> getAllCustomers(@RequestParam(value = "page", defaultValue = "0") int page,
+    public ResponseEntity<Iterable<AdminDto>> getAllAdmins(@RequestParam(value = "page", defaultValue = "0") int page,
                                                                @RequestParam(value = "size", defaultValue = "10") int size) {
         return new ResponseEntity<>(service.getAllAdmins(PageRequest.of(page, size)).getContent(), HttpStatus.OK);
     }
 
     @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/{id}")
-    public ResponseEntity<AdminDto> getDriver(@PathVariable("id") Long id) {
+    public ResponseEntity<AdminDto> getAdmin(@PathVariable("id") Long id) {
         return new ResponseEntity<>(service.getAdmin(id), HttpStatus.OK);
     }
 
     @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("/delete/{id}")
-    public ResponseEntity<HttpStatus> deleteCustomer(@PathVariable("id") Long id) {
+    public ResponseEntity<HttpStatus> deleteAdmin(@PathVariable("id") Long id) {
         service.deleteAdmin(id);
         return new ResponseEntity<>(HttpStatus.OK);
     }
