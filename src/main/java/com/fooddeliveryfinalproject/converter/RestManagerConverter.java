@@ -10,13 +10,6 @@ import org.springframework.stereotype.Component;
 @Component
 public class RestManagerConverter implements Converter<RestaurantManager, RestaurantManagerDto> {
 
-    private final RestaurantConverter restaurantConverter;
-
-    @Lazy
-    public RestManagerConverter(RestaurantConverter restaurantConverter) {
-        this.restaurantConverter = restaurantConverter;
-    }
-
     @Override
     public RestaurantManager convertToEntity(RestaurantManagerDto model, RestaurantManager entity) {
         entity.setId(model.getId());
@@ -25,10 +18,6 @@ public class RestManagerConverter implements Converter<RestaurantManager, Restau
         entity.setPassword(model.getPassword());
         entity.setPhoneNumber(model.getPhoneNumber());
         entity.setRole(model.getRole());
-
-        if (model.getRestaurantDto() != null) {
-            entity.setRestaurant(restaurantConverter.convertToEntity(model.getRestaurantDto(), new Restaurant()));
-        }
 
         return entity;
     }
@@ -41,10 +30,6 @@ public class RestManagerConverter implements Converter<RestaurantManager, Restau
         model.setPassword(entity.getPassword());
         model.setPhoneNumber(entity.getPhoneNumber());
         model.setRole(entity.getRole());
-
-        if (entity.getRestaurant() != null) {
-            model.setRestaurantDto(restaurantConverter.convertToModel(entity.getRestaurant(), new RestaurantDto()));
-        }
 
         return model;
     }

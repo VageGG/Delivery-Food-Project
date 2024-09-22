@@ -11,8 +11,4 @@ public class MenuCategoryDto {
 
     private String name;
 
-    private List<MenuItemDto> itemsDto;
-
-    private MenuDto menuDto;
-
 }

@@ -80,7 +80,19 @@ public class CustomerService implements ValidUser<CustomerDto> {
     public void updateCustomer(Long id, CustomerDto customerDto) {
         Customer customerEntity = customerRepo.findById(id)
                 .orElseThrow(() -> new RuntimeException("Customer not found"));
-        customerConverter.convertToEntity(customerDto, customerEntity);
+        customerEntity.setUsername(customerDto.getUsername());
+
+        if (isEmailValid(customerDto.getEmail())) {
+            customerEntity.setEmail(customerDto.getEmail());
+        }
+
+        if (!isPasswordValid(customerDto.getPassword())) {
+            String pw_hash = BCrypt.hashpw(customerDto.getPassword(), BCrypt.gensalt(12));
+            customerEntity.setPassword(pw_hash);
+        }
+
+        customerEntity.setPhoneNumber(customerDto.getPhoneNumber());
+        customerEntity.setRole(customerDto.getRole());
         customerRepo.save(customerEntity);
     }
 

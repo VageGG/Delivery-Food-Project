@@ -10,11 +10,5 @@ public class OrderDto {
 
     private Long orderId;
 
-    private CustomerDto customerDto;
-
-    private List<OrderItemDto> itemDtos;
-
-    private DeliveryDto deliveryDto;
-
     private Order.OrderStatus status;
 }

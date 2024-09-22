@@ -8,8 +8,6 @@ public class PaymentDto {
 
     private Long paymentId;
 
-    private OrderDto orderDto;
-
     private Double totalAmount;
 
     private Payment.PaymentMethodType paymentMethod;

@@ -73,7 +73,19 @@ public class RestaurantManagerService implements ValidUser<RestaurantManagerDto>
     public void updateRestaurantManager(Long id, RestaurantManagerDto restaurantManagerDto) {
         RestaurantManager restaurantManager = restaurantManagerRepo.findById(id)
                .orElseThrow(() -> new RuntimeException("Manager not found"));
-        restManagerConverter.convertToEntity(restaurantManagerDto, restaurantManager);
+        restaurantManager.setUsername(restaurantManagerDto.getUsername());
+
+        if (isEmailValid(restaurantManagerDto.getEmail())) {
+            restaurantManager.setEmail(restaurantManagerDto.getEmail());
+        }
+
+        if (!isPasswordValid(restaurantManagerDto.getPassword())) {
+            String pw_hash = BCrypt.hashpw(restaurantManagerDto.getPassword(), BCrypt.gensalt(12));
+            restaurantManager.setPassword(pw_hash);
+        }
+
+        restaurantManager.setPhoneNumber(restaurantManagerDto.getPhoneNumber());
+        restaurantManager.setRole(restaurantManagerDto.getRole());
         restaurantManagerRepo.save(restaurantManager);
     }
 

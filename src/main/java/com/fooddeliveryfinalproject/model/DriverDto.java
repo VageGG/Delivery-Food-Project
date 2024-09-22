@@ -10,6 +10,4 @@ import java.util.List;
 @EqualsAndHashCode(callSuper = true)
 public class DriverDto extends UserDto {
 
-    private List<DeliveryDto> deliveriesDto;
-
 }

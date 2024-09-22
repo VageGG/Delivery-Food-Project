@@ -9,12 +9,4 @@ import java.util.List;
 @EqualsAndHashCode(callSuper = true)
 public class CustomerDto extends UserDto {
 
-
-    private List<OrderDto> ordersDto;
-
-    private List<CustomerAddressDto> addressesDto;
-
-    private CartDto cartDto;
-
-    private List<PaymentMethodDto> paymentMethodsDto;
 }

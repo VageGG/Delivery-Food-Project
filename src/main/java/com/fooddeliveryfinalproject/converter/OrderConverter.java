@@ -32,20 +32,6 @@ public class OrderConverter implements Converter<Order, OrderDto> {
     @Override
     public Order convertToEntity(OrderDto model, Order entity) {
         entity.setOrderId(model.getOrderId());
-
-        if (model.getCustomerDto() != null) {
-            entity.setCustomer(customerConverter.convertToEntity(model.getCustomerDto(), new Customer()));
-        }
-
-        if (model.getItemDtos() != null) {
-            List<OrderItem> orderItems = orderItemConverter.convertToEntityList(model.getItemDtos(), OrderItem::new);
-            entity.setItems(orderItems);
-        }
-
-        if (model.getDeliveryDto() != null) {
-            entity.setDelivery(deliveryConverter.convertToEntity(model.getDeliveryDto(), new Delivery()));
-        }
-
         entity.setStatus(model.getStatus());
         return entity;
     }
@@ -53,20 +39,6 @@ public class OrderConverter implements Converter<Order, OrderDto> {
     @Override
     public OrderDto convertToModel(Order entity, OrderDto model) {
         model.setOrderId(entity.getOrderId());
-
-        if (entity.getCustomer() != null) {
-            model.setCustomerDto(customerConverter.convertToModel(entity.getCustomer(), new CustomerDto()));
-        }
-
-        if (entity.getItems() != null) {
-            List<OrderItemDto> orderItemDtos = orderItemConverter.convertToModelList(entity.getItems(), OrderItemDto::new);
-            model.setItemDtos(orderItemDtos);
-        }
-
-        if (entity.getDelivery() != null) {
-            model.setDeliveryDto(deliveryConverter.convertToModel(entity.getDelivery(), new DeliveryDto()));
-        }
-
         model.setStatus(entity.getStatus());
         return model;
     }

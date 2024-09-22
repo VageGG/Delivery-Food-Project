@@ -12,22 +12,6 @@ import java.util.List;
 @Component
 public class CustomerConverter implements Converter<Customer, CustomerDto> {
 
-    private final OrderConverter orderConverter;
-    private final CustomerAddressConvertor customerAddressConvertor;
-    private final PaymentMethodConverter paymentMethodConverter;
-
-    @Autowired
-    @Lazy
-    private CartConverter cartConverter;
-
-    public CustomerConverter(OrderConverter orderConverter,
-                             CustomerAddressConvertor addressConverter,
-                             PaymentMethodConverter paymentMethodConverter) {
-        this.orderConverter = orderConverter;
-        this.customerAddressConvertor = addressConverter;
-        this.paymentMethodConverter = paymentMethodConverter;
-    }
-
     @Override
     public Customer convertToEntity(CustomerDto model, Customer entity) {
         entity.setId(model.getId());
@@ -36,25 +20,6 @@ public class CustomerConverter implements Converter<Customer, CustomerDto> {
         entity.setPassword(model.getPassword());
         entity.setPhoneNumber(model.getPhoneNumber());
         entity.setRole(model.getRole());
-
-        if (model.getOrdersDto() != null) {
-            List<Order> orders = orderConverter.convertToEntityList(model.getOrdersDto(), Order::new);
-            entity.setOrders(orders);
-        }
-
-        if (model.getAddressesDto() != null) {
-            List<CustomerAddress> addresses = customerAddressConvertor.convertToEntityList(model.getAddressesDto(), CustomerAddress::new);
-            entity.setAddresses(addresses);
-        }
-
-        if (model.getCartDto()!= null) {
-            entity.setCart(cartConverter.convertToEntity(model.getCartDto(), new Cart()));
-        }
-
-        if (model.getPaymentMethodsDto() != null) {
-            List<PaymentMethod> paymentMethods = paymentMethodConverter.convertToEntityList(model.getPaymentMethodsDto(), PaymentMethod::new);
-            entity.setPaymentMethods(paymentMethods);
-        }
 
         return entity;
     }
@@ -67,25 +32,6 @@ public class CustomerConverter implements Converter<Customer, CustomerDto> {
         model.setPassword(entity.getPassword());
         model.setPhoneNumber(entity.getPhoneNumber());
         model.setRole(entity.getRole());
-
-        if (entity.getOrders() != null) {
-            List<OrderDto> orderDtos = orderConverter.convertToModelList(entity.getOrders(), OrderDto::new);
-            model.setOrdersDto(orderDtos);
-        }
-
-        if (entity.getAddresses() != null) {
-            List<CustomerAddressDto> addressDtos = customerAddressConvertor.convertToModelList(entity.getAddresses(), CustomerAddressDto::new);
-            model.setAddressesDto(addressDtos);
-        }
-
-        if (entity.getCart()!= null) {
-            model.setCartDto(cartConverter.convertToModel(entity.getCart(), new CartDto()));
-        }
-
-        if (entity.getPaymentMethods() != null) {
-            List<PaymentMethodDto> paymentMethodDtos = paymentMethodConverter.convertToModelList(entity.getPaymentMethods(), PaymentMethodDto::new);
-            model.setPaymentMethodsDto(paymentMethodDtos);
-        }
 
         return model;
     }

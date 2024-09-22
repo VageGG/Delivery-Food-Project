@@ -7,5 +7,4 @@ import lombok.EqualsAndHashCode;
 @EqualsAndHashCode(callSuper = true)
 public class RestaurantManagerDto extends  UserDto{
 
-    private RestaurantDto restaurantDto;
 }

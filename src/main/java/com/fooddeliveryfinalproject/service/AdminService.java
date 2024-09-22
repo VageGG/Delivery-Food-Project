@@ -68,7 +68,19 @@ public class AdminService implements ValidUser<AdminDto> {
     public void updateAdmin(Long id, AdminDto adminDto) {
         Admin adminEntity = adminRepo.findById(id)
                 .orElseThrow(() -> new RuntimeException("Admin not found"));
-        adminConverter.convertToEntity(adminDto, adminEntity);
+        adminEntity.setUsername(adminDto.getUsername());
+
+        if (isEmailValid(adminDto.getEmail())) {
+            adminEntity.setEmail(adminDto.getEmail());
+        }
+
+        if (!isPasswordValid(adminDto.getPassword())) {
+            String pw_hash = BCrypt.hashpw(adminDto.getPassword(), BCrypt.gensalt(12));
+            adminEntity.setPassword(pw_hash);
+        }
+
+        adminEntity.setPhoneNumber(adminDto.getPhoneNumber());
+        adminEntity.setRole(adminDto.getRole());
         adminRepo.save(adminEntity);
     }
 
