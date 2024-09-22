@@ -72,7 +72,19 @@ public class DriverService implements ValidUser<DriverDto> {
     public void updateDriver(Long id, DriverDto driverDto) {
         Driver driverEntity = driverRepo.findById(id)
                 .orElseThrow(() -> new RuntimeException("Could not find driver"));
-        driverConverter.convertToEntity(driverDto, driverEntity);
+        driverEntity.setUsername(driverDto.getUsername());
+
+        if (isEmailValid(driverDto.getEmail())) {
+            driverEntity.setEmail(driverDto.getEmail());
+        }
+
+        if (!isPasswordValid(driverDto.getPassword())) {
+            String pw_hash = BCrypt.hashpw(driverDto.getPassword(), BCrypt.gensalt(12));
+            driverEntity.setPassword(pw_hash);
+        }
+
+        driverEntity.setPhoneNumber(driverDto.getPhoneNumber());
+        driverEntity.setRole(driverDto.getRole());
         driverRepo.save(driverEntity);
     }
 

@@ -29,19 +29,6 @@ public class ReviewConverter implements Converter<Review, ReviewDto> {
     @Override
     public Review convertToEntity(ReviewDto model, Review entity) {
         entity.setReviewId(model.getReviewId());
-
-        if (model.getCustomerDto() != null) {
-            entity.setCustomer(customerConverter.convertToEntity(model.getCustomerDto(), new Customer()));
-        }
-
-        if (model.getRestaurantDto()!= null) {
-            entity.setRestaurant(restaurantConverter.convertToEntity(model.getRestaurantDto(), new Restaurant()));
-        }
-
-        if (model.getDriverDto()!= null) {
-            entity.setDriver(driverConverter.convertToEntity(model.getDriverDto(), new Driver()));
-        }
-
         entity.setRating(model.getRating());
         entity.setComment(model.getComment());
         return entity;
@@ -50,19 +37,6 @@ public class ReviewConverter implements Converter<Review, ReviewDto> {
     @Override
     public ReviewDto convertToModel(Review entity, ReviewDto model) {
         model.setReviewId(entity.getReviewId());
-
-        if (entity.getCustomer()!= null) {
-            model.setCustomerDto(customerConverter.convertToModel(entity.getCustomer(), new CustomerDto()));
-        }
-
-        if (entity.getRestaurant()!= null) {
-            model.setRestaurantDto(restaurantConverter.convertToModel(entity.getRestaurant(), new RestaurantDto()));
-        }
-
-        if (entity.getDriver()!= null) {
-            model.setDriverDto(driverConverter.convertToModel(entity.getDriver(), new DriverDto()));
-        }
-
         model.setRating(entity.getRating());
         model.setComment(entity.getComment());
         return model;

@@ -11,6 +11,4 @@ public class PaymentMethodDto {
     private Payment.PaymentMethodType paymentMethodType;
 
     private String details;
-
-    private CustomerDto customerDto;
 }

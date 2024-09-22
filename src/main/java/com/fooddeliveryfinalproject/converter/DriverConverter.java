@@ -14,11 +14,6 @@ import java.util.List;
 @Component
 public class DriverConverter implements Converter<Driver, DriverDto> {
 
-    @Autowired
-    @Lazy
-    private DeliveryConverter deliveryConverter;
-
-
     @Override
     public Driver convertToEntity(DriverDto model, Driver entity) {
         entity.setId(model.getId());
@@ -27,11 +22,6 @@ public class DriverConverter implements Converter<Driver, DriverDto> {
         entity.setPassword(model.getPassword());
         entity.setPhoneNumber(model.getPhoneNumber());
         entity.setRole(model.getRole());
-
-        if (model.getDeliveriesDto() != null) {
-            List<Delivery> deliveryList = deliveryConverter.convertToEntityList(model.getDeliveriesDto(), Delivery::new);
-            entity.setDeliveries(deliveryList);
-        }
         return entity;
     }
 
@@ -43,11 +33,6 @@ public class DriverConverter implements Converter<Driver, DriverDto> {
         model.setPassword(entity.getPassword());
         model.setPhoneNumber(entity.getPhoneNumber());
         model.setRole(entity.getRole());
-
-        if (entity.getDeliveries() != null) {
-            List<DeliveryDto> deliveryDtoList = deliveryConverter.convertToModelList(entity.getDeliveries(), DeliveryDto::new);
-            model.setDeliveriesDto(deliveryDtoList);
-        }
         return model;
     }
 

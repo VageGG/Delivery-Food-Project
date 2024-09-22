@@ -34,36 +34,14 @@ public class MenuCategoryConverter implements Converter<MenuCategory, MenuCatego
     @Override
     public MenuCategory convertToEntity(MenuCategoryDto model, MenuCategory entity) {
         entity.setCategoryId(model.getCategoryId());
-
-        if (model.getItemsDto() != null) {
-            List<MenuItem> menuItems = menuItemConverter.convertToEntityList(model.getItemsDto(), MenuItem::new);
-            entity.setItems(menuItems);
-        }
-
         entity.setName(model.getName());
-
-        if (model.getMenuDto() != null) {
-            entity.setMenu(menuConverter.convertToEntity(model.getMenuDto(), new Menu()));
-        }
-
         return entity;
     }
 
     @Override
     public MenuCategoryDto convertToModel(MenuCategory entity, MenuCategoryDto model) {
         model.setCategoryId(entity.getCategoryId());
-
-        if (entity.getItems() != null) {
-            List<MenuItemDto> menuItemDtos = menuItemConverter.convertToModelList(entity.getItems(), MenuItemDto::new);
-            model.setItemsDto(menuItemDtos);
-        }
-
         model.setName(entity.getName());
-
-        if (entity.getMenu() != null) {
-            model.setMenuDto(menuConverter.convertToModel(entity.getMenu(), new MenuDto()));
-        }
-
         return model;
     }
 }

@@ -8,11 +8,7 @@ public class RestaurantBranchDto {
 
     private Long branchId;
 
-    private RestaurantDto restaurantDto;
-
     private MenuDto menuDto;
 
     private String phoneNumber;
-
-    private AddressDto addressDto;
 }

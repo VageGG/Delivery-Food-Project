@@ -1,5 +1,8 @@
 package com.fooddeliveryfinalproject.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -15,25 +18,27 @@ public class CartItem {
 
     @Id
     @Column(name = "cart_id", insertable = false, updatable = false)
+    @JsonIgnore
     private Long cartId;
 
     @Id
     @Column(name = "menu_item_id", insertable = false, updatable = false)
+    @JsonIgnore
     private Long menuItemId;
 
     @ManyToOne(cascade = CascadeType.ALL)
     @MapsId("cartId")
     @JoinColumn(name = "cart_id")
+    @JsonBackReference
     private Cart cart;
 
     @ManyToOne(cascade = CascadeType.ALL)
     @MapsId("menuItemId")
     @JoinColumn(name = "menu_item_id")
+    @JsonManagedReference
     private MenuItem menuItem;
 
     public CartItem(Cart cart, MenuItem menuItem) {
-        this.cartId = cart.getCartId();
-        this.menuItemId = menuItem.getMenuItemId();
         this.cart = cart;
         this.menuItem = menuItem;
     }

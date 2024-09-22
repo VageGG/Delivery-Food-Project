@@ -1,5 +1,6 @@
 package com.fooddeliveryfinalproject.entity;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -22,6 +23,7 @@ public class Order {
     private Customer customer;
 
     @OneToMany(mappedBy = "order")
+    @JsonManagedReference
     private List<OrderItem> items;
 
     @OneToOne(mappedBy = "order")

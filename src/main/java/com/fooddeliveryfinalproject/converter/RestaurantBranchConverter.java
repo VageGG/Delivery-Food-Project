@@ -15,34 +15,9 @@ import org.springframework.stereotype.Component;
 @Component
 public class RestaurantBranchConverter implements Converter<RestaurantBranch, RestaurantBranchDto> {
 
-    @Autowired
-    private RestaurantConverter restaurantConverter;
-
-    @Autowired
-    @Lazy
-    private MenuConverter menuConverter;
-
-    @Autowired
-    @Lazy
-    private AddressConverter addressConverter;
-
-
     @Override
     public RestaurantBranch convertToEntity(RestaurantBranchDto model, RestaurantBranch entity) {
         entity.setRestBranchId(model.getBranchId());
-
-        if (model.getRestaurantDto() != null) {
-            entity.setRestaurant(restaurantConverter.convertToEntity(model.getRestaurantDto(), new Restaurant()));
-        }
-
-        if (model.getMenuDto() != null) {
-            entity.setMenu(menuConverter.convertToEntity(model.getMenuDto(), new Menu()));
-        }
-
-        if (model.getAddressDto() != null) {
-            entity.setAddress(addressConverter.convertToEntity(model.getAddressDto(), new Address()));
-        }
-
         entity.setPhoneNumber(model.getPhoneNumber());
         return entity;
     }
@@ -50,19 +25,6 @@ public class RestaurantBranchConverter implements Converter<RestaurantBranch, Re
     @Override
     public RestaurantBranchDto convertToModel(RestaurantBranch entity, RestaurantBranchDto model) {
         model.setBranchId(entity.getRestBranchId());
-
-        if (entity.getRestaurant() != null) {
-            model.setRestaurantDto(restaurantConverter.convertToModel(entity.getRestaurant(), new RestaurantDto()));
-        }
-
-        if (entity.getMenu() != null) {
-            model.setMenuDto(menuConverter.convertToModel(entity.getMenu(), new MenuDto()));
-        }
-
-        if (entity.getAddress() != null) {
-            model.setAddressDto(addressConverter.convertToModel(entity.getAddress(), new AddressDto()));
-        }
-
         model.setPhoneNumber(entity.getPhoneNumber());
         return model;
     }

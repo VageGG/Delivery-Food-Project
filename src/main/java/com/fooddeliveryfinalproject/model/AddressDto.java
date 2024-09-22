@@ -21,12 +21,4 @@ public class AddressDto {
     private String houseNumber;
 
     private String apartmentNumber;
-
-    private List<CustomerAddressDto> customerAddressDtoList;
-
-    private RestaurantBranchDto restaurantBranchDto;
-
-    private List<DeliveryDto> pickupLocationDto;
-
-    private List<DeliveryDto> dropoffLocationDto;
 }

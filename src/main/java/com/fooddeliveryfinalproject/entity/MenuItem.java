@@ -1,5 +1,6 @@
 package com.fooddeliveryfinalproject.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -26,9 +27,11 @@ public class MenuItem {
     private MenuCategory menuCategory;
 
     @OneToMany(mappedBy = "menuItem")
+    @JsonIgnore
     private List<CartItem> carts;
 
     @OneToMany(mappedBy = "menuItem")
+    @JsonIgnore
     private List<OrderItem> orders;
 
     private String name;

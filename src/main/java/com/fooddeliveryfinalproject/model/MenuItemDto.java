@@ -10,12 +10,6 @@ public class MenuItemDto {
 
     private Long menuItemId;
 
-    private MenuCategoryDto menuCategoryDto;
-
-    private List<CartItemDto> cartDtos;
-
-    private List<OrderItemDto> orderDtos;
-
     private String name;
 
     private Double price;

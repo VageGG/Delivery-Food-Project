@@ -1,5 +1,6 @@
 package com.fooddeliveryfinalproject.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -34,14 +35,18 @@ public class Address {
     private String apartmentNumber;
 
     @OneToMany(mappedBy = "address", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonIgnore
     private List<CustomerAddress> customerAddresses;
 
     @OneToOne(mappedBy = "address")
+    @JsonIgnore
     private RestaurantBranch restaurantBranch;
 
     @OneToMany(mappedBy = "pickupLocation")
+    @JsonIgnore
     private List<Delivery> pickupLocation;
 
     @OneToMany(mappedBy = "dropoffLocation")
+    @JsonIgnore
     private List<Delivery> dropoffLocation;
 }

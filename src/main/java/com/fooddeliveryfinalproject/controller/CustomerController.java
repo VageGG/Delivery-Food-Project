@@ -11,6 +11,9 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 @RestController
 @RequestMapping(value = "/customers")
 public class CustomerController extends LoginImplController<CustomerService, CustomerDto>{
@@ -24,9 +27,12 @@ public class CustomerController extends LoginImplController<CustomerService, Cus
 
     @PreAuthorize("hasRole('ADMIN')")
     @GetMapping(value = "/list")
-    public ResponseEntity<Iterable<CustomerDto>> getAllCustomers(@RequestParam(value = "page", defaultValue = "0") int page,
+    public ResponseEntity<List<CustomerDto>> getAllCustomers(@RequestParam(value = "page", defaultValue = "0") int page,
                                                              @RequestParam(value = "size", defaultValue = "10") int size) {
-        return new ResponseEntity<>(service.getAllCustomer(PageRequest.of(page, size)).getContent(), HttpStatus.OK);
+        List<CustomerDto> customerDtos = service.getAllCustomer(PageRequest.of(page, size))
+                .stream()
+                .collect(Collectors.toList());
+        return new ResponseEntity<>(customerDtos, HttpStatus.OK);
     }
 
     @PreAuthorize("hasRole('ADMIN')")
