@@ -1,7 +1,6 @@
 package com.fooddeliveryfinalproject.controller;
 
-import com.fooddeliveryfinalproject.model.AddressDto;
-import com.fooddeliveryfinalproject.model.CustomerDto;
+import com.fooddeliveryfinalproject.entity.User;
 import com.fooddeliveryfinalproject.model.DriverDto;
 import com.fooddeliveryfinalproject.service.DriverService;
 import com.fooddeliveryfinalproject.service.JWTUtilService;
@@ -15,13 +14,10 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping(value = "/drivers")
-public class DriverController extends LoginImplController<DriverService, DriverDto> {
+public class DriverController extends RegisterImplController<DriverService, DriverDto> {
 
-    public DriverController(AuthenticationManager authenticationManager,
-                            JWTUtilService jwtUtilService,
-                            UserService userService,
-                            DriverService service) {
-        super(authenticationManager, jwtUtilService, userService, service);
+    public DriverController(DriverService service) {
+        super(service);
     }
 
     @PreAuthorize("hasRole('ADMIN')")
@@ -49,5 +45,10 @@ public class DriverController extends LoginImplController<DriverService, DriverD
     public ResponseEntity<HttpStatus> deleteDriver(@PathVariable("id") Long id) {
         service.deleteDriver(id);
         return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @Override
+    protected User.Role getExpectedRole() {
+        return User.Role.DRIVER;
     }
 }

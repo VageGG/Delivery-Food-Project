@@ -3,6 +3,7 @@ package com.fooddeliveryfinalproject.service;
 import com.fooddeliveryfinalproject.converter.CustomerConverter;
 import com.fooddeliveryfinalproject.entity.Address;
 import com.fooddeliveryfinalproject.entity.Customer;
+import com.fooddeliveryfinalproject.entity.User;
 import com.fooddeliveryfinalproject.model.*;
 import com.fooddeliveryfinalproject.repository.CustomerRepo;
 import org.springframework.data.domain.Page;
@@ -58,6 +59,11 @@ public class CustomerService implements ValidUser<CustomerDto> {
         if (existingUser.isPresent()) {
             throw new RuntimeException("Username has already been used");
         }
+
+        if (!customerDto.getRole().equals(User.Role.CUSTOMER)) {
+            throw new RuntimeException("Role mismatch. Customer role must be CUSTOMER");
+        }
+
 
         if (!isEmailValid(customerDto.getEmail())) {
             throw new RuntimeException("email is invalid");

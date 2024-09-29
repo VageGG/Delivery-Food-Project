@@ -55,10 +55,10 @@ public class SpringSecurityConfig {
         return http
                 .csrf(customizer -> customizer.disable())
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/customers/register", "/customers/login").permitAll()
-                        .requestMatchers("/admins/register", "/admins/login").permitAll()
-                        .requestMatchers("/managers/register", "/managers/login").permitAll()
-                        .requestMatchers("/drivers/register", "/drivers/login").permitAll()
+                        .requestMatchers("/customers/register", "/login").permitAll()
+                        .requestMatchers("/admins/register").permitAll()
+                        .requestMatchers("/managers/register").permitAll()
+                        .requestMatchers("/drivers/register").permitAll()
                         .anyRequest().authenticated()
                 )
                 .httpBasic(withDefaults())

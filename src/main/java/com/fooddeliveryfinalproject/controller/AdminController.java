@@ -1,6 +1,7 @@
 package com.fooddeliveryfinalproject.controller;
 
 
+import com.fooddeliveryfinalproject.entity.User;
 import com.fooddeliveryfinalproject.model.AdminDto;
 import com.fooddeliveryfinalproject.service.AdminService;
 import com.fooddeliveryfinalproject.service.JWTUtilService;
@@ -14,12 +15,9 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping(value = "/admins")
-public class AdminController extends LoginImplController<AdminService, AdminDto>{
-    public AdminController(AuthenticationManager authenticationManager,
-                           JWTUtilService jwtUtilService,
-                           UserService userService,
-                           AdminService service) {
-        super(authenticationManager, jwtUtilService, userService, service);
+public class AdminController extends RegisterImplController<AdminService, AdminDto> {
+    public AdminController(AdminService service) {
+        super(service);
     }
 
     @PreAuthorize("hasRole('ADMIN')")
@@ -40,5 +38,10 @@ public class AdminController extends LoginImplController<AdminService, AdminDto>
     public ResponseEntity<HttpStatus> deleteAdmin(@PathVariable("id") Long id) {
         service.deleteAdmin(id);
         return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @Override
+    protected User.Role getExpectedRole() {
+        return User.Role.ADMIN;
     }
 }

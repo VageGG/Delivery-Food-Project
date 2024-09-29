@@ -2,6 +2,7 @@ package com.fooddeliveryfinalproject.service;
 
 import com.fooddeliveryfinalproject.converter.RestManagerConverter;
 import com.fooddeliveryfinalproject.entity.RestaurantManager;
+import com.fooddeliveryfinalproject.entity.User;
 import com.fooddeliveryfinalproject.model.CustomerDto;
 import com.fooddeliveryfinalproject.model.RestaurantManagerDto;
 import com.fooddeliveryfinalproject.repository.RestaurantManagerRepo;
@@ -51,6 +52,11 @@ public class RestaurantManagerService implements ValidUser<RestaurantManagerDto>
         if (existingUser.isPresent()) {
             throw new RuntimeException("Email has already been used");
         }
+
+        if (!restaurantManagerDto.getRole().equals(User.Role.RESTAURANT_MANAGER)) {
+            throw new RuntimeException("Role mismatch");
+        }
+
 
         if (!isEmailValid(restaurantManagerDto.getEmail())) {
             throw new RuntimeException("email is invalid");

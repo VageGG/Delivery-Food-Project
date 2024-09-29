@@ -2,6 +2,7 @@ package com.fooddeliveryfinalproject.service;
 
 import com.fooddeliveryfinalproject.converter.AdminConverter;
 import com.fooddeliveryfinalproject.entity.Admin;
+import com.fooddeliveryfinalproject.entity.User;
 import com.fooddeliveryfinalproject.model.AdminDto;
 import com.fooddeliveryfinalproject.repository.AdminRepo;
 import org.springframework.data.domain.Page;
@@ -45,6 +46,10 @@ public class AdminService implements ValidUser<AdminDto> {
         Optional<Admin> existingUser = adminRepo.findByUsername(adminDto.getUsername());
         if (existingUser.isPresent()) {
             throw new RuntimeException("Username has already been used");
+        }
+
+        if (!adminDto.getRole().equals(User.Role.ADMIN)) {
+            throw new RuntimeException("Role mismatch");
         }
 
         if (!isEmailValid(adminDto.getEmail())) {

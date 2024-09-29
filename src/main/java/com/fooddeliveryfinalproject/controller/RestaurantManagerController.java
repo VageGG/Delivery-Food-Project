@@ -1,6 +1,6 @@
 package com.fooddeliveryfinalproject.controller;
 
-import com.fooddeliveryfinalproject.model.DriverDto;
+import com.fooddeliveryfinalproject.entity.User;
 import com.fooddeliveryfinalproject.model.RestaurantManagerDto;
 import com.fooddeliveryfinalproject.service.JWTUtilService;
 import com.fooddeliveryfinalproject.service.RestaurantManagerService;
@@ -14,13 +14,10 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping(value = "/managers")
-public class RestaurantManagerController extends LoginImplController<RestaurantManagerService, RestaurantManagerDto> {
+public class RestaurantManagerController extends RegisterImplController<RestaurantManagerService, RestaurantManagerDto> {
 
-    public RestaurantManagerController(AuthenticationManager authenticationManager,
-                                       JWTUtilService jwtUtilService,
-                                       UserService userService,
-                                       RestaurantManagerService service) {
-        super(authenticationManager, jwtUtilService, userService, service);
+    public RestaurantManagerController(RestaurantManagerService service) {
+        super(service);
     }
 
     @PreAuthorize("hasRole('ADMIN')")
@@ -48,5 +45,10 @@ public class RestaurantManagerController extends LoginImplController<RestaurantM
     public ResponseEntity<HttpStatus> deleteManager(@PathVariable("id") Long id) {
         service.deleteRestaurantManager(id);
         return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @Override
+    protected User.Role getExpectedRole() {
+        return User.Role.RESTAURANT_MANAGER;
     }
 }
