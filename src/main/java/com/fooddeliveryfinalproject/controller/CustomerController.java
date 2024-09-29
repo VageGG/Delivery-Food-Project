@@ -1,5 +1,6 @@
 package com.fooddeliveryfinalproject.controller;
 
+import com.fooddeliveryfinalproject.entity.User;
 import com.fooddeliveryfinalproject.model.*;
 import com.fooddeliveryfinalproject.service.CustomerService;
 import com.fooddeliveryfinalproject.service.JWTUtilService;
@@ -16,12 +17,9 @@ import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping(value = "/customers")
-public class CustomerController extends LoginImplController<CustomerService, CustomerDto>{
-    public CustomerController(AuthenticationManager authenticationManager,
-                              JWTUtilService jwtUtilService,
-                              UserService userService,
-                              CustomerService service) {
-        super(authenticationManager, jwtUtilService, userService, service);
+public class CustomerController extends RegisterImplController<CustomerService, CustomerDto> {
+    public CustomerController(CustomerService service) {
+        super(service);
     }
 
 
@@ -62,4 +60,8 @@ public class CustomerController extends LoginImplController<CustomerService, Cus
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
+    @Override
+    protected User.Role getExpectedRole() {
+        return User.Role.CUSTOMER;
+    }
 }

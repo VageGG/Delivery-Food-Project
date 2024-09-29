@@ -3,6 +3,7 @@ package com.fooddeliveryfinalproject.service;
 
 import com.fooddeliveryfinalproject.converter.DriverConverter;
 import com.fooddeliveryfinalproject.entity.Driver;
+import com.fooddeliveryfinalproject.entity.User;
 import com.fooddeliveryfinalproject.model.CustomerDto;
 import com.fooddeliveryfinalproject.model.DriverDto;
 import com.fooddeliveryfinalproject.repository.DriverRepo;
@@ -50,6 +51,11 @@ public class DriverService implements ValidUser<DriverDto> {
         if (existingUser.isPresent()) {
             throw new RuntimeException("Username has already been used");
         }
+
+        if (!driverDto.getRole().equals(User.Role.DRIVER)) {
+            throw new RuntimeException("Role mismatch");
+        }
+
 
         if (!isEmailValid(driverDto.getEmail())) {
             throw new RuntimeException("email is invalid");
