@@ -14,6 +14,9 @@ import lombok.*;
 @Table(name = "restaurant_managers")
 public class RestaurantManager extends User{
 
+    @Enumerated(EnumType.STRING)
+    private RegistrationStatus status;
+
     @OneToOne(mappedBy = "restaurantManager")
     private Restaurant restaurant;
 

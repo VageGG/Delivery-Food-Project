@@ -55,8 +55,23 @@ public class UserService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        return findUserByUsername(username)
+        User user = findUserByUsername(username)
                 .orElseThrow(() -> new UsernameNotFoundException("User not found with username: " + username));
+
+        // Проверяем, если пользователь водитель или менеджер, его статус должен быть одобрен
+        if (user instanceof Driver) {
+            Driver driver = (Driver) user;
+            if (driver.getStatus() != RegistrationStatus.APPROVED) {
+                throw new RuntimeException("Driver is not approved by admin yet");
+            }
+        } else if (user instanceof RestaurantManager) {
+            RestaurantManager manager = (RestaurantManager) user;
+            if (manager.getStatus() != RegistrationStatus.APPROVED) {
+                throw new RuntimeException("Restaurant Manager is not approved by admin yet");
+            }
+        }
+
+        return user;
     }
 
 

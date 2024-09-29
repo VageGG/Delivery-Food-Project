@@ -14,6 +14,9 @@ import java.util.List;
 @EqualsAndHashCode(callSuper = true)
 public class Driver extends User {
 
+    @Enumerated(EnumType.STRING)
+    private RegistrationStatus status;
+
     @OneToMany(mappedBy="driver")
     private List<Delivery> deliveries;
 

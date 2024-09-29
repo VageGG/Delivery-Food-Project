@@ -1,5 +1,6 @@
 package com.fooddeliveryfinalproject.model;
 
+import com.fooddeliveryfinalproject.entity.RegistrationStatus;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
@@ -7,4 +8,5 @@ import lombok.EqualsAndHashCode;
 @EqualsAndHashCode(callSuper = true)
 public class RestaurantManagerDto extends  UserDto{
 
+    private RegistrationStatus status;
 }

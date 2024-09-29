@@ -1,11 +1,15 @@
 package com.fooddeliveryfinalproject.service;
 
 import com.fooddeliveryfinalproject.converter.RestManagerConverter;
+import com.fooddeliveryfinalproject.entity.Driver;
+import com.fooddeliveryfinalproject.entity.RegistrationStatus;
 import com.fooddeliveryfinalproject.entity.RestaurantManager;
 import com.fooddeliveryfinalproject.entity.User;
 import com.fooddeliveryfinalproject.model.CustomerDto;
+import com.fooddeliveryfinalproject.model.DriverDto;
 import com.fooddeliveryfinalproject.model.RestaurantManagerDto;
 import com.fooddeliveryfinalproject.repository.RestaurantManagerRepo;
+import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -72,6 +76,8 @@ public class RestaurantManagerService implements ValidUser<RestaurantManagerDto>
         String pw_hash = BCrypt.hashpw(restaurantManagerDto.getPassword(), BCrypt.gensalt(12));
         restaurantManagerDto.setPassword(pw_hash);
 
+        restaurantManagerDto.setStatus(RegistrationStatus.PENDING);
+
         restaurantManagerRepo.save(restManagerConverter.convertToEntity(restaurantManagerDto, new RestaurantManager()));
     }
 
@@ -92,7 +98,31 @@ public class RestaurantManagerService implements ValidUser<RestaurantManagerDto>
 
         restaurantManager.setPhoneNumber(restaurantManagerDto.getPhoneNumber());
         restaurantManager.setRole(restaurantManagerDto.getRole());
+        restaurantManager.setStatus(restaurantManagerDto.getStatus());
         restaurantManagerRepo.save(restaurantManager);
+    }
+
+    @Transactional
+    public void approveManager(Long managerId) {
+        RestaurantManager restaurantManager = restaurantManagerRepo.findById(managerId)
+                .orElseThrow(() -> new EntityNotFoundException("Driver not found"));
+        restaurantManager.setStatus(RegistrationStatus.APPROVED);
+        restaurantManagerRepo.save(restaurantManager);
+    }
+
+    @Transactional
+    public void rejectedManager(Long managerId) {
+        RestaurantManager restaurantManager = restaurantManagerRepo.findById(managerId)
+                .orElseThrow(() -> new EntityNotFoundException("Driver not found"));
+        restaurantManager.setStatus(RegistrationStatus.REJECTED);
+        restaurantManagerRepo.save(restaurantManager);
+    }
+
+    @Transactional(readOnly = true)
+    public List<RestaurantManagerDto> getAllPendingManagers() {
+        return restaurantManagerRepo.findAllByStatus(RegistrationStatus.PENDING).stream()
+                .map(restManager -> restManagerConverter.convertToModel(restManager, new RestaurantManagerDto()))
+                .collect(Collectors.toList());
     }
 
     @Transactional
