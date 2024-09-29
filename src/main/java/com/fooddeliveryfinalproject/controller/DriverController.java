@@ -1,5 +1,6 @@
 package com.fooddeliveryfinalproject.controller;
 
+import com.fooddeliveryfinalproject.entity.Driver;
 import com.fooddeliveryfinalproject.entity.User;
 import com.fooddeliveryfinalproject.model.DriverDto;
 import com.fooddeliveryfinalproject.service.DriverService;
@@ -11,6 +12,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping(value = "/drivers")
@@ -45,6 +48,26 @@ public class DriverController extends RegisterImplController<DriverService, Driv
     public ResponseEntity<HttpStatus> deleteDriver(@PathVariable("id") Long id) {
         service.deleteDriver(id);
         return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @PreAuthorize("hasRole('ADMIN')")
+    @PostMapping("/approve-driver/{driverId}")
+    public ResponseEntity<?> approveDriver(@PathVariable("driverId") Long driverId) {
+        service.approveDriver(driverId);
+        return ResponseEntity.ok("Driver approved");
+    }
+
+    @PreAuthorize("hasRole('ADMIN')")
+    @PutMapping("/rejected-driver/{driverId}")
+    public ResponseEntity<?> rejectedDriver(@PathVariable("driverId") Long driverId) {
+        service.rejectedDriver(driverId);
+        return ResponseEntity.ok("Driver rejected");
+    }
+
+    @PreAuthorize("hasRole('ADMIN')")
+    @GetMapping("/pending-drivers")
+    public ResponseEntity<List<DriverDto>> getPendingDrivers() {
+        return new ResponseEntity<>(service.getAllPendingDrivers(), HttpStatus.OK);
     }
 
     @Override

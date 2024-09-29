@@ -3,10 +3,12 @@ package com.fooddeliveryfinalproject.service;
 
 import com.fooddeliveryfinalproject.converter.DriverConverter;
 import com.fooddeliveryfinalproject.entity.Driver;
+import com.fooddeliveryfinalproject.entity.RegistrationStatus;
 import com.fooddeliveryfinalproject.entity.User;
 import com.fooddeliveryfinalproject.model.CustomerDto;
 import com.fooddeliveryfinalproject.model.DriverDto;
 import com.fooddeliveryfinalproject.repository.DriverRepo;
+import jakarta.persistence.EntityNotFoundException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.transaction.annotation.Transactional;
@@ -71,6 +73,8 @@ public class DriverService implements ValidUser<DriverDto> {
         String pw_hash = BCrypt.hashpw(driverDto.getPassword(), BCrypt.gensalt(12));
         driverDto.setPassword(pw_hash);
 
+        driverDto.setStatus(RegistrationStatus.PENDING);
+
         driverRepo.save(driverConverter.convertToEntity(driverDto, new Driver()));
     }
 
@@ -91,7 +95,31 @@ public class DriverService implements ValidUser<DriverDto> {
 
         driverEntity.setPhoneNumber(driverDto.getPhoneNumber());
         driverEntity.setRole(driverDto.getRole());
+        driverEntity.setStatus(driverDto.getStatus());
         driverRepo.save(driverEntity);
+    }
+
+    @Transactional
+    public void approveDriver(Long driverId) {
+        Driver driver = driverRepo.findById(driverId)
+                .orElseThrow(() -> new EntityNotFoundException("Driver not found"));
+        driver.setStatus(RegistrationStatus.APPROVED);
+        driverRepo.save(driver);
+    }
+
+    @Transactional
+    public void rejectedDriver(Long driverId) {
+        Driver driver = driverRepo.findById(driverId)
+                .orElseThrow(() -> new EntityNotFoundException("Driver not found"));
+        driver.setStatus(RegistrationStatus.REJECTED);
+        driverRepo.save(driver);
+    }
+
+    @Transactional(readOnly = true)
+    public List<DriverDto> getAllPendingDrivers() {
+        return driverRepo.findAllByStatus(RegistrationStatus.PENDING).stream()
+                .map(driver -> driverConverter.convertToModel(driver, new DriverDto()))
+                .collect(Collectors.toList());
     }
 
     @Transactional

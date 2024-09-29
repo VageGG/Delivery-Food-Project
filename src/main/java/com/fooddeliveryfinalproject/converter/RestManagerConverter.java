@@ -18,7 +18,7 @@ public class RestManagerConverter implements Converter<RestaurantManager, Restau
         entity.setPassword(model.getPassword());
         entity.setPhoneNumber(model.getPhoneNumber());
         entity.setRole(model.getRole());
-
+        entity.setStatus(model.getStatus());
         return entity;
     }
 
@@ -30,7 +30,7 @@ public class RestManagerConverter implements Converter<RestaurantManager, Restau
         model.setPassword(entity.getPassword());
         model.setPhoneNumber(entity.getPhoneNumber());
         model.setRole(entity.getRole());
-
+        model.setStatus(entity.getStatus());
         return model;
     }
 }
