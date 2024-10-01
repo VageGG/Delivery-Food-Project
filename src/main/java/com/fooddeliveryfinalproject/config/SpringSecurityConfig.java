@@ -23,14 +23,20 @@ import static org.springframework.security.config.Customizer.withDefaults;
 @Configuration
 public class SpringSecurityConfig {
 
-    @Autowired
-    private UserDetailsService userDetailsService;
+    private final UserDetailsService userDetailsService;
+
+    private final JWTRequestFilter jwtRequestFilter;
+
+    private final AuthenticationConfiguration authenticationConfiguration;
 
     @Autowired
-    private JWTRequestFilter jwtRequestFilter;
-
-    @Autowired
-    private AuthenticationConfiguration authenticationConfiguration;
+    public SpringSecurityConfig(UserDetailsService userDetailsService,
+                                JWTRequestFilter jwtRequestFilter,
+                                AuthenticationConfiguration authenticationConfiguration) {
+        this.userDetailsService = userDetailsService;
+        this.jwtRequestFilter = jwtRequestFilter;
+        this.authenticationConfiguration = authenticationConfiguration;
+    }
 
     @Bean
     public AuthenticationManager authenticationManager() throws Exception {

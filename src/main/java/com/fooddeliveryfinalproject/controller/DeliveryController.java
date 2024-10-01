@@ -16,17 +16,26 @@ import java.util.List;
 @RestController
 @RequestMapping("/delivery")
 public class DeliveryController {
-    @Autowired
-    private DeliveryService deliveryService;
+
+
+    private final DeliveryService deliveryService;
+
+    private final DeliveryConverter deliveryConverter;
+
+    private final ReviewService reviewService;
+
+    private final ReviewConverter reviewConverter;
 
     @Autowired
-    private DeliveryConverter deliveryConverter;
-
-    @Autowired
-    private ReviewService reviewService;
-
-    @Autowired
-    private ReviewConverter reviewConverter;
+    public DeliveryController(DeliveryService deliveryService,
+                              DeliveryConverter deliveryConverter,
+                              ReviewService reviewService,
+                              ReviewConverter reviewConverter) {
+        this.deliveryService = deliveryService;
+        this.deliveryConverter = deliveryConverter;
+        this.reviewService = reviewService;
+        this.reviewConverter = reviewConverter;
+    }
 
     @GetMapping("/list")
     @ResponseStatus(HttpStatus.OK)

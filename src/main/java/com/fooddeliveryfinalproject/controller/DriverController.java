@@ -1,16 +1,12 @@
 package com.fooddeliveryfinalproject.controller;
 
-import com.fooddeliveryfinalproject.entity.Driver;
 import com.fooddeliveryfinalproject.entity.User;
 import com.fooddeliveryfinalproject.model.DriverDto;
 import com.fooddeliveryfinalproject.service.DriverService;
-import com.fooddeliveryfinalproject.service.JWTUtilService;
-import com.fooddeliveryfinalproject.service.UserService;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;

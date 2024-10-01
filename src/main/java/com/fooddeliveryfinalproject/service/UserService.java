@@ -6,6 +6,7 @@ import com.fooddeliveryfinalproject.model.AddressDto;
 import com.fooddeliveryfinalproject.model.AllUserDto;
 import com.fooddeliveryfinalproject.repository.*;
 import jakarta.persistence.EntityNotFoundException;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -37,6 +38,7 @@ public class UserService implements UserDetailsService {
 
     private final AddressConverter addressConverter;
 
+    @Autowired
     public UserService(CustomerRepo customerRepo,
                        AdminRepo adminRepo,
                        DriverRepo driverRepo,

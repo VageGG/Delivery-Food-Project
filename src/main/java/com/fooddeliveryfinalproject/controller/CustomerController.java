@@ -1,15 +1,13 @@
 package com.fooddeliveryfinalproject.controller;
 
 import com.fooddeliveryfinalproject.entity.User;
-import com.fooddeliveryfinalproject.model.*;
+import com.fooddeliveryfinalproject.model.AddressDto;
+import com.fooddeliveryfinalproject.model.CustomerDto;
 import com.fooddeliveryfinalproject.service.CustomerService;
-import com.fooddeliveryfinalproject.service.JWTUtilService;
-import com.fooddeliveryfinalproject.service.UserService;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -18,6 +16,7 @@ import java.util.stream.Collectors;
 @RestController
 @RequestMapping(value = "/customers")
 public class CustomerController extends RegisterImplController<CustomerService, CustomerDto> {
+
     public CustomerController(CustomerService service) {
         super(service);
     }

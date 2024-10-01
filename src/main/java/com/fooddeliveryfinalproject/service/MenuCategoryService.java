@@ -4,6 +4,7 @@ import com.fooddeliveryfinalproject.converter.MenuCategoryConverter;
 import com.fooddeliveryfinalproject.entity.MenuCategory;
 import com.fooddeliveryfinalproject.model.MenuCategoryDto;
 import com.fooddeliveryfinalproject.repository.MenuCategoryRepo;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.stereotype.Service;
 
@@ -17,6 +18,7 @@ public class MenuCategoryService {
 
     private final MenuCategoryConverter menuCategoryConverter;
 
+    @Autowired
     public MenuCategoryService(MenuCategoryRepo menuCategoryRepo, MenuCategoryConverter menuCategoryConverter){
         this.menuCategoryRepo = menuCategoryRepo;
         this.menuCategoryConverter = menuCategoryConverter;
@@ -27,7 +29,7 @@ public class MenuCategoryService {
         return this.menuCategoryRepo.save(menuCategory);
     }
 
-    @Transactional()
+    @Transactional(readOnly = true)
     public MenuCategory getMenuCategoryById(long id) {
         MenuCategory menuCategory = this.menuCategoryRepo.findById(id).get();
         if (menuCategory == null) {
@@ -55,6 +57,7 @@ public class MenuCategoryService {
         return this.menuCategoryRepo.findAllByMenu_RestaurantBranch_RestBranchId(branchId);
     }
 
+    @Transactional(readOnly = true)
     public List<MenuCategoryDto> getCategoriesByBranchId(Long branchId) {
         List<MenuCategory> categories = menuCategoryRepo.findAllByMenu_RestaurantBranch_RestBranchId(branchId);
         return categories.stream()

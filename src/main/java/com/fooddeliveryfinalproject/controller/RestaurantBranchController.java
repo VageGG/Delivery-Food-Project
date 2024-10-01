@@ -4,7 +4,6 @@ import com.fooddeliveryfinalproject.model.MenuCategoryDto;
 import com.fooddeliveryfinalproject.model.MenuDto;
 import com.fooddeliveryfinalproject.model.MenuItemDto;
 import com.fooddeliveryfinalproject.model.RestaurantBranchDto;
-import com.fooddeliveryfinalproject.service.MenuCategoryService;
 import com.fooddeliveryfinalproject.service.MenuService;
 import com.fooddeliveryfinalproject.service.RestaurantBranchService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,14 +23,11 @@ public class RestaurantBranchController {
 
     private final MenuService menuService;
 
-    private final MenuCategoryService menuCategoryService;
-
     private final RestaurantBranchService restaurantBranchService;
 
     @Autowired
-    public RestaurantBranchController(MenuService menuService, MenuCategoryService menuCategoryService,RestaurantBranchService restaurantBranchService){
+    public RestaurantBranchController(MenuService menuService,RestaurantBranchService restaurantBranchService){
         this.menuService = menuService;
-        this.menuCategoryService = menuCategoryService;
         this.restaurantBranchService = restaurantBranchService;
     }
 
@@ -45,14 +41,6 @@ public class RestaurantBranchController {
             return ResponseEntity.notFound().build();
         }
     }
-
-
-    @GetMapping("/categories/{branchId}")
-    public ResponseEntity<List<MenuCategoryDto>> getCategoriesByBranchId(@PathVariable("branchId") Long branchId){
-        List<MenuCategoryDto> categories = menuCategoryService.getCategoriesByBranchId(branchId);
-        return ResponseEntity.ok(categories);
-    }
-
 
     @GetMapping(value = "/list/{restaurantId}")
     public ResponseEntity<List<RestaurantBranchDto>> getAllRestaurantBranches(

@@ -5,6 +5,7 @@ import com.fooddeliveryfinalproject.entity.Address;
 import com.fooddeliveryfinalproject.entity.Customer;
 import com.fooddeliveryfinalproject.model.AddressDto;
 import com.fooddeliveryfinalproject.repository.AddressRepo;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -18,6 +19,7 @@ public class AddressService {
 
     private final AddressConverter addressConverter;
 
+    @Autowired
     public AddressService(AddressRepo addressRepo, AddressConverter addressConverter) {
         this.addressRepo = addressRepo;
         this.addressConverter = addressConverter;

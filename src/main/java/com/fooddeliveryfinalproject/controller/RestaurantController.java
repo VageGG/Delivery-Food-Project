@@ -1,6 +1,5 @@
 package com.fooddeliveryfinalproject.controller;
 
-import com.fooddeliveryfinalproject.entity.Restaurant;
 import com.fooddeliveryfinalproject.model.RestaurantDto;
 import com.fooddeliveryfinalproject.service.RestaurantService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,6 +20,7 @@ public class RestaurantController {
 
     private final RestaurantService restaurantService;
 
+    @Autowired
     public RestaurantController (RestaurantService restaurantService) {
         this.restaurantService = restaurantService;
     }
@@ -69,8 +69,4 @@ public class RestaurantController {
         restaurantService.deleteRestaurant(id);
         return new ResponseEntity<>(HttpStatus.OK);
     }
-
-
-
-
 }

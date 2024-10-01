@@ -12,12 +12,18 @@ import java.util.stream.Collectors;
 
 @Service
 public class DeliveryService {
-    @Autowired
-    private DeliveryRepo repo;
+
+    private final DeliveryRepo repo;
+
+    private final DeliveryConverter deliveryConverter;
 
     @Autowired
-    private DeliveryConverter deliveryConverter;
+    public DeliveryService(DeliveryRepo repo, DeliveryConverter deliveryConverter) {
+        this.repo = repo;
+        this.deliveryConverter = deliveryConverter;
+    }
 
+    @Transactional(readOnly = true)
     public List<DeliveryDto> getDeliveryList(Long driverId) {
         List<DeliveryDto> deliveries = repo.findByDriverId(driverId).stream()
                 .map(delivery -> deliveryConverter.convertToModel(delivery, new DeliveryDto()))
@@ -26,6 +32,7 @@ public class DeliveryService {
         return deliveries;
     }
 
+    @Transactional(readOnly = true)
     public DeliveryDto getCurrentDelivery(Long driverId) {
         Delivery.DeliveryStatus[] deliveryStatuses = {
                 Delivery.DeliveryStatus.PICKED_UP,
@@ -59,12 +66,14 @@ public class DeliveryService {
         return repo.save(delivery);
     }
 
+    @Transactional(readOnly = true)
     public Delivery getDeliveryById(Long deliveryId) {
         return this.repo.findById(deliveryId).orElseThrow(() ->
                     new NullPointerException("delivery not found")
         );
     }
 
+    @Transactional(readOnly = true)
     public Delivery getDeliveryByTrackingId(String trackingId) {
         Delivery delivery = repo.findByTrackingNumber(trackingId);
 

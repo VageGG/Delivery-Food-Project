@@ -5,6 +5,7 @@ import com.fooddeliveryfinalproject.entity.Admin;
 import com.fooddeliveryfinalproject.entity.User;
 import com.fooddeliveryfinalproject.model.AdminDto;
 import com.fooddeliveryfinalproject.repository.AdminRepo;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.bcrypt.BCrypt;
@@ -21,6 +22,7 @@ public class AdminService implements ValidUser<AdminDto> {
 
     private final AdminConverter adminConverter;
 
+    @Autowired
     public AdminService(AdminRepo adminRepo, AdminConverter adminConverter) {
         this.adminRepo = adminRepo;
         this.adminConverter = adminConverter;

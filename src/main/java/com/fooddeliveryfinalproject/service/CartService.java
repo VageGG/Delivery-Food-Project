@@ -11,17 +11,25 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class CartService {
-    @Autowired
-    private CartRepo repo;
+
+    private final CartRepo repo;
+
+    private final MenuItemService menuItemService;
+
+    private final CartConverter cartConverter;
+
+    private final MenuItemConverter menuItemConverter;
 
     @Autowired
-    private MenuItemService menuItemService;
-
-    @Autowired
-    private CartConverter cartConverter;
-
-    @Autowired
-    private MenuItemConverter menuItemConverter;
+    public CartService(CartRepo repo,
+                       MenuItemService menuItemService,
+                       CartConverter cartConverter,
+                       MenuItemConverter menuItemConverter) {
+        this.repo = repo;
+        this.menuItemService = menuItemService;
+        this.cartConverter = cartConverter;
+        this.menuItemConverter = menuItemConverter;
+    }
 
     @Transactional
     public Cart createOrderCart(Cart cart) {

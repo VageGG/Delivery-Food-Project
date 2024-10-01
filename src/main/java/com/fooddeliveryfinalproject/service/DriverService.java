@@ -5,15 +5,15 @@ import com.fooddeliveryfinalproject.converter.DriverConverter;
 import com.fooddeliveryfinalproject.entity.Driver;
 import com.fooddeliveryfinalproject.entity.RegistrationStatus;
 import com.fooddeliveryfinalproject.entity.User;
-import com.fooddeliveryfinalproject.model.CustomerDto;
 import com.fooddeliveryfinalproject.model.DriverDto;
 import com.fooddeliveryfinalproject.repository.DriverRepo;
 import jakarta.persistence.EntityNotFoundException;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.security.NoSuchAlgorithmException;
 import java.util.List;
@@ -27,6 +27,7 @@ public class DriverService implements ValidUser<DriverDto> {
 
     private final DriverConverter driverConverter;
 
+    @Autowired
     public DriverService(DriverRepo driverRepo, DriverConverter driverConverter) {
         this.driverRepo = driverRepo;
         this.driverConverter = driverConverter;
