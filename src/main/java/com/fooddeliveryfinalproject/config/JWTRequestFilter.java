@@ -23,14 +23,20 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 @Component
 public class JWTRequestFilter extends OncePerRequestFilter {
 
-    @Autowired
-    private UserDetailsService userDetailsService;
+    private final UserDetailsService userDetailsService;
+
+    private final JWTUtilService jwtUtil;
+
+    private final BlacklistService blacklistService;
 
     @Autowired
-    private JWTUtilService jwtUtil;
-
-    @Autowired
-    private BlacklistService blacklistService;
+    public JWTRequestFilter(UserDetailsService userDetailsService,
+                            JWTUtilService jwtUtil,
+                            BlacklistService blacklistService) {
+        this.userDetailsService = userDetailsService;
+        this.jwtUtil = jwtUtil;
+        this.blacklistService = blacklistService;
+    }
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain)

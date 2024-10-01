@@ -6,6 +6,7 @@ import com.fooddeliveryfinalproject.entity.Customer;
 import com.fooddeliveryfinalproject.entity.User;
 import com.fooddeliveryfinalproject.model.*;
 import com.fooddeliveryfinalproject.repository.CustomerRepo;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.bcrypt.BCrypt;
@@ -26,8 +27,7 @@ public class CustomerService implements ValidUser<CustomerDto> {
 
     private final AddressService addressService;
 
-
-
+    @Autowired
     public CustomerService(CustomerRepo customerRepo,
                            CustomerConverter customerConverter,
                            AddressService addressService,

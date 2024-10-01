@@ -18,11 +18,16 @@ import java.util.List;
 @RestController
 @RequestMapping("/order")
 public class OrderController {
-    @Autowired
-    private OrderService orderService;
+
+    private final OrderService orderService;
+
+    private final OrderConverter orderConverter;
 
     @Autowired
-    private OrderConverter orderConverter;
+    public OrderController(OrderService orderService, OrderConverter orderConverter) {
+        this.orderService = orderService;
+        this.orderConverter = orderConverter;
+    }
 
     @PostMapping("/create")
     @ResponseStatus(HttpStatus.CREATED)
@@ -68,7 +73,4 @@ public class OrderController {
     public OrderDto takeOrder(@PathVariable Long orderId) {
         return orderConverter.convertToModel(orderService.takeOrder(orderId), new OrderDto());
     }
-
-
-
 }

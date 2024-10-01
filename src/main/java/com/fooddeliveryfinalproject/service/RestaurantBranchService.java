@@ -56,12 +56,14 @@ public class RestaurantBranchService {
         this.menuItemConverter = menuItemConverter;
     }
 
+    @Transactional(readOnly = true)
     public RestaurantBranchDto getRestaurantBranch(Long id) {
         return restaurantBranchConverter.convertToModel(restaurantBranchRepo.findById(id)
                         .orElseThrow(() -> new RuntimeException("Could not find RestaurantBranch")),
                 new RestaurantBranchDto());
     }
 
+    @Transactional(readOnly = true)
     public Page<RestaurantBranchDto> getAllRestaurantBranches(Long restaurantId, Pageable pageable) {
         if (restaurantId == null) {
             throw new RuntimeException("Restaurant ID is required");
@@ -99,8 +101,6 @@ public class RestaurantBranchService {
         restaurantBranchRepo.deleteById(id);
     }
 
-
-    // Այս մեթոդը գրել այստեղ թե MenuCategoryService-ի մեջ
     @Transactional(readOnly = true)
     public List<MenuCategoryDto> getAllCategoriesByBranchId(Long branchId) {
 
@@ -116,20 +116,6 @@ public class RestaurantBranchService {
 
         return menuCategoryConverter.convertToModelList(menuCategories, MenuCategoryDto::new);
     }
-
-
-//    @Transactional(readOnly = true)
-//    public List<MenuItemDto> getMenuItemsByCategoryId(Long branchId, Long categoryId) {
-//
-//        List<MenuItem> menuItems = menuItemRepo.findByMenuCategoryIdAndRestaurantBranchId(categoryId, branchId);
-//
-//        if (menuItems.isEmpty()) {
-//            throw new RuntimeException("No menu items found for this branch and category");
-//        }
-//
-//        return menuItemConverter.convertToModelList(menuItems, MenuItemDto::new);
-//
-//    }
 
     @Transactional
     public void addMenuCategoryToBranch(Long branchId, MenuCategoryDto menuCategoryDto) {
@@ -161,6 +147,7 @@ public class RestaurantBranchService {
         menuCategoryRepo.delete(menuCategory);
     }
 
+    @Transactional
     public void addMenuItemToCategory(Long branchId, Long categoryId, MenuItemDto menuItemDto) {
 
         Menu menu = menuRepo.findByRestaurantBranch_RestBranchId(branchId);
@@ -177,6 +164,7 @@ public class RestaurantBranchService {
         menuItemRepo.save(menuItem);
     }
 
+    @Transactional
     public void deleteMenuItemFromCategory(Long branchId, Long categoryId, Long itemId) {
 
         Menu menu = menuRepo.findByRestaurantBranch_RestBranchId(branchId);

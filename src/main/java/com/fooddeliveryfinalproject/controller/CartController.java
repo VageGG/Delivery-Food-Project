@@ -12,11 +12,17 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/cart")
 public class CartController {
-    @Autowired
-    private CartService cartService;
+
+    private final CartService cartService;
+
+
+    private final CartConverter cartConverter;
 
     @Autowired
-    private CartConverter cartConverter;
+    public CartController(CartService cartService, CartConverter cartConverter) {
+        this.cartService = cartService;
+        this.cartConverter = cartConverter;
+    }
 
     @GetMapping("/")
     @ResponseStatus(HttpStatus.CREATED)

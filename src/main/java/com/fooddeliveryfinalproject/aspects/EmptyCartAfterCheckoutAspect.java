@@ -25,7 +25,7 @@ public class EmptyCartAfterCheckoutAspect {
     @Autowired
     private PaypalPaymentController paypalPaymentController;
 
-    @AfterReturning("com.fooddeliveryfinalproject.controller.executePayment()")
+    //@AfterReturning("com.fooddeliveryfinalproject.controller.executePayment()")
     public void emptyCart(JoinPoint joinPoint) {
         System.out.println("================ emptying cart =======================");
         long orderId = paypalPaymentController.getId();

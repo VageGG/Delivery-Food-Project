@@ -19,11 +19,11 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping(value ="/login")
 public class LoginController {
 
-    private AuthenticationManager authenticationManager;
+    private final AuthenticationManager authenticationManager;
 
-    private JWTUtilService jwtUtilService;
+    private final JWTUtilService jwtUtilService;
 
-    private UserService userService;
+    private final UserService userService;
 
     @PostMapping
     public ResponseEntity<?> login(@RequestBody AllUserDto dto) throws Exception {

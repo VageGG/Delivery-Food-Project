@@ -1,12 +1,11 @@
 package com.fooddeliveryfinalproject.controller;
 
 import com.fooddeliveryfinalproject.service.OrderService;
+import com.fooddeliveryfinalproject.service.PaypalPaymentService;
 import com.paypal.api.payments.Links;
 import com.paypal.api.payments.Payment;
 import com.paypal.base.rest.PayPalRESTException;
-import com.fooddeliveryfinalproject.service.PaypalPaymentService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
@@ -16,13 +15,14 @@ import org.springframework.web.servlet.view.RedirectView;
 @Controller
 @RequiredArgsConstructor
 public class PaypalPaymentController {
-    @Autowired
-    private PaypalPaymentService paypalService;
 
-    @Autowired
-    private OrderService orderService;
+    private final PaypalPaymentService paypalService;
+
+    private final OrderService orderService;
 
     private long id;
+
+
 
     @PostMapping("/order/{orderId}/pay")
     @ResponseStatus(HttpStatus.TEMPORARY_REDIRECT)

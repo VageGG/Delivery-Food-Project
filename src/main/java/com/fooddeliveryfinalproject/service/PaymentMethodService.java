@@ -6,6 +6,7 @@ import com.fooddeliveryfinalproject.entity.PaymentMethod;
 import com.fooddeliveryfinalproject.model.PaymentMethodDto;
 import com.fooddeliveryfinalproject.repository.CustomerRepo;
 import com.fooddeliveryfinalproject.repository.PaymentMethodRepo;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -13,8 +14,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
-
-import static org.springframework.data.repository.util.ClassUtils.ifPresent;
 
 @Service
 public class PaymentMethodService {
@@ -25,6 +24,7 @@ public class PaymentMethodService {
 
     private final CustomerRepo customerRepo;
 
+    @Autowired
     public PaymentMethodService(PaymentMethodRepo paymentMethodRepo,
                                 PaymentMethodConverter paymentMethodConverter,
                                 CustomerRepo customerRepo) {

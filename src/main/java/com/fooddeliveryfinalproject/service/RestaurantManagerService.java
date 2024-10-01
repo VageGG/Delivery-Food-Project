@@ -1,12 +1,9 @@
 package com.fooddeliveryfinalproject.service;
 
 import com.fooddeliveryfinalproject.converter.RestManagerConverter;
-import com.fooddeliveryfinalproject.entity.Driver;
 import com.fooddeliveryfinalproject.entity.RegistrationStatus;
 import com.fooddeliveryfinalproject.entity.RestaurantManager;
 import com.fooddeliveryfinalproject.entity.User;
-import com.fooddeliveryfinalproject.model.CustomerDto;
-import com.fooddeliveryfinalproject.model.DriverDto;
 import com.fooddeliveryfinalproject.model.RestaurantManagerDto;
 import com.fooddeliveryfinalproject.repository.RestaurantManagerRepo;
 import jakarta.persistence.EntityNotFoundException;

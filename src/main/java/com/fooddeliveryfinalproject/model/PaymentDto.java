@@ -4,6 +4,8 @@ import com.fooddeliveryfinalproject.entity.Payment;
 import lombok.*;
 
 @Data
+@AllArgsConstructor
+@NoArgsConstructor
 public class PaymentDto {
 
     private Long paymentId;

@@ -12,10 +12,16 @@ import java.util.stream.Collectors;
 
 @Service
 public class MenuItemService {
+
+    private final MenuItemRepo repo;
+
+    private final MenuItemConverter converter;
+
     @Autowired
-    private MenuItemRepo repo;
-    @Autowired
-    private MenuItemConverter converter;
+    public MenuItemService(MenuItemRepo repo, MenuItemConverter converter) {
+        this.repo = repo;
+        this.converter = converter;
+    }
 
     @Transactional
     public MenuItemDto createMenuItem(MenuItemDto menuItemDto) {
@@ -23,6 +29,7 @@ public class MenuItemService {
         return this.converter.convertToModel(this.repo.save(menuItem), new MenuItemDto());
     }
 
+    @Transactional(readOnly = true)
     public MenuItemDto getMenuItemById(Long id) {
         return this.converter.convertToModel
                 (
@@ -31,6 +38,7 @@ public class MenuItemService {
                 );
     }
 
+    @Transactional(readOnly = true)
     public List<MenuItemDto> getAllMenuItems() {
         return this.repo.findAll().stream()
                 .map(menuItems -> this.converter.convertToModel(menuItems, new MenuItemDto()))

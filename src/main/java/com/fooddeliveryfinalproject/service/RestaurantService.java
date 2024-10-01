@@ -4,14 +4,13 @@ import com.fooddeliveryfinalproject.converter.RestaurantConverter;
 import com.fooddeliveryfinalproject.entity.Restaurant;
 import com.fooddeliveryfinalproject.model.RestaurantDto;
 import com.fooddeliveryfinalproject.repository.RestaurantRepo;
-import jakarta.transaction.Transactional;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 public class RestaurantService {
@@ -21,12 +20,14 @@ public class RestaurantService {
     private final RestaurantConverter restaurantConverter;
 
 
+    @Autowired
     public RestaurantService(RestaurantRepo restaurantRepo, RestaurantConverter restaurantConverter) {
         this.restaurantRepo = restaurantRepo;
         this.restaurantConverter = restaurantConverter;
     }
 
 
+    @Transactional(readOnly = true)
     public RestaurantDto getRestaurantById(Long id) {
         return restaurantConverter.convertToModel(restaurantRepo.findById(id)
                 .orElseThrow(()->new RuntimeException("Could not find Restaurant")),
@@ -34,11 +35,13 @@ public class RestaurantService {
     }
 
 
+    @Transactional(readOnly = true)
     public Page<RestaurantDto> getAllRestaurants(Pageable pageable) {
         return restaurantRepo.findAll(pageable).map(restaurants ->
                 restaurantConverter.convertToModel(restaurants, new RestaurantDto()));
     }
 
+    @Transactional
     public List<RestaurantDto> searchRestaurantsByName(String name) {
 
         List<Restaurant> restaurants = restaurantRepo.findByNameContainingIgnoreCase(name);
@@ -61,7 +64,6 @@ public class RestaurantService {
 
     @Transactional
     public void deleteRestaurant (Long id){
-
         restaurantRepo.deleteById(id);
     }
 

@@ -1,11 +1,12 @@
 package com.fooddeliveryfinalproject.model;
 
-import com.fooddeliveryfinalproject.entity.CustomerAddress;
+import lombok.AllArgsConstructor;
 import lombok.Data;
-
-import java.util.List;
+import lombok.NoArgsConstructor;
 
 @Data
+@AllArgsConstructor
+@NoArgsConstructor
 public class AddressDto {
 
     private Long id;

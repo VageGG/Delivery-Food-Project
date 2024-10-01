@@ -8,8 +8,13 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class ReviewService {
+
+    private final ReviewRepo repo;
+
     @Autowired
-    private ReviewRepo repo;
+    public ReviewService(ReviewRepo repo) {
+        this.repo = repo;
+    }
 
     @Transactional
     public Review createReview(Review review) {
@@ -23,6 +28,7 @@ public class ReviewService {
         return this.repo.save(review);
     }
 
+    @Transactional(readOnly = true)
     public Review getReviewById(long id) {
         Review review = this.repo.getReferenceById(id);
         if (review == null) {

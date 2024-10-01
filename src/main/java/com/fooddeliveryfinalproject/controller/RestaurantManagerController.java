@@ -1,16 +1,13 @@
 package com.fooddeliveryfinalproject.controller;
 
 import com.fooddeliveryfinalproject.entity.User;
-import com.fooddeliveryfinalproject.model.DriverDto;
 import com.fooddeliveryfinalproject.model.RestaurantManagerDto;
-import com.fooddeliveryfinalproject.service.JWTUtilService;
 import com.fooddeliveryfinalproject.service.RestaurantManagerService;
-import com.fooddeliveryfinalproject.service.UserService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -19,6 +16,7 @@ import java.util.List;
 @RequestMapping(value = "/managers")
 public class RestaurantManagerController extends RegisterImplController<RestaurantManagerService, RestaurantManagerDto> {
 
+    @Autowired
     public RestaurantManagerController(RestaurantManagerService service) {
         super(service);
     }

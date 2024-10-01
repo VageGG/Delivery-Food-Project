@@ -1,11 +1,13 @@
 package com.fooddeliveryfinalproject.model;
 
-import com.fooddeliveryfinalproject.entity.*;
-import lombok.*;
-
-import java.util.List;
+import com.fooddeliveryfinalproject.entity.Order;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
+@AllArgsConstructor
+@NoArgsConstructor
 public class OrderDto {
 
     private Long orderId;

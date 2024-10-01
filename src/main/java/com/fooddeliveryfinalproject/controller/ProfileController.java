@@ -17,8 +17,12 @@ import java.util.List;
 @RequestMapping("/profile")
 public class ProfileController {
 
+    private final UserService userService;
+
     @Autowired
-    private UserService userService;
+    public ProfileController(UserService userService) {
+        this.userService = userService;
+    }
 
     @GetMapping
     @PreAuthorize("hasAnyRole('CUSTOMER', 'DRIVER', 'RESTAURANT_MANAGER', 'ADMIN')")
