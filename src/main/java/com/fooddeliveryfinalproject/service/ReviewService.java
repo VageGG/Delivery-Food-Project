@@ -12,7 +12,7 @@ public class ReviewService {
     private ReviewRepo repo;
 
     @Transactional
-    public Review createReview(Review review) { //checks later for driver, restaurant...
+    public Review createReview(Review review) {
         if (review.getRating() > 5 || review.getRating() < 1) {
             throw new RuntimeException("rating must be between 1 and 5");
         }
