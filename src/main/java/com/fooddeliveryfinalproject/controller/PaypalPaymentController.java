@@ -1,6 +1,5 @@
 package com.fooddeliveryfinalproject.controller;
 
-import com.fooddeliveryfinalproject.service.CartService;
 import com.fooddeliveryfinalproject.service.OrderService;
 import com.paypal.api.payments.Links;
 import com.paypal.api.payments.Payment;
@@ -8,10 +7,10 @@ import com.paypal.base.rest.PayPalRESTException;
 import com.fooddeliveryfinalproject.service.PaypalPaymentService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.view.RedirectView;
 
 @Controller
@@ -19,15 +18,22 @@ import org.springframework.web.servlet.view.RedirectView;
 public class PaypalPaymentController {
     @Autowired
     private PaypalPaymentService paypalService;
+
     @Autowired
     private OrderService orderService;
 
-    @PostMapping("/paypal/payment/create")
-    public RedirectView createPayment(@RequestParam long orderId) throws PayPalRESTException {
+    private long id;
+
+    @PostMapping("/order/{orderId}/pay")
+    @ResponseStatus(HttpStatus.TEMPORARY_REDIRECT)
+    @PreAuthorize("hasRole('CUSTOMER')")
+    public RedirectView createPayment(@PathVariable long orderId) throws PayPalRESTException {
         double total = this.orderService.calculateTotal(orderId);
 
+        id = orderId;
+
         String cancelUrl = "http://localhost:8081/paypal/payment/cancel";
-        String successUrl = "http://localhost:8081/paypal/payment/success";
+        String successUrl = "http://localhost:8081/paypal/payment/execute";
 
         Payment payment = paypalService.createPayment (
                 total,
@@ -49,7 +55,7 @@ public class PaypalPaymentController {
         return new RedirectView("/payment/error");
     }
 
-    @GetMapping("/paypal/payment/success")
+    @GetMapping("/paypal/payment/execute")
     public String executePayment (
         @RequestParam("paymentId") String paymentId,
         @RequestParam("PayerID") String payerId
@@ -75,5 +81,7 @@ public class PaypalPaymentController {
         return "cancel";
     }
 
-
+    public long getId() {
+        return id;
+    }
 }
