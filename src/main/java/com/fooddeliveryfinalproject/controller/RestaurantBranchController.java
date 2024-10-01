@@ -19,7 +19,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @RestController
-@RequestMapping("/restaurantBranch")
+@RequestMapping("/restaurant-branch")
 public class RestaurantBranchController {
 
     private final MenuService menuService;
@@ -36,7 +36,7 @@ public class RestaurantBranchController {
     }
 
 
-    @GetMapping("/{restaurantBranchId}/getMenu")
+    @GetMapping("/menu/{restaurantBranchId}")
     public ResponseEntity<MenuDto> getMenuByRestaurantBranchId(@PathVariable("restaurantBranchId") Long restaurantBranchId) {
         MenuDto menuDto = menuService.getMenuByRestaurantBranchId(restaurantBranchId);
         if (menuDto != null) {
@@ -47,7 +47,7 @@ public class RestaurantBranchController {
     }
 
 
-    @GetMapping("/getCategories/{branchId}")
+    @GetMapping("/categories/{branchId}")
     public ResponseEntity<List<MenuCategoryDto>> getCategoriesByBranchId(@PathVariable("branchId") Long branchId){
         List<MenuCategoryDto> categories = menuCategoryService.getCategoriesByBranchId(branchId);
         return ResponseEntity.ok(categories);
@@ -93,29 +93,33 @@ public class RestaurantBranchController {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
-    @GetMapping("/{branchId}/get-all-categories")
+    @GetMapping("/categories/{branchId}")
     public List<MenuCategoryDto> getAllMenuCategoriesByBranchId(@PathVariable Long branchId) {
         return restaurantBranchService.getAllCategoriesByBranchId(branchId);
     }
 
-    @PostMapping("/{branchId}/add-category")
+    @PreAuthorize("hasRole('RESTAURANT_MANAGER')")
+    @PostMapping("/add-category/{branchId}")
     public ResponseEntity<HttpStatus> addMenuCategoryToBranch(@PathVariable Long branchId, @RequestBody MenuCategoryDto menuCategoryDto) {
         restaurantBranchService.addMenuCategoryToBranch(branchId, menuCategoryDto);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
+    @PreAuthorize("hasRole('RESTAURANT_MANAGER')")
     @DeleteMapping("/{branchId}/delete-category/{categoryId}")
     public ResponseEntity<HttpStatus> deleteMenuCategoryFromBranch(@PathVariable("branchId") Long branchId, @PathVariable("categoryId") Long categoryId) {
         restaurantBranchService.deleteMenuCategoryFromBranch(branchId, categoryId);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
+    @PreAuthorize("hasRole('RESTAURANT_MANAGER')")
     @PostMapping("/{branchId}/add-menu-item/{categoryId}")
     public ResponseEntity<HttpStatus> addMenuItemToCategory(@PathVariable Long branchId, @PathVariable Long categoryId, @RequestBody MenuItemDto menuItemDto) {
         restaurantBranchService.addMenuItemToCategory(branchId, categoryId, menuItemDto);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
+    @PreAuthorize("hasRole('RESTAURANT_MANAGER')")
     @DeleteMapping("/{branchId}/delete-menu-item/{categoryId}/{itemId}")
     public ResponseEntity<HttpStatus> deleteMenuItemFromCategory(@PathVariable("branchId") Long branchId,
                                                                  @PathVariable("categoryId") Long categoryId,

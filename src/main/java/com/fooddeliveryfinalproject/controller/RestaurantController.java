@@ -40,7 +40,7 @@ public class RestaurantController {
 
     @GetMapping("/search")
     public ResponseEntity<List<RestaurantDto>> searchRestaurantsByName(
-            @RequestParam String name) {
+            @RequestBody String name) {
         List<RestaurantDto> restaurantDtos = restaurantService.searchRestaurantsByName(name);
         return new ResponseEntity<>(restaurantDtos, HttpStatus.OK);
     }
@@ -49,21 +49,21 @@ public class RestaurantController {
         return ResponseEntity.ok(restaurantService.getRestaurantById(id));
     }
 
-    @PreAuthorize("hasRole('ADMIN')")
-    @GetMapping("/create")
+    @PreAuthorize("hasAnyRole('ADMIN','RESTAURANT_MANAGER')")
+    @PostMapping("/create")
     public ResponseEntity<HttpStatus> createRestaurant(@RequestBody RestaurantDto restaurantDto) {
         restaurantService.createRestaurant(restaurantDto);
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasAnyRole('ADMIN','RESTAURANT_MANAGER')")
     @PutMapping("/update/{id}")
     public ResponseEntity<HttpStatus> updateRestaurant(@PathVariable("id") Long id, @RequestBody RestaurantDto restaurantDto) {
         restaurantService.updateRestaurant(id, restaurantDto);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasAnyRole('ADMIN','RESTAURANT_MANAGER')")
     @DeleteMapping("/delete/{id}")
     public ResponseEntity<HttpStatus> deleteRestaurant(@PathVariable("id") Long id) {
         restaurantService.deleteRestaurant(id);
