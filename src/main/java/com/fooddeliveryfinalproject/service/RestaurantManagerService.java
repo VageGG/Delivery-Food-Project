@@ -52,7 +52,7 @@ public class RestaurantManagerService implements ValidUser<RestaurantManagerDto>
     @Override
     @Transactional
     public void addUser(RestaurantManagerDto restaurantManagerDto) throws NoSuchAlgorithmException {
-        Optional<RestaurantManager> existingUser = restaurantManagerRepo.findByUsername(restaurantManagerDto.getEmail());
+        Optional<RestaurantManager> existingUser = restaurantManagerRepo.findByUsername(restaurantManagerDto.getUsername());
         if (existingUser.isPresent()) {
             throw new RuntimeException("Email has already been used");
         }

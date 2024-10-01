@@ -185,28 +185,4 @@ class PaymentMethodServiceTest {
         assertFalse(result.isPresent());
     }
 
-//    @Test
-//    void deletePaymentMethod_ShouldDeleteIfExists() {
-//        // Создание клиента и метода оплаты
-//        Customer customer = new Customer();
-//        PaymentMethod paymentMethod = new PaymentMethod();
-//        paymentMethod.setId(1L); // Устанавливаем ID
-//        paymentMethod.setCustomer(customer); // Устанавливаем связь с клиентом
-//
-//        // Добавляем метод оплаты в список методов клиента
-//        customer.setPaymentMethods(Collections.singletonList(paymentMethod));
-//
-//        // Настройка мока для customerRepo
-//        when(customerRepo.findByUsername("testUser")).thenReturn(Optional.of(customer));
-//
-//        // Настройка мока для paymentMethodRepo
-//        doNothing().when(paymentMethodRepo).delete(paymentMethod);
-//
-//        // Вызов метода удаления
-//        paymentMethodService.deletePaymentMethod("testUser", 1L);
-//
-//        // Проверка, что delete был вызван
-//        verify(paymentMethodRepo, times(1)).delete(paymentMethod);
-//    }
-
 }
