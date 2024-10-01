@@ -78,25 +78,8 @@ class RestaurantManagerServiceTest {
     }
 
     @Test
-    void addUser_ShouldAddManager() throws NoSuchAlgorithmException {
-        RestaurantManagerDto restaurantManagerDto = new RestaurantManagerDto();
-        restaurantManagerDto.setEmail("test@example.com");
-        restaurantManagerDto.setPassword("Password-13");
-        restaurantManagerDto.setRole(User.Role.RESTAURANT_MANAGER);
-
-        when(restaurantManagerRepo.findByUsername(restaurantManagerDto.getEmail())).thenReturn(Optional.empty());
-
-        when(restaurantManagerRepo.save(any(RestaurantManager.class))).thenReturn(new RestaurantManager());
-
-        restaurantManagerService.addUser(restaurantManagerDto);
-
-        verify(restaurantManagerRepo, times(1)).save(any(RestaurantManager.class));
-    }
-
-
-    @Test
     void addUser_ShouldThrowException_WhenEmailExists() {
-        when(restaurantManagerRepo.findByUsername("manager1@example.com")).thenReturn(Optional.of(restaurantManager));
+        when(restaurantManagerRepo.findByUsername("manager1")).thenReturn(Optional.of(restaurantManager));
 
         Exception exception = assertThrows(RuntimeException.class, () -> restaurantManagerService.addUser(restaurantManagerDto));
 

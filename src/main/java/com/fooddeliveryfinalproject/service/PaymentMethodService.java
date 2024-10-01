@@ -100,7 +100,7 @@ public class PaymentMethodService {
         return customerRepo.findByUsername(username)
                 .flatMap(customer -> customer.getPaymentMethods().stream()
                         .map(pm -> paymentMethodConverter.convertToModel(pm, new PaymentMethodDto()))
-                        .filter(pm -> pm.getId().equals(paymentMethodId))
+                        .filter(pmDto -> pmDto != null && pmDto.getId().equals(paymentMethodId))
                         .findFirst());
     }
 
@@ -119,9 +119,13 @@ public class PaymentMethodService {
     @Transactional
     public void deletePaymentMethod(String username, Long paymentMethodId) {
         Optional<PaymentMethodDto> paymentMethodDto = getPaymentMethods(username, paymentMethodId);
-        PaymentMethod paymentMethod = paymentMethodConverter.convertToEntity(paymentMethodDto.get(), new PaymentMethod());
+
         if (paymentMethodDto.isPresent()) {
+            PaymentMethod paymentMethod = paymentMethodConverter.convertToEntity(paymentMethodDto.get(), new PaymentMethod());
+
             paymentMethodRepo.delete(paymentMethod);
+        } else {
+            throw new IllegalArgumentException("Payment method not found for ID: " + paymentMethodId);
         }
     }
 }
