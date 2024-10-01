@@ -13,5 +13,5 @@ import java.util.List;
 @Repository
 public interface RestaurantBranchRepo extends JpaRepository<RestaurantBranch, Long> {
 
-    Page<RestaurantBranch> findAllByRestaurantId(Long restaurantId, Pageable pageable);
+    Page<RestaurantBranch> findAllByRestaurant_RestId(Long restaurantId, Pageable pageable);
 }

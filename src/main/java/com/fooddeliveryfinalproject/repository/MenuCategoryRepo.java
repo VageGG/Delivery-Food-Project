@@ -12,5 +12,5 @@ import java.util.Optional;
 public interface MenuCategoryRepo extends JpaRepository<MenuCategory, Long> {
     List<MenuCategory> findAllByMenu_RestaurantBranch_RestBranchId(Long branchId);
 
-    Optional<MenuCategory> findByIdAndMenu(Long categoryId, Menu menu);
+    Optional<MenuCategory> findByCategoryIdAndMenu(Long categoryId, Menu menu);
 }

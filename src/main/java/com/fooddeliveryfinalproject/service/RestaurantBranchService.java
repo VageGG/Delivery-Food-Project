@@ -67,7 +67,7 @@ public class RestaurantBranchService {
             throw new RuntimeException("Restaurant ID is required");
         }
 
-        Page<RestaurantBranch> branches = restaurantBranchRepo.findAllByRestaurantId(restaurantId, pageable);
+        Page<RestaurantBranch> branches = restaurantBranchRepo.findAllByRestaurant_RestId(restaurantId, pageable);
         return branches.map(restaurantBranch -> restaurantBranchConverter.convertToModel(restaurantBranch, new RestaurantBranchDto()));
     }
 
@@ -134,7 +134,7 @@ public class RestaurantBranchService {
     @Transactional
     public void addMenuCategoryToBranch(Long branchId, MenuCategoryDto menuCategoryDto) {
 
-        Menu menu = menuRepo.findByRestaurantBranchId(branchId);
+        Menu menu = menuRepo.findByRestaurantBranch_RestBranchId(branchId);
 
         if (menu == null) {
             throw new RuntimeException("No menu found for branch with ID " + branchId);
@@ -149,13 +149,13 @@ public class RestaurantBranchService {
     @Transactional
     public void deleteMenuCategoryFromBranch(Long branchId, Long categoryId) {
 
-        Menu menu = menuRepo.findByRestaurantBranchId(branchId);
+        Menu menu = menuRepo.findByRestaurantBranch_RestBranchId(branchId);
 
         if (menu == null) {
             throw new RuntimeException("No menu found for branch with ID " + branchId);
         }
 
-        MenuCategory menuCategory = menuCategoryRepo.findByIdAndMenu(categoryId, menu)
+        MenuCategory menuCategory = menuCategoryRepo.findByCategoryIdAndMenu(categoryId, menu)
                 .orElseThrow(() -> new RuntimeException("Menu Category with ID " + categoryId + " not found"));
 
         menuCategoryRepo.delete(menuCategory);
@@ -163,11 +163,11 @@ public class RestaurantBranchService {
 
     public void addMenuItemToCategory(Long branchId, Long categoryId, MenuItemDto menuItemDto) {
 
-        Menu menu = menuRepo.findByRestaurantBranchId(branchId);
+        Menu menu = menuRepo.findByRestaurantBranch_RestBranchId(branchId);
         if (menu == null) {
             throw new RuntimeException("No menu found for branch with ID " + branchId);
         }
-        MenuCategory menuCategory = menuCategoryRepo.findByIdAndMenu(categoryId, menu)
+        MenuCategory menuCategory = menuCategoryRepo.findByCategoryIdAndMenu(categoryId, menu)
                 .orElseThrow(() -> new RuntimeException("Menu Category with ID " + categoryId + " not found"));
 
         MenuItem menuItem = menuItemConverter.convertToEntity(menuItemDto,new MenuItem());
@@ -179,15 +179,15 @@ public class RestaurantBranchService {
 
     public void deleteMenuItemFromCategory(Long branchId, Long categoryId, Long itemId) {
 
-        Menu menu = menuRepo.findByRestaurantBranchId(branchId);
+        Menu menu = menuRepo.findByRestaurantBranch_RestBranchId(branchId);
         if (menu == null) {
             throw new RuntimeException("No menu found for branch with ID " + branchId);
         }
 
-        MenuCategory menuCategory = menuCategoryRepo.findByIdAndMenu(categoryId, menu)
+        MenuCategory menuCategory = menuCategoryRepo.findByCategoryIdAndMenu(categoryId, menu)
                 .orElseThrow(() -> new RuntimeException("Menu Category with ID " + categoryId + " not found"));
 
-        MenuItem menuItem = menuItemRepo.findByIdAndMenuCategory(itemId, menuCategory)
+        MenuItem menuItem = menuItemRepo.findByMenuItemIdAndMenuCategory(itemId, menuCategory)
                 .orElseThrow(() -> new RuntimeException("Menu Item with ID " + itemId + " not found"));
 
         menuItemRepo.delete(menuItem);

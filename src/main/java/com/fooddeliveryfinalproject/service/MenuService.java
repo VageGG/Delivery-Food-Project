@@ -67,7 +67,7 @@ public class MenuService {
     }
 
     public MenuDto getMenuByRestaurantBranchId(Long restaurantBranchId) {
-        Menu menu = menuRepo.findByRestaurantBranchId(restaurantBranchId);
+        Menu menu = menuRepo.findByRestaurantBranch_RestBranchId(restaurantBranchId);
         return menuConverter.convertToModel(menu, new MenuDto());
     }
 
