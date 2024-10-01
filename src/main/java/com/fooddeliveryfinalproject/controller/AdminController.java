@@ -4,18 +4,16 @@ package com.fooddeliveryfinalproject.controller;
 import com.fooddeliveryfinalproject.entity.User;
 import com.fooddeliveryfinalproject.model.AdminDto;
 import com.fooddeliveryfinalproject.service.AdminService;
-import com.fooddeliveryfinalproject.service.JWTUtilService;
-import com.fooddeliveryfinalproject.service.UserService;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping(value = "/admins")
 public class AdminController extends RegisterImplController<AdminService, AdminDto> {
+
     public AdminController(AdminService service) {
         super(service);
     }
