@@ -22,10 +22,10 @@ public class Menu {
     private Long menuId;
 
     @OneToOne
-    @JoinColumn(name = "rest_branch_id")
+    @JoinColumn(name = "rest_branch_id",nullable = false)
     private RestaurantBranch restaurantBranch;
 
-    @OneToMany(mappedBy = "menu")
+    @OneToMany(mappedBy = "menu",cascade = CascadeType.ALL, orphanRemoval = true)
     private List<MenuCategory> menuCategories;
 }
 

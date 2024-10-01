@@ -1,10 +1,12 @@
 package com.fooddeliveryfinalproject.service;
 
+import com.fooddeliveryfinalproject.config.DeliveryFoodException;
 import com.fooddeliveryfinalproject.converter.MenuConverter;
 import com.fooddeliveryfinalproject.entity.Menu;
+import com.fooddeliveryfinalproject.entity.RestaurantBranch;
 import com.fooddeliveryfinalproject.model.MenuDto;
 import com.fooddeliveryfinalproject.repository.MenuRepo;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.fooddeliveryfinalproject.repository.RestaurantBranchRepo;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -14,42 +16,83 @@ import java.util.stream.Collectors;
 @Service
 public class MenuService {
 
-    @Autowired
-    private MenuRepo repo;
 
-    @Autowired
-    private MenuConverter converter;
+    private final MenuRepo menuRepo;
 
-    @Transactional
-    public MenuDto createMenu(MenuDto menuDto) {
-        Menu menu = this.converter.convertToEntity(menuDto, new Menu());
-        return this.converter.convertToModel(this.repo.save(menu), new MenuDto());
+    private final MenuConverter menuConverter;
+
+  //  private final RestaurantBranchRepo restaurantBranchRepo;
+
+
+
+    public MenuService(MenuRepo menuRepo,
+                       MenuConverter menuConverter
+     //                  RestaurantBranchRepo restaurantBranchRepo
+    ){
+
+        this.menuRepo = menuRepo;
+        this.menuConverter = menuConverter;
+   //     this.restaurantBranchRepo= restaurantBranchRepo;
     }
+
+//    @Transactional
+//    public MenuDto createMenu(MenuDto menuDto) {
+//        Menu menu = menuConverter.convertToEntity(menuDto, new Menu());
+//        return menuConverter.convertToModel(this.menuRepo.save(menu), new MenuDto());
+//    }
 
     public MenuDto getMenuById(Long id) {
-        return this.converter.convertToModel
-                (
-                        this.repo.findById(id).orElseThrow(() ->
-                                new RuntimeException("menu not found")), new MenuDto()
-                );
+        return menuConverter.convertToModel(
+                        menuRepo.findById(id).orElseThrow(() ->
+                                new DeliveryFoodException("menu not found")), new MenuDto());
     }
 
+
     public List<MenuDto> getAllMenus() {
-        return this.repo.findAll().stream()
-                .map(menus -> this.converter.convertToModel(menus, new MenuDto()))
+        return this.menuRepo.findAll().stream()
+                .map(menus -> menuConverter.convertToModel(menus, new MenuDto()))
                 .collect(Collectors.toList());
     }
 
-    @Transactional
-    public MenuDto updateMenu(MenuDto menuDto) {
-        getMenuById(menuDto.getId());
-        Menu menu = this.converter.convertToEntity(menuDto, new Menu());
-        return this.converter.convertToModel(this.repo.save(menu), new MenuDto());
-    }
+//    @Transactional
+//    public MenuDto updateMenu(MenuDto menuDto) {
+//        getMenuById(menuDto.getId());
+//        Menu menu = menuConverter.convertToEntity(menuDto, new Menu());
+//        return menuConverter.convertToModel(this.menuRepo.save(menu), new MenuDto());
+//    }
 
     @Transactional
     public void deleteMenu(long id) {
-        Menu menu = this.converter.convertToEntity(getMenuById(id), new Menu());
-        this.repo.delete(menu);
+        menuRepo.deleteById(id);
     }
+
+    public MenuDto getMenuByRestaurantBranchId(Long restaurantBranchId) {
+        Menu menu = menuRepo.findByRestaurantBranch_RestBranchId(restaurantBranchId);
+        return menuConverter.convertToModel(menu, new MenuDto());
+    }
+
+//    public Menu createMenu(Long restaurantBranchId, MenuDto menuDto) {
+//        RestaurantBranch restaurantBranch = restaurantBranchRepo.findById(restaurantBranchId)
+//                .orElseThrow(() -> new DeliveryFoodException("RestaurantBranch not found"));
+//
+//        Menu menu = menuConverter.convertToEntity(menuDto,new Menu());
+//        menu.setRestaurantBranch(restaurantBranch);
+//        return menuRepo.save(menu);
+//    }
+
+//    public void deleteMenuByRestaurantBranchId(Long restaurantBranchId) {
+//        menuRepo.deleteByRestaurantBranchId(restaurantBranchId);
+//    }
+
+//    public Menu updateMenu(Long restaurantBranchId, MenuDto menuDto) {
+//        Menu existingMenu = menuRepo.findByRestaurantBranchId(restaurantBranchId);
+//
+//        if (existingMenu == null) {
+//            throw new DeliveryFoodException("Menu not found for RestaurantBranch with ID " + restaurantBranchId);
+//        }
+//
+//        existingMenu.setMenuItems(menuDto.getMenuItems());
+//        return menuRepository.save(existingMenu);
+//    }
+
 }
