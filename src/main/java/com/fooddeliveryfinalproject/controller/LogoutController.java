@@ -17,14 +17,17 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/logout")
 public class LogoutController {
 
-    @Autowired
-    private JWTUtilService jwtUtil;
+    private final JWTUtilService jwtUtil;
+    private final BlacklistService blacklistService;
+    private final UserService userService;
 
     @Autowired
-    private BlacklistService blacklistService;
+    public LogoutController(JWTUtilService jwtUtil, BlacklistService blacklistService, UserService userService) {
+        this.jwtUtil = jwtUtil;
+        this.blacklistService = blacklistService;
+        this.userService = userService;
+    }
 
-    @Autowired
-    private UserService userService;
 
     @PostMapping
     @PreAuthorize("hasAnyRole('CUSTOMER', 'DRIVER', 'RESTAURANT_MANAGER', 'ADMIN')")
@@ -34,6 +37,10 @@ public class LogoutController {
 
         // Проверяем, что токен не пустой
         if (token != null) {
+
+            if (blacklistService.isBlacklisted(token)) {
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Token already invalidated");
+            }
             // Извлекаем имя пользователя из токена
             String username = jwtUtil.extractUsername(token);
 

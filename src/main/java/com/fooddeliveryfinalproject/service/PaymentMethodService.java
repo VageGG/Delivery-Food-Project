@@ -14,6 +14,8 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import static org.springframework.data.repository.util.ClassUtils.ifPresent;
+
 @Service
 public class PaymentMethodService {
 
@@ -72,46 +74,54 @@ public class PaymentMethodService {
     }
 
     @Transactional(readOnly = true)
-    public List<PaymentMethod> listPaymentMethods(String username) {
+    public List<PaymentMethodDto> listPaymentMethods(String username) {
         return customerRepo.findByUsername(username)
-                .map(Customer::getPaymentMethods)
+                .map(customer -> customer.getPaymentMethods().stream()
+                        .map(paymentMethod -> paymentMethodConverter.convertToModel(paymentMethod, new PaymentMethodDto()))
+                        .collect(Collectors.toList()))
                 .orElse(Collections.emptyList());
     }
 
     @Transactional
-    public Optional<PaymentMethod> createPaymentMethod(String username, PaymentMethodDto paymentMethodDto) {
+    public Optional<PaymentMethodDto> createPaymentMethod(String username, PaymentMethodDto paymentMethodDto) {
         Optional<Customer> customer = customerRepo.findByUsername(username);
         if (customer.isPresent()) {
             Customer cust = customer.get();
             PaymentMethod payment = paymentMethodConverter.convertToEntity(paymentMethodDto, new PaymentMethod());
             payment.setCustomer(cust);
-            return Optional.of(paymentMethodRepo.save(payment));
+            PaymentMethod savedPaymentMethod = paymentMethodRepo.save(payment);
+            return Optional.of(paymentMethodConverter.convertToModel(savedPaymentMethod, new PaymentMethodDto()));
         }
         return Optional.empty();
     }
 
     @Transactional(readOnly = true)
-    public Optional<PaymentMethod> getPaymentMethods(String username, Long paymentMethodId) {
+    public Optional<PaymentMethodDto> getPaymentMethods(String username, Long paymentMethodId) {
         return customerRepo.findByUsername(username)
                 .flatMap(customer -> customer.getPaymentMethods().stream()
+                        .map(pm -> paymentMethodConverter.convertToModel(pm, new PaymentMethodDto()))
                         .filter(pm -> pm.getId().equals(paymentMethodId))
                         .findFirst());
     }
 
     @Transactional
-    public Optional<PaymentMethod> updatePaymentMethod(String username, Long paymentMethodId, PaymentMethodDto updatedPaymentMethod) {
-        Optional<PaymentMethod> paymentMethodOptional = getPaymentMethods(username, paymentMethodId);
+    public Optional<PaymentMethodDto> updatePaymentMethod(String username, Long paymentMethodId, PaymentMethodDto updatedPaymentMethod) {
+        Optional<PaymentMethodDto> paymentMethodOptional = getPaymentMethods(username, paymentMethodId);
         if (paymentMethodOptional.isPresent()) {
-            PaymentMethod paymentMethod = paymentMethodOptional.get();
-            paymentMethod.setPaymentMethodType(updatedPaymentMethod.getPaymentMethodType());
-            paymentMethod.setDetails(updatedPaymentMethod.getDetails());
-            paymentMethodRepo.save(paymentMethod);
+            PaymentMethodDto paymentMethodDto = paymentMethodOptional.get();
+            paymentMethodDto.setPaymentMethodType(updatedPaymentMethod.getPaymentMethodType());
+            paymentMethodDto.setDetails(updatedPaymentMethod.getDetails());
+            paymentMethodRepo.save(paymentMethodConverter.convertToEntity(paymentMethodDto, new PaymentMethod()));
         }
         return paymentMethodOptional;
     }
 
     @Transactional
     public void deletePaymentMethod(String username, Long paymentMethodId) {
-        getPaymentMethods(username, paymentMethodId).ifPresent(paymentMethodRepo::delete);
+        Optional<PaymentMethodDto> paymentMethodDto = getPaymentMethods(username, paymentMethodId);
+        PaymentMethod paymentMethod = paymentMethodConverter.convertToEntity(paymentMethodDto.get(), new PaymentMethod());
+        if (paymentMethodDto.isPresent()) {
+            paymentMethodRepo.delete(paymentMethod);
+        }
     }
 }
