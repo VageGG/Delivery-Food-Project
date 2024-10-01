@@ -5,8 +5,11 @@ import com.fooddeliveryfinalproject.entity.Restaurant;
 import com.fooddeliveryfinalproject.model.RestaurantDto;
 import com.fooddeliveryfinalproject.repository.RestaurantRepo;
 import jakarta.transaction.Transactional;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -24,21 +27,22 @@ public class RestaurantService {
     }
 
 
-    public RestaurantDto getRestaurant(Long id) {
+    public RestaurantDto getRestaurantById(Long id) {
         return restaurantConverter.convertToModel(restaurantRepo.findById(id)
                 .orElseThrow(()->new RuntimeException("Could not find Restaurant")),
                 new RestaurantDto());
     }
 
 
-    public List<RestaurantDto> getAllRestaurants() {
-        return restaurantRepo.findAll().stream()
-                .map(restaurants -> restaurantConverter.convertToModel(restaurants, new RestaurantDto()))
-                .collect(Collectors.toList());
+    public Page<RestaurantDto> getAllRestaurants(Pageable pageable) {
+        return restaurantRepo.findAll(pageable).map(restaurants ->
+                restaurantConverter.convertToModel(restaurants, new RestaurantDto()));
     }
-    // addPoint search
-    public RestaurantDto searchRest(String name) {
-        return restaurantConverter.convertToModel(restaurantRepo.findByName(name), new RestaurantDto());
+
+    public List<RestaurantDto> searchRestaurantsByName(String name) {
+
+        List<Restaurant> restaurants = restaurantRepo.findByNameContainingIgnoreCase(name);
+        return restaurantConverter.convertToModelList(restaurants,RestaurantDto::new);
     }
 
     @Transactional
@@ -53,11 +57,11 @@ public class RestaurantService {
                 .orElseThrow(() -> new RuntimeException("Could not find Restaurant"));
         restaurantConverter.convertToEntity(restaurantDto, restaurantEntity);
         restaurantRepo.save(restaurantEntity);
-
     }
 
     @Transactional
     public void deleteRestaurant (Long id){
+
         restaurantRepo.deleteById(id);
     }
 
