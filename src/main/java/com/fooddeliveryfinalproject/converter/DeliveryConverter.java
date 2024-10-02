@@ -23,11 +23,8 @@ public class DeliveryConverter implements Converter<Delivery, DeliveryDto> {
     @Lazy
     private AddressConverter addressConverter;
 
-    private final DriverConverter driverConverter;
-
-    public DeliveryConverter(DriverConverter driverConverter) {
-        this.driverConverter = driverConverter;
-    }
+    @Autowired
+    private DriverConverter driverConverter;
 
     @Override
     public Delivery convertToEntity(DeliveryDto model, Delivery entity) {
