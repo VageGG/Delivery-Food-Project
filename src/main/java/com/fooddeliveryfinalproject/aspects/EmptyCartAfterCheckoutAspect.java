@@ -25,20 +25,27 @@ public class EmptyCartAfterCheckoutAspect {
     @Autowired
     private PaypalPaymentController paypalPaymentController;
 
-    //@AfterReturning("com.fooddeliveryfinalproject.controller.executePayment()")
+
+    @AfterReturning(pointcut = "execution(* com.fooddeliveryfinalproject.controller.PaypalPaymentController.executePayment(..))")
     public void emptyCart(JoinPoint joinPoint) {
         System.out.println("================ emptying cart =======================");
-        long orderId = paypalPaymentController.getId();
 
-        Cart cart = orderRepo.findById(orderId).get().getCustomer().getCart();
-        cart.getItems().clear();
+        try {
+            // Получаем orderId из параметров метода executePayment
+            Object[] args = joinPoint.getArgs();
+            long orderId = (Long) args[0];  // Если ваш метод принимает orderId как параметр
 
-//        for (CartItem cartItem : cart.getItems()) {
-//            cart.getItems().remove(cartItem);
-//        }
+            // Находим заказ и корзину покупателя
+            Cart cart = orderRepo.findById(orderId).get().getCustomer().getCart();
 
-        cartRepo.save(cart);
+            // Очищаем корзину
+            cart.getItems().clear();
+            cartRepo.save(cart);
 
-        System.out.println("===isCartEmpty==== " + cart.getItems().isEmpty());
+            System.out.println("===isCartEmpty==== " + cart.getItems().isEmpty());
+        } catch (Exception e) {
+            System.out.println("Error during cart emptying: " + e.getMessage());
+            throw e;
+        }
     }
 }
