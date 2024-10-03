@@ -3,10 +3,8 @@ package com.fooddeliveryfinalproject.service;
 import com.fooddeliveryfinalproject.converter.MenuCategoryConverter;
 import com.fooddeliveryfinalproject.converter.MenuItemConverter;
 import com.fooddeliveryfinalproject.converter.RestaurantBranchConverter;
-import com.fooddeliveryfinalproject.entity.Menu;
-import com.fooddeliveryfinalproject.entity.MenuCategory;
-import com.fooddeliveryfinalproject.entity.MenuItem;
-import com.fooddeliveryfinalproject.entity.RestaurantBranch;
+import com.fooddeliveryfinalproject.entity.*;
+import com.fooddeliveryfinalproject.model.AddressDto;
 import com.fooddeliveryfinalproject.model.MenuCategoryDto;
 import com.fooddeliveryfinalproject.model.MenuItemDto;
 import com.fooddeliveryfinalproject.model.RestaurantBranchDto;
@@ -38,6 +36,8 @@ public class RestaurantBranchService {
 
     private final MenuItemConverter menuItemConverter;
 
+    private final AddressService addressService;
+
 
     @Autowired
     public RestaurantBranchService(RestaurantBranchRepo restaurantBranchRepo,
@@ -46,7 +46,8 @@ public class RestaurantBranchService {
                                    MenuCategoryRepo menuCategoryRepo,
                                    MenuCategoryConverter menuCategoryConverter,
                                    MenuItemRepo menuItemRepo,
-                                   MenuItemConverter menuItemConverter) {
+                                   MenuItemConverter menuItemConverter,
+                                   AddressService addressService) {
         this.restaurantBranchRepo = restaurantBranchRepo;
         this.restaurantBranchConverter = restaurantBranchConverter;
         this.menuRepo = menuRepo;
@@ -54,6 +55,7 @@ public class RestaurantBranchService {
         this.menuCategoryConverter = menuCategoryConverter;
         this.menuItemRepo = menuItemRepo;
         this.menuItemConverter = menuItemConverter;
+        this.addressService = addressService;
     }
 
     @Transactional(readOnly = true)
@@ -82,6 +84,10 @@ public class RestaurantBranchService {
         Menu menu = new Menu();
         menu.setRestaurantBranch(restaurantBranch);
         restaurantBranch.setMenu(menu);
+
+        AddressDto addressDto = restaurantBranchDto.getAddressDto();
+        Address address = addressService.createAddress(addressDto);
+        restaurantBranch.setAddress(address);
 
         menuRepo.save(menu);
         restaurantBranchRepo.save(restaurantBranch);

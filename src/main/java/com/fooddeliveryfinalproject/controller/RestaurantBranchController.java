@@ -1,9 +1,6 @@
 package com.fooddeliveryfinalproject.controller;
 
-import com.fooddeliveryfinalproject.model.MenuCategoryDto;
-import com.fooddeliveryfinalproject.model.MenuDto;
-import com.fooddeliveryfinalproject.model.MenuItemDto;
-import com.fooddeliveryfinalproject.model.RestaurantBranchDto;
+import com.fooddeliveryfinalproject.model.*;
 import com.fooddeliveryfinalproject.service.MenuService;
 import com.fooddeliveryfinalproject.service.RestaurantBranchService;
 import org.springframework.beans.factory.annotation.Autowired;

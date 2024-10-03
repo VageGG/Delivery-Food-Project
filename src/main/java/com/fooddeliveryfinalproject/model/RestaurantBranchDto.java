@@ -14,5 +14,7 @@ public class RestaurantBranchDto {
 
     private MenuDto menuDto;
 
+    private AddressDto addressDto;
+
     private String phoneNumber;
 }
