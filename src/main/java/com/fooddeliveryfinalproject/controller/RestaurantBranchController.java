@@ -113,5 +113,11 @@ public class RestaurantBranchController {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
+    @GetMapping("/categories-with-menu-items/{branchId}")
+    public ResponseEntity<List<MenuCategoryWithItemsDto>> getCategoriesWithItemsByBranchId(@PathVariable Long branchId) {
+        List<MenuCategoryWithItemsDto> categoriesWithItems = restaurantBranchService.getCategoriesWithItemsByBranchId(branchId);
+        return ResponseEntity.ok(categoriesWithItems);
+    }
+
 
 }
