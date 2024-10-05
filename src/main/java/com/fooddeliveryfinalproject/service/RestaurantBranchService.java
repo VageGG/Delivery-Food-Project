@@ -6,6 +6,7 @@ import com.fooddeliveryfinalproject.converter.RestaurantBranchConverter;
 import com.fooddeliveryfinalproject.entity.*;
 import com.fooddeliveryfinalproject.model.AddressDto;
 import com.fooddeliveryfinalproject.model.MenuCategoryDto;
+import com.fooddeliveryfinalproject.model.MenuCategoryWithItemsDto;
 import com.fooddeliveryfinalproject.model.MenuItemDto;
 import com.fooddeliveryfinalproject.model.RestaurantBranchDto;
 import com.fooddeliveryfinalproject.repository.MenuCategoryRepo;
@@ -19,6 +20,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class RestaurantBranchService {
@@ -132,7 +134,7 @@ public class RestaurantBranchService {
             throw new RuntimeException("No menu found for branch with ID " + branchId);
         }
 
-        MenuCategory menuCategory = menuCategoryConverter.convertToEntity(menuCategoryDto,new MenuCategory());
+        MenuCategory menuCategory = menuCategoryConverter.convertToEntity(menuCategoryDto, new MenuCategory());
         menuCategory.setMenu(menu);
         menuCategoryRepo.save(menuCategory);
     }
@@ -163,7 +165,7 @@ public class RestaurantBranchService {
         MenuCategory menuCategory = menuCategoryRepo.findByCategoryIdAndMenu(categoryId, menu)
                 .orElseThrow(() -> new RuntimeException("Menu Category with ID " + categoryId + " not found"));
 
-        MenuItem menuItem = menuItemConverter.convertToEntity(menuItemDto,new MenuItem());
+        MenuItem menuItem = menuItemConverter.convertToEntity(menuItemDto, new MenuItem());
 
         menuItem.setMenuCategory(menuCategory);
 
@@ -185,6 +187,39 @@ public class RestaurantBranchService {
                 .orElseThrow(() -> new RuntimeException("Menu Item with ID " + itemId + " not found"));
 
         menuItemRepo.delete(menuItem);
+    }
+
+    public List<MenuCategoryWithItemsDto> getCategoriesWithItemsByBranchId(Long branchId) {
+
+        RestaurantBranch branch = restaurantBranchRepo.findById(branchId)
+                .orElseThrow(() -> new RuntimeException("Branch with ID " + branchId + " not found"));
+
+        Menu menu = menuRepo.findByRestaurantBranch_RestBranchId(branchId);
+
+        if (menu == null) {
+            throw new RuntimeException("No menu found for branch with ID " + branchId);
+        }
+
+        List<MenuCategory> categories = menuCategoryRepo.findAllByMenu(menu);
+
+        return categories.stream()
+                .map(category -> {
+                    MenuCategoryWithItemsDto menuCategoryWithItemsDto = new MenuCategoryWithItemsDto();
+
+                    menuCategoryWithItemsDto.setCategoryId(category.getCategoryId());
+                    menuCategoryWithItemsDto.setName(category.getName());
+
+                    List<MenuItemDto> menuItems = category.getItems().stream()
+                            .map(item -> {
+                                MenuItemDto menuItemDto = new MenuItemDto();
+                                return menuItemConverter.convertToModel(item, menuItemDto);
+                            })
+                            .collect(Collectors.toList());
+
+                    menuCategoryWithItemsDto.setItems(menuItems);
+                    return menuCategoryWithItemsDto;
+                })
+                .collect(Collectors.toList());
     }
 
 }

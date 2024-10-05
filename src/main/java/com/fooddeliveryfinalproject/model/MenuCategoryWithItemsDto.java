@@ -7,14 +7,12 @@ import lombok.NoArgsConstructor;
 import java.util.List;
 
 @Data
-@AllArgsConstructor
 @NoArgsConstructor
-public class MenuCategoryDto {
+@AllArgsConstructor
+public class MenuCategoryWithItemsDto {
 
     private Long categoryId;
-
     private String name;
-
     private List<MenuItemDto> items;
 
 }
