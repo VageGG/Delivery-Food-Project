@@ -107,13 +107,24 @@ public class PaymentMethodService {
     @Transactional
     public Optional<PaymentMethodDto> updatePaymentMethod(String username, Long paymentMethodId, PaymentMethodDto updatedPaymentMethod) {
         Optional<PaymentMethodDto> paymentMethodOptional = getPaymentMethods(username, paymentMethodId);
+
         if (paymentMethodOptional.isPresent()) {
             PaymentMethodDto paymentMethodDto = paymentMethodOptional.get();
-            paymentMethodDto.setPaymentMethodType(updatedPaymentMethod.getPaymentMethodType());
-            paymentMethodDto.setDetails(updatedPaymentMethod.getDetails());
-            paymentMethodRepo.save(paymentMethodConverter.convertToEntity(paymentMethodDto, new PaymentMethod()));
+
+            Optional<PaymentMethod> existingPaymentMethodOptional = paymentMethodRepo.findById(paymentMethodId);
+
+            if (existingPaymentMethodOptional.isPresent()) {
+                PaymentMethod existingPaymentMethod = existingPaymentMethodOptional.get();
+
+                existingPaymentMethod.setPaymentMethodType(updatedPaymentMethod.getPaymentMethodType());
+                existingPaymentMethod.setDetails(updatedPaymentMethod.getDetails());
+
+                paymentMethodRepo.save(existingPaymentMethod);
+
+                return Optional.of(paymentMethodConverter.convertToModel(existingPaymentMethod, new PaymentMethodDto()));
+            }
         }
-        return paymentMethodOptional;
+        return Optional.empty();
     }
 
     @Transactional

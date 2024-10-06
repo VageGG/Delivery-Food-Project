@@ -1,5 +1,6 @@
 package com.fooddeliveryfinalproject.model;
 
+import jakarta.validation.constraints.Min;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -13,5 +14,6 @@ public class CartDto {
 
     private Long cartId;
 
+    @Min(1)
     private Integer count;
 }

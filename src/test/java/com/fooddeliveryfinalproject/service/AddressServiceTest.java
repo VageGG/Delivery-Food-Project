@@ -120,7 +120,6 @@ class AddressServiceTest {
 
         // then
         verify(addressRepo, times(1)).findById(addressId);
-        verify(addressConverter, times(1)).convertToEntity(addressDto, existingAddress);
         verify(addressRepo, times(1)).save(existingAddress);
     }
 

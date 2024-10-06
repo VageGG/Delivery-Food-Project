@@ -1,5 +1,6 @@
 package com.fooddeliveryfinalproject.controller;
 
+import com.fooddeliveryfinalproject.entity.RestaurantBranch;
 import com.fooddeliveryfinalproject.model.*;
 import com.fooddeliveryfinalproject.service.MenuService;
 import com.fooddeliveryfinalproject.service.RestaurantBranchService;
@@ -53,14 +54,14 @@ public class RestaurantBranchController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<RestaurantBranchDto> getRestaurantBranch(@PathVariable("id") Long id) {
+    public ResponseEntity<RestaurantBranch> getRestaurantBranch(@PathVariable("id") Long id) {
         return new ResponseEntity<>(restaurantBranchService.getRestaurantBranch(id), HttpStatus.OK);
     }
 
     @PreAuthorize("hasRole('RESTAURANT_MANAGER')")
-    @PostMapping("/create")
-    public ResponseEntity<HttpStatus> createRestaurantBranch(@RequestBody RestaurantBranchDto restaurantBranchDto) {
-        restaurantBranchService.createRestaurantBranch(restaurantBranchDto);
+    @PostMapping("/create/{restId}")
+    public ResponseEntity<HttpStatus> createRestaurantBranch(@PathVariable("restId") Long id,@RequestBody RestaurantBranchDto restaurantBranchDto) {
+        restaurantBranchService.createRestaurantBranch(id, restaurantBranchDto);
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
