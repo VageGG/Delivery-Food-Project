@@ -94,7 +94,7 @@ public class RestaurantController {
         return new ResponseEntity<>( HttpStatus.OK);
     }
 
-    @GetMapping("/average-rating{restaurantId}")
+    @GetMapping("/average-rating/{restaurantId}")
     public ResponseEntity<Double> getAverageRating(@PathVariable Long restaurantId) {
         double averageRating = reviewService.getAverageRating(restaurantId);
         return new ResponseEntity<>(averageRating, HttpStatus.OK);

@@ -76,7 +76,9 @@ public class ReviewService {
         Restaurant restaurant = restaurantRepo.findById(restaurantId)
                 .orElseThrow(() -> new RuntimeException("Restaurant not found"));
 
-        Review review = reviewConverter.convertToEntity(reviewDto, new Review());
+        Review review = new Review();
+        review.setComment(reviewDto.getComment());
+        review.setRating(reviewDto.getRating());
         review.setRestaurant(restaurant);
 
         repo.save(review);
@@ -100,11 +102,12 @@ public class ReviewService {
 
     @Transactional(readOnly = true)
     public double getAverageRating(Long restaurantId) {
-        List<Review> reviews = repo.findByRestaurant_RestId( restaurantId);
-        return reviews.stream()
+        List<Review> reviews = repo.findByRestaurant_RestId(restaurantId);
+        double averageRating = reviews.stream()
                 .mapToDouble(Review::getRating)
                 .average()
                 .orElse(0.0);
+        return Math.round(averageRating * 10.0) / 10.0; // Округление до 1 знака
     }
 
     @Transactional(readOnly = true)
