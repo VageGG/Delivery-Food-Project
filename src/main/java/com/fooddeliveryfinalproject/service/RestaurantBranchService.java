@@ -1,14 +1,8 @@
 package com.fooddeliveryfinalproject.service;
 
-import com.fooddeliveryfinalproject.converter.MenuCategoryConverter;
-import com.fooddeliveryfinalproject.converter.MenuItemConverter;
-import com.fooddeliveryfinalproject.converter.RestaurantBranchConverter;
+import com.fooddeliveryfinalproject.converter.*;
 import com.fooddeliveryfinalproject.entity.*;
-import com.fooddeliveryfinalproject.model.AddressDto;
-import com.fooddeliveryfinalproject.model.MenuCategoryDto;
-import com.fooddeliveryfinalproject.model.MenuCategoryWithItemsDto;
-import com.fooddeliveryfinalproject.model.MenuItemDto;
-import com.fooddeliveryfinalproject.model.RestaurantBranchDto;
+import com.fooddeliveryfinalproject.model.*;
 import com.fooddeliveryfinalproject.repository.MenuCategoryRepo;
 import com.fooddeliveryfinalproject.repository.MenuItemRepo;
 import com.fooddeliveryfinalproject.repository.MenuRepo;
@@ -40,6 +34,12 @@ public class RestaurantBranchService {
 
     private final AddressService addressService;
 
+    private final RestaurantService restaurantService;
+
+    private final RestaurantConverter restaurantConverter;
+
+    private final AddressConverter addressConverter;
+
 
     @Autowired
     public RestaurantBranchService(RestaurantBranchRepo restaurantBranchRepo,
@@ -49,7 +49,10 @@ public class RestaurantBranchService {
                                    MenuCategoryConverter menuCategoryConverter,
                                    MenuItemRepo menuItemRepo,
                                    MenuItemConverter menuItemConverter,
-                                   AddressService addressService) {
+                                   AddressService addressService,
+                                   RestaurantService restaurantService,
+                                   RestaurantConverter restaurantConverter,
+                                   AddressConverter addressConverter) {
         this.restaurantBranchRepo = restaurantBranchRepo;
         this.restaurantBranchConverter = restaurantBranchConverter;
         this.menuRepo = menuRepo;
@@ -58,13 +61,15 @@ public class RestaurantBranchService {
         this.menuItemRepo = menuItemRepo;
         this.menuItemConverter = menuItemConverter;
         this.addressService = addressService;
+        this.restaurantService = restaurantService;
+        this.restaurantConverter = restaurantConverter;
+        this.addressConverter = addressConverter;
     }
 
     @Transactional(readOnly = true)
-    public RestaurantBranchDto getRestaurantBranch(Long id) {
-        return restaurantBranchConverter.convertToModel(restaurantBranchRepo.findById(id)
-                        .orElseThrow(() -> new RuntimeException("Could not find RestaurantBranch")),
-                new RestaurantBranchDto());
+    public RestaurantBranch getRestaurantBranch(Long id) {
+        return restaurantBranchRepo.findById(id)
+                        .orElseThrow(() -> new RuntimeException("Could not find RestaurantBranch"));
     }
 
     @Transactional(readOnly = true)
@@ -79,29 +84,52 @@ public class RestaurantBranchService {
 
 
     @Transactional
-    public void createRestaurantBranch(RestaurantBranchDto restaurantBranchDto) {
-
+    public void createRestaurantBranch(Long restId, RestaurantBranchDto restaurantBranchDto) {
+        RestaurantDto restaurant = restaurantService.getRestaurantById(restId);
         RestaurantBranch restaurantBranch = restaurantBranchConverter.convertToEntity(restaurantBranchDto, new RestaurantBranch());
-
-        Menu menu = new Menu();
-        menu.setRestaurantBranch(restaurantBranch);
-        restaurantBranch.setMenu(menu);
+        restaurantBranch.setRestaurant(restaurantConverter.convertToEntity(restaurant, new Restaurant()));
 
         AddressDto addressDto = restaurantBranchDto.getAddressDto();
         Address address = addressService.createAddress(addressDto);
         restaurantBranch.setAddress(address);
 
+        restaurantBranchRepo.save(restaurantBranch);
+        Menu menu = new Menu();
+        menu.setRestaurantBranch(restaurantBranch);
+        restaurantBranch.setMenu(menu);
         menuRepo.save(menu);
         restaurantBranchRepo.save(restaurantBranch);
     }
 
     @Transactional
     public void updateRestaurantBranch(Long id, RestaurantBranchDto restaurantBranchDto) {
-        RestaurantBranch restaurantBranchEntity = restaurantBranchRepo.findById(id)
+        RestaurantBranch restaurantBranch = restaurantBranchRepo.findById(id)
                 .orElseThrow(() -> new RuntimeException("Could not find RestaurantBranch"));
-        restaurantBranchConverter.convertToEntity(restaurantBranchDto, restaurantBranchEntity);
-        restaurantBranchRepo.save(restaurantBranchEntity);
 
+        restaurantBranch.setPhoneNumber(restaurantBranchDto.getPhoneNumber());
+
+        AddressDto addressDto = restaurantBranchDto.getAddressDto();
+        if (addressDto != null) {
+            Long addressId = restaurantBranch.getAddress().getId();
+            if (addressId != null) {
+                addressService.updateAddress(addressId, addressDto);
+            } else {
+                Address newAddress = addressConverter.convertToEntity(addressDto, new Address());
+                Address savedAddress = addressService.createAddress(addressConverter.convertToModel(newAddress, new AddressDto()));
+                restaurantBranch.setAddress(savedAddress);
+            }
+        }
+
+        MenuDto menuDto = restaurantBranchDto.getMenuDto();
+        if (menuDto != null) {
+            Menu menu = menuRepo.findById(menuDto.getId())
+                    .orElseThrow(() -> new RuntimeException("Could not find Menu"));
+            restaurantBranch.setMenu(menu);
+            menu.setRestaurantBranch(restaurantBranch);
+            menuRepo.save(menu);
+        }
+
+        restaurantBranchRepo.save(restaurantBranch);
     }
 
     @Transactional
@@ -134,7 +162,8 @@ public class RestaurantBranchService {
             throw new RuntimeException("No menu found for branch with ID " + branchId);
         }
 
-        MenuCategory menuCategory = menuCategoryConverter.convertToEntity(menuCategoryDto, new MenuCategory());
+        MenuCategory menuCategory =  new MenuCategory();
+        menuCategory.setName(menuCategoryDto.getName());
         menuCategory.setMenu(menu);
         menuCategoryRepo.save(menuCategory);
     }

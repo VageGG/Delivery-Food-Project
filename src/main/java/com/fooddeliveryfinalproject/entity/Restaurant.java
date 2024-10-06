@@ -1,6 +1,7 @@
 package com.fooddeliveryfinalproject.entity;
 
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -30,11 +31,9 @@ public class Restaurant {
     private RestaurantManager restaurantManager;
 
     @OneToMany(mappedBy = "restaurant")
+    @JsonIgnore
     private List<RestaurantBranch> branches;
 
     @OneToMany(mappedBy = "restaurant")
     private List<Review> reviews;
-
-
-
 }

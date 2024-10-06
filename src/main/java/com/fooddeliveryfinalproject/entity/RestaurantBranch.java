@@ -1,5 +1,6 @@
 package com.fooddeliveryfinalproject.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -26,6 +27,7 @@ public class RestaurantBranch {
 
 
     @OneToOne(mappedBy = "restaurantBranch", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonIgnore
     private Menu menu;
 
     @OneToOne(cascade = CascadeType.ALL)

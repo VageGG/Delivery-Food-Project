@@ -58,7 +58,7 @@ public class RestaurantService {
     public void updateRestaurant(Long id, RestaurantDto restaurantDto){
         Restaurant restaurantEntity = restaurantRepo.findById(id)
                 .orElseThrow(() -> new RuntimeException("Could not find Restaurant"));
-        restaurantConverter.convertToEntity(restaurantDto, restaurantEntity);
+        restaurantEntity.setName(restaurantDto.getName());
         restaurantRepo.save(restaurantEntity);
     }
 

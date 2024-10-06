@@ -12,6 +12,8 @@ public class RestaurantBranchDto {
 
     private Long branchId;
 
+    private RestaurantDto restaurantDto;
+
     private MenuDto menuDto;
 
     private AddressDto addressDto;
