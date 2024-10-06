@@ -220,9 +220,6 @@ public class RestaurantBranchService {
 
     public List<MenuCategoryWithItemsDto> getCategoriesWithItemsByBranchId(Long branchId) {
 
-        RestaurantBranch branch = restaurantBranchRepo.findById(branchId)
-                .orElseThrow(() -> new RuntimeException("Branch with ID " + branchId + " not found"));
-
         Menu menu = menuRepo.findByRestaurantBranch_RestBranchId(branchId);
 
         if (menu == null) {
@@ -249,6 +246,35 @@ public class RestaurantBranchService {
                     return menuCategoryWithItemsDto;
                 })
                 .collect(Collectors.toList());
+    }
+
+    public MenuCategoryWithItemsDto getCategoryWithItemsByBranchIdAndCategoryId(Long branchId, Long categoryId) {
+
+        Menu menu = menuRepo.findByRestaurantBranch_RestBranchId(branchId);
+
+        if (menu == null) {
+            throw new RuntimeException("No menu found for branch with ID " + branchId);
+        }
+
+        MenuCategory category = menuCategoryRepo.findByMenuAndCategoryId(menu, categoryId);
+        if (category == null) {
+            throw new RuntimeException("No category with ID " + categoryId + " found in menu");
+        }
+
+        MenuCategoryWithItemsDto menuCategoryWithItemsDto = new MenuCategoryWithItemsDto();
+        menuCategoryWithItemsDto.setCategoryId(category.getCategoryId());
+        menuCategoryWithItemsDto.setName(category.getName());
+
+        List<MenuItemDto> menuItems = category.getItems().stream()
+                .map(item -> {
+                    MenuItemDto menuItemDto = new MenuItemDto();
+                    return menuItemConverter.convertToModel(item, menuItemDto);
+                })
+                .collect(Collectors.toList());
+
+        menuCategoryWithItemsDto.setItems(menuItems);
+
+        return menuCategoryWithItemsDto;
     }
 
 }
