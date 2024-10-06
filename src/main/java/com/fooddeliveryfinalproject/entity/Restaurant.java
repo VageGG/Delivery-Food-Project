@@ -3,6 +3,7 @@ package com.fooddeliveryfinalproject.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -23,6 +24,7 @@ public class Restaurant {
     @Column(name = "restaurant_id")
     private Long restId;
 
+    @NotNull
     @Column(name = "restaurant_name", nullable = false, unique = true)
     private String name;
 

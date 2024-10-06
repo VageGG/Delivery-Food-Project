@@ -2,6 +2,7 @@ package com.fooddeliveryfinalproject.entity;
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Min;
 import lombok.*;
 
 import java.util.List;
@@ -26,5 +27,6 @@ public class Cart {
     @JoinColumn(name = "customer_id")
     private Customer customer;
 
+    @Min(1)
     private Integer count;
 }

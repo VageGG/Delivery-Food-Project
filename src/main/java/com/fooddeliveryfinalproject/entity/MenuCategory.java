@@ -1,6 +1,7 @@
 package com.fooddeliveryfinalproject.entity;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
 import java.util.List;
@@ -17,6 +18,7 @@ public class MenuCategory {
     @Column(name = "category_id")
     private long categoryId;
 
+    @NotNull
     private String name;
 
     @OneToMany(mappedBy = "menuCategory")
