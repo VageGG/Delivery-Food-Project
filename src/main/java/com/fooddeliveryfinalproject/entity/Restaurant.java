@@ -34,6 +34,6 @@ public class Restaurant {
     @JsonIgnore
     private List<RestaurantBranch> branches;
 
-    @OneToMany(mappedBy = "restaurant")
+    @OneToMany(mappedBy = "restaurant", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Review> reviews;
 }
