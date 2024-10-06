@@ -2,6 +2,7 @@ package com.fooddeliveryfinalproject.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -34,8 +35,10 @@ public class MenuItem {
     @JsonIgnore
     private List<OrderItem> orders;
 
+    @NotNull
     private String name;
 
+    @NotNull
     private Double price;
 
     private String description;

@@ -3,6 +3,7 @@ package com.fooddeliveryfinalproject.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -23,6 +24,7 @@ public class PaymentMethod {
     @Column(name = "payment_method_type")
     private Payment.PaymentMethodType paymentMethodType;
 
+    @NotNull
     private String details;
 
     @ManyToOne

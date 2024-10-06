@@ -2,6 +2,7 @@ package com.fooddeliveryfinalproject.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -20,14 +21,18 @@ public class Address {
     @Column(name = "address_id")
     private Long id;
 
+    @NotNull
     private String country;
 
+    @NotNull
     private String city;
 
     private String state;
 
+    @NotNull
     private String street;
 
+    @NotNull
     @Column(name = "house_number")
     private String houseNumber;
 

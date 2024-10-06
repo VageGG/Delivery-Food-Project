@@ -1,6 +1,8 @@
 package com.fooddeliveryfinalproject.entity;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.Min;
 import lombok.*;
 
 @Data
@@ -27,6 +29,8 @@ public class Review {
     @JoinColumn(name = "driver_id")
     private Driver driver;
 
+    @Min(1)
+    @Max(5)
     private byte rating;
 
     private String comment;
