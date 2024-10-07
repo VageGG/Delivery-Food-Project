@@ -8,12 +8,15 @@ import com.fooddeliveryfinalproject.entity.User;
 import com.fooddeliveryfinalproject.model.DriverDto;
 import com.fooddeliveryfinalproject.repository.DriverRepo;
 import jakarta.persistence.EntityNotFoundException;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.Min;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.validation.annotation.Validated;
 
 import java.security.NoSuchAlgorithmException;
 import java.util.List;
@@ -21,6 +24,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
+@Validated
 public class DriverService implements ValidUser<DriverDto> {
 
     private final DriverRepo driverRepo;
@@ -41,7 +45,7 @@ public class DriverService implements ValidUser<DriverDto> {
     }
 
     @Transactional(readOnly = true)
-    public DriverDto getDriverById(Long id) {
+    public DriverDto getDriverById(@Min(1) Long id) {
         return driverConverter.convertToModel(driverRepo.findById(id)
                 .orElseThrow(() -> new RuntimeException("Could not find driver")),
                 new DriverDto());
@@ -49,7 +53,7 @@ public class DriverService implements ValidUser<DriverDto> {
 
     @Override
     @Transactional
-    public void addUser(DriverDto driverDto) throws NoSuchAlgorithmException {
+    public void addUser(@Valid DriverDto driverDto) throws NoSuchAlgorithmException {
         Optional<Driver> existingUser = driverRepo.findByUsername(driverDto.getUsername());
         if (existingUser.isPresent()) {
             throw new RuntimeException("Username has already been used");
@@ -80,7 +84,7 @@ public class DriverService implements ValidUser<DriverDto> {
     }
 
     @Transactional
-    public void updateDriver(Long id, DriverDto driverDto) {
+    public void updateDriver(@Min(1) Long id, @Valid DriverDto driverDto) {
         Driver driverEntity = driverRepo.findById(id)
                 .orElseThrow(() -> new RuntimeException("Could not find driver"));
         driverEntity.setUsername(driverDto.getUsername());
@@ -101,7 +105,7 @@ public class DriverService implements ValidUser<DriverDto> {
     }
 
     @Transactional
-    public void approveDriver(Long driverId) {
+    public void approveDriver(@Min(1) Long driverId) {
         Driver driver = driverRepo.findById(driverId)
                 .orElseThrow(() -> new EntityNotFoundException("Driver not found"));
         driver.setStatus(RegistrationStatus.APPROVED);
@@ -109,7 +113,7 @@ public class DriverService implements ValidUser<DriverDto> {
     }
 
     @Transactional
-    public void rejectedDriver(Long driverId) {
+    public void rejectedDriver(@Min(1) Long driverId) {
         Driver driver = driverRepo.findById(driverId)
                 .orElseThrow(() -> new EntityNotFoundException("Driver not found"));
         driver.setStatus(RegistrationStatus.REJECTED);

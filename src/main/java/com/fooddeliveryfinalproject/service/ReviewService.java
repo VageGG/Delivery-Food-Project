@@ -6,14 +6,18 @@ import com.fooddeliveryfinalproject.entity.Review;
 import com.fooddeliveryfinalproject.model.ReviewDto;
 import com.fooddeliveryfinalproject.repository.RestaurantRepo;
 import com.fooddeliveryfinalproject.repository.ReviewRepo;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.Min;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.validation.annotation.Validated;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
+@Validated
 public class ReviewService {
 
     private final ReviewRepo repo;
@@ -33,7 +37,7 @@ public class ReviewService {
     }
 
     @Transactional
-    public Review createReview(Review review) {
+    public Review createReview(@Valid Review review) {
         if (review.getRating() > 5 || review.getRating() < 1) {
             throw new RuntimeException("rating must be between 1 and 5");
         }
@@ -45,7 +49,7 @@ public class ReviewService {
     }
 
     @Transactional(readOnly = true)
-    public Review getReviewById(long id) {
+    public Review getReviewById(@Min(1) long id) {
         Review review = this.repo.getReferenceById(id);
         if (review == null) {
             throw new RuntimeException("review not found");
@@ -55,7 +59,7 @@ public class ReviewService {
     }
 
     @Transactional
-    public Review updateReview(Review review) {
+    public Review updateReview(@Valid Review review) {
         getReviewById(review.getReviewId());
 
         if (review.getComment().length() > 200 || review.getComment().length() < 5) {
@@ -66,13 +70,13 @@ public class ReviewService {
     }
 
     @Transactional
-    public void deleteReview(long id) {
+    public void deleteReview(@Min(1) long id) {
         Review review = getReviewById(id);
         this.repo.delete(review);
     }
 
     @Transactional
-    public void addReview(Long restaurantId, ReviewDto reviewDto) {
+    public void addReview(@Min(1) Long restaurantId, @Valid ReviewDto reviewDto) {
         Restaurant restaurant = restaurantRepo.findById(restaurantId)
                 .orElseThrow(() -> new RuntimeException("Restaurant not found"));
 
@@ -85,12 +89,12 @@ public class ReviewService {
     }
 
     @Transactional
-    public void deleteReview(Long reviewId) {
+    public void deleteReview(@Min(1) Long reviewId) {
         repo.deleteById(reviewId);
     }
 
     @Transactional
-    public ReviewDto updateReview(Long reviewId, ReviewDto reviewDto) {
+    public ReviewDto updateReview(@Min(1) Long reviewId, @Valid ReviewDto reviewDto) {
         Review existingReview = repo.findById(reviewId)
                 .orElseThrow(() -> new RuntimeException("Review not found"));
 
@@ -101,7 +105,7 @@ public class ReviewService {
     }
 
     @Transactional(readOnly = true)
-    public double getAverageRating(Long restaurantId) {
+    public double getAverageRating(@Min(1) Long restaurantId) {
         List<Review> reviews = repo.findByRestaurant_RestId(restaurantId);
         double averageRating = reviews.stream()
                 .mapToDouble(Review::getRating)
@@ -111,7 +115,7 @@ public class ReviewService {
     }
 
     @Transactional(readOnly = true)
-    public List<ReviewDto> getAllReviewsByRestaurantId(Long restaurantId) {
+    public List<ReviewDto> getAllReviewsByRestaurantId(@Min(1) Long restaurantId) {
         List<Review> reviews = repo.findAllByRestaurant_RestId(restaurantId);
         return reviews.stream()
                 .map(review -> reviewConverter.convertToModel(review,new ReviewDto()))
