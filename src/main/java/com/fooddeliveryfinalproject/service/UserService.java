@@ -26,7 +26,6 @@ import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 @Service
-@Validated
 public class UserService implements UserDetailsService {
 
     private final CustomerRepo customerRepo;

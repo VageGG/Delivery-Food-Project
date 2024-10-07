@@ -27,7 +27,7 @@ public class LoginController {
     private final UserService userService;
 
     @PostMapping
-    public ResponseEntity<?> login(@RequestBody @Valid AllUserDto dto) throws Exception {
+    public ResponseEntity<?> login(@RequestBody AllUserDto dto) throws Exception {
         try {
             authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(dto.getUsername(), dto.getPassword()));
