@@ -7,16 +7,20 @@ import com.fooddeliveryfinalproject.repository.MenuCategoryRepo;
 import com.fooddeliveryfinalproject.repository.MenuItemRepo;
 import com.fooddeliveryfinalproject.repository.MenuRepo;
 import com.fooddeliveryfinalproject.repository.RestaurantBranchRepo;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.Min;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.validation.annotation.Validated;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
+@Validated
 public class RestaurantBranchService {
     private final RestaurantBranchRepo restaurantBranchRepo;
 
@@ -67,13 +71,13 @@ public class RestaurantBranchService {
     }
 
     @Transactional(readOnly = true)
-    public RestaurantBranch getRestaurantBranch(Long id) {
+    public RestaurantBranch getRestaurantBranch(@Min(1) Long id) {
         return restaurantBranchRepo.findById(id)
                         .orElseThrow(() -> new RuntimeException("Could not find RestaurantBranch"));
     }
 
     @Transactional(readOnly = true)
-    public Page<RestaurantBranchDto> getAllRestaurantBranches(Long restaurantId, Pageable pageable) {
+    public Page<RestaurantBranchDto> getAllRestaurantBranches(@Min(1) Long restaurantId, Pageable pageable) {
         if (restaurantId == null) {
             throw new RuntimeException("Restaurant ID is required");
         }
@@ -84,7 +88,7 @@ public class RestaurantBranchService {
 
 
     @Transactional
-    public void createRestaurantBranch(Long restId, RestaurantBranchDto restaurantBranchDto) {
+    public void createRestaurantBranch(@Min(1) Long restId, @Valid RestaurantBranchDto restaurantBranchDto) {
         RestaurantDto restaurant = restaurantService.getRestaurantById(restId);
         RestaurantBranch restaurantBranch = restaurantBranchConverter.convertToEntity(restaurantBranchDto, new RestaurantBranch());
         restaurantBranch.setRestaurant(restaurantConverter.convertToEntity(restaurant, new Restaurant()));
@@ -102,7 +106,7 @@ public class RestaurantBranchService {
     }
 
     @Transactional
-    public void updateRestaurantBranch(Long id, RestaurantBranchDto restaurantBranchDto) {
+    public void updateRestaurantBranch(@Min(1) Long id, @Valid RestaurantBranchDto restaurantBranchDto) {
         RestaurantBranch restaurantBranch = restaurantBranchRepo.findById(id)
                 .orElseThrow(() -> new RuntimeException("Could not find RestaurantBranch"));
 
@@ -133,12 +137,12 @@ public class RestaurantBranchService {
     }
 
     @Transactional
-    public void deleteRestaurantBranch(Long id) {
+    public void deleteRestaurantBranch(@Min(1) Long id) {
         restaurantBranchRepo.deleteById(id);
     }
 
     @Transactional(readOnly = true)
-    public List<MenuCategoryDto> getAllCategoriesByBranchId(Long branchId) {
+    public List<MenuCategoryDto> getAllCategoriesByBranchId(@Min(1) Long branchId) {
 
         if (branchId == null) {
             throw new RuntimeException("Branch ID is required");
@@ -154,7 +158,7 @@ public class RestaurantBranchService {
     }
 
     @Transactional
-    public void addMenuCategoryToBranch(Long branchId, MenuCategoryDto menuCategoryDto) {
+    public void addMenuCategoryToBranch(@Min(1) Long branchId, @Valid MenuCategoryDto menuCategoryDto) {
 
         Menu menu = menuRepo.findByRestaurantBranch_RestBranchId(branchId);
 
@@ -170,7 +174,7 @@ public class RestaurantBranchService {
 
 
     @Transactional
-    public void deleteMenuCategoryFromBranch(Long branchId, Long categoryId) {
+    public void deleteMenuCategoryFromBranch(@Min(1) Long branchId, @Min(1) Long categoryId) {
 
         Menu menu = menuRepo.findByRestaurantBranch_RestBranchId(branchId);
 
@@ -185,7 +189,7 @@ public class RestaurantBranchService {
     }
 
     @Transactional
-    public void addMenuItemToCategory(Long branchId, Long categoryId, MenuItemDto menuItemDto) {
+    public void addMenuItemToCategory(@Min(1) Long branchId, @Min(1) Long categoryId, @Valid MenuItemDto menuItemDto) {
 
         Menu menu = menuRepo.findByRestaurantBranch_RestBranchId(branchId);
         if (menu == null) {
@@ -202,7 +206,7 @@ public class RestaurantBranchService {
     }
 
     @Transactional
-    public void deleteMenuItemFromCategory(Long branchId, Long categoryId, Long itemId) {
+    public void deleteMenuItemFromCategory(@Min(1) Long branchId, @Min(1) Long categoryId, @Min(1) Long itemId) {
 
         Menu menu = menuRepo.findByRestaurantBranch_RestBranchId(branchId);
         if (menu == null) {
@@ -218,7 +222,7 @@ public class RestaurantBranchService {
         menuItemRepo.delete(menuItem);
     }
 
-    public List<MenuCategoryWithItemsDto> getCategoriesWithItemsByBranchId(Long branchId) {
+    public List<MenuCategoryWithItemsDto> getCategoriesWithItemsByBranchId(@Min(1) Long branchId) {
 
         Menu menu = menuRepo.findByRestaurantBranch_RestBranchId(branchId);
 
@@ -248,7 +252,7 @@ public class RestaurantBranchService {
                 .collect(Collectors.toList());
     }
 
-    public MenuCategoryWithItemsDto getCategoryWithItemsByBranchIdAndCategoryId(Long branchId, Long categoryId) {
+    public MenuCategoryWithItemsDto getCategoryWithItemsByBranchIdAndCategoryId(@Min(1) Long branchId, @Min(1) Long categoryId) {
 
         Menu menu = menuRepo.findByRestaurantBranch_RestBranchId(branchId);
 

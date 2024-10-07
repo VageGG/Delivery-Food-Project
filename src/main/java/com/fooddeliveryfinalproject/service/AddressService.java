@@ -5,14 +5,18 @@ import com.fooddeliveryfinalproject.entity.Address;
 import com.fooddeliveryfinalproject.entity.Customer;
 import com.fooddeliveryfinalproject.model.AddressDto;
 import com.fooddeliveryfinalproject.repository.AddressRepo;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.Min;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.validation.annotation.Validated;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
+@Validated
 public class AddressService {
 
     private final AddressRepo addressRepo;
@@ -33,20 +37,20 @@ public class AddressService {
     }
 
     @Transactional(readOnly = true)
-    public AddressDto getAddress(Long id) {
+    public AddressDto getAddress(@Min(1) Long id) {
         return addressConverter.convertToModel(addressRepo.findById(id)
                 .orElseThrow(() -> new RuntimeException("Address not found")),
                 new AddressDto());
     }
 
     @Transactional
-    public Address createAddress(AddressDto addressDto) {
+    public Address createAddress(@Valid AddressDto addressDto) {
         Address address = addressConverter.convertToEntity(addressDto, new Address());
         return addressRepo.save(address);
     }
 
     @Transactional
-    public void updateAddress(Long id, AddressDto addressDto) {
+    public void updateAddress(@Min(1) Long id, @Valid AddressDto addressDto) {
         Address addressEntity = addressRepo.findById(id)
                 .orElseThrow(() -> new RuntimeException("Address not found"));
         addressEntity.setCountry(addressDto.getCountry());
@@ -59,7 +63,7 @@ public class AddressService {
     }
 
     @Transactional
-    public void deleteAddress(Long id) {
+    public void deleteAddress(@Min(1) Long id) {
         addressRepo.deleteById(id);
     }
 }

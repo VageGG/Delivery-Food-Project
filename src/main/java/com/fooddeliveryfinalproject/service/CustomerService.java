@@ -6,17 +6,21 @@ import com.fooddeliveryfinalproject.entity.Customer;
 import com.fooddeliveryfinalproject.entity.User;
 import com.fooddeliveryfinalproject.model.*;
 import com.fooddeliveryfinalproject.repository.CustomerRepo;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.Min;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.validation.annotation.Validated;
 
 import java.security.NoSuchAlgorithmException;
 import java.util.Optional;
 
 @Service
+@Validated
 public class CustomerService implements ValidUser<CustomerDto> {
 
     private final CustomerRepo customerRepo;
@@ -46,7 +50,7 @@ public class CustomerService implements ValidUser<CustomerDto> {
     }
 
     @Transactional(readOnly = true)
-    public CustomerDto getCustomer(Long id) {
+    public CustomerDto getCustomer(@Min(1) Long id) {
         return customerConverter.convertToModel(customerRepo.findById(id)
                 .orElseThrow(() -> new RuntimeException("Customer not found")),
                 new CustomerDto());
@@ -54,7 +58,7 @@ public class CustomerService implements ValidUser<CustomerDto> {
 
     @Override
     @Transactional
-    public void addUser(CustomerDto customerDto) throws NoSuchAlgorithmException {
+    public void addUser(@Valid CustomerDto customerDto) throws NoSuchAlgorithmException {
         Optional<Customer> existingUser = customerRepo.findByUsername(customerDto.getUsername());
         if (existingUser.isPresent()) {
             throw new RuntimeException("Username has already been used");
@@ -83,7 +87,7 @@ public class CustomerService implements ValidUser<CustomerDto> {
     }
 
     @Transactional
-    public void updateCustomer(Long id, CustomerDto customerDto) {
+    public void updateCustomer(@Min(1) Long id, @Valid CustomerDto customerDto) {
         Customer customerEntity = customerRepo.findById(id)
                 .orElseThrow(() -> new RuntimeException("Customer not found"));
         customerEntity.setUsername(customerDto.getUsername());
@@ -103,12 +107,12 @@ public class CustomerService implements ValidUser<CustomerDto> {
     }
 
     @Transactional
-    public void deleteCustomer(Long id) {
+    public void deleteCustomer(@Min(1) Long id) {
         customerRepo.deleteById(id);
     }
 
     @Transactional
-    public void addAddressForCustomer(Long customerId, AddressDto addressDto) {
+    public void addAddressForCustomer(@Min(1) Long customerId, @Valid AddressDto addressDto) {
         Customer customer = customerRepo.findById(customerId).orElseThrow(() -> new RuntimeException("Customer not found"));
         Address newAddress = addressService.createAddress(addressDto);
         customerAddressService.createCustomerAddress(customer, newAddress);

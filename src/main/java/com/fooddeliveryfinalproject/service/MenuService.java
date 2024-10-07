@@ -7,14 +7,17 @@ import com.fooddeliveryfinalproject.entity.RestaurantBranch;
 import com.fooddeliveryfinalproject.model.MenuDto;
 import com.fooddeliveryfinalproject.repository.MenuRepo;
 import com.fooddeliveryfinalproject.repository.RestaurantBranchRepo;
+import jakarta.validation.constraints.Min;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.validation.annotation.Validated;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
+@Validated
 public class MenuService {
 
     private final MenuRepo menuRepo;
@@ -30,7 +33,7 @@ public class MenuService {
     }
 
     @Transactional(readOnly = true)
-    public MenuDto getMenuById(Long id) {
+    public MenuDto getMenuById(@Min(1) Long id) {
         return menuConverter.convertToModel(
                         menuRepo.findById(id).orElseThrow(() ->
                                 new DeliveryFoodException("menu not found")), new MenuDto());
@@ -45,7 +48,7 @@ public class MenuService {
     }
 
     @Transactional
-    public void deleteMenu(long id) {
+    public void deleteMenu(@Min(1) Long id) {
         menuRepo.deleteById(id);
     }
 

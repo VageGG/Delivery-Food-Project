@@ -4,13 +4,18 @@ import com.fooddeliveryfinalproject.converter.MenuItemConverter;
 import com.fooddeliveryfinalproject.entity.MenuItem;
 import com.fooddeliveryfinalproject.model.MenuItemDto;
 import com.fooddeliveryfinalproject.repository.MenuItemRepo;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.Min;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.validation.annotation.Validated;
+
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
+@Validated
 public class MenuItemService {
 
     private final MenuItemRepo repo;
@@ -24,13 +29,13 @@ public class MenuItemService {
     }
 
     @Transactional
-    public MenuItemDto createMenuItem(MenuItemDto menuItemDto) {
+    public MenuItemDto createMenuItem(@Valid MenuItemDto menuItemDto) {
         MenuItem menuItem = this.converter.convertToEntity(menuItemDto, new MenuItem());
         return this.converter.convertToModel(this.repo.save(menuItem), new MenuItemDto());
     }
 
     @Transactional(readOnly = true)
-    public MenuItemDto getMenuItemById(Long id) {
+    public MenuItemDto getMenuItemById(@Min(1) Long id) {
         return this.converter.convertToModel
                 (
                         this.repo.findById(id).orElseThrow(() ->
@@ -46,14 +51,14 @@ public class MenuItemService {
     }
 
     @Transactional
-    public MenuItemDto updateMenuItem(MenuItemDto menuItemDto) {
+    public MenuItemDto updateMenuItem(@Valid MenuItemDto menuItemDto) {
         getMenuItemById(menuItemDto.getMenuItemId());
         MenuItem menuItem = this.converter.convertToEntity(menuItemDto, new MenuItem());
         return this.converter.convertToModel(this.repo.save(menuItem), new MenuItemDto());
     }
 
     @Transactional
-    public void deleteMenuItem(long id) {
+    public void deleteMenuItem(@Min(1) long id) {
         MenuItem menuItem = this.converter.convertToEntity(getMenuItemById(id), new MenuItem());
         this.repo.delete(menuItem);
     }

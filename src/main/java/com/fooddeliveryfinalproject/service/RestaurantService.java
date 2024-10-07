@@ -8,15 +8,20 @@ import com.fooddeliveryfinalproject.model.RestaurantDto;
 import com.fooddeliveryfinalproject.model.ReviewDto;
 import com.fooddeliveryfinalproject.repository.RestaurantRepo;
 import com.fooddeliveryfinalproject.repository.ReviewRepo;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.validation.annotation.Validated;
 
 import java.util.List;
 
 @Service
+@Validated
 public class RestaurantService {
 
     private final RestaurantRepo restaurantRepo;
@@ -41,7 +46,7 @@ public class RestaurantService {
 
 
     @Transactional(readOnly = true)
-    public RestaurantDto getRestaurantById(Long id) {
+    public RestaurantDto getRestaurantById(@Min(1) Long id) {
         return restaurantConverter.convertToModel(restaurantRepo.findById(id)
                 .orElseThrow(()->new RuntimeException("Could not find Restaurant")),
                 new RestaurantDto());
@@ -55,20 +60,20 @@ public class RestaurantService {
     }
 
     @Transactional
-    public List<RestaurantDto> searchRestaurantsByName(String name) {
+    public List<RestaurantDto> searchRestaurantsByName(@NotNull String name) {
 
         List<Restaurant> restaurants = restaurantRepo.findByNameContainingIgnoreCase(name);
         return restaurantConverter.convertToModelList(restaurants,RestaurantDto::new);
     }
 
     @Transactional
-    public void createRestaurant (RestaurantDto restaurantDto){
+    public void createRestaurant (@Valid RestaurantDto restaurantDto){
         Restaurant restaurant = restaurantConverter.convertToEntity(restaurantDto, new Restaurant());
         restaurantRepo.save(restaurant);
     }
 
     @Transactional
-    public void updateRestaurant(Long id, RestaurantDto restaurantDto){
+    public void updateRestaurant(@Min(1) Long id, @Valid RestaurantDto restaurantDto){
         Restaurant restaurantEntity = restaurantRepo.findById(id)
                 .orElseThrow(() -> new RuntimeException("Could not find Restaurant"));
         restaurantEntity.setName(restaurantDto.getName());
@@ -76,7 +81,7 @@ public class RestaurantService {
     }
 
     @Transactional
-    public void deleteRestaurant (Long id){
+    public void deleteRestaurant (@Min(1) Long id){
         restaurantRepo.deleteById(id);
     }
 

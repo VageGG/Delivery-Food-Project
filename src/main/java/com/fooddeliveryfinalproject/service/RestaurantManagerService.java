@@ -7,12 +7,15 @@ import com.fooddeliveryfinalproject.entity.User;
 import com.fooddeliveryfinalproject.model.RestaurantManagerDto;
 import com.fooddeliveryfinalproject.repository.RestaurantManagerRepo;
 import jakarta.persistence.EntityNotFoundException;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.Min;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.validation.annotation.Validated;
 
 import java.security.NoSuchAlgorithmException;
 import java.util.List;
@@ -20,6 +23,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
+@Validated
 public class RestaurantManagerService implements ValidUser<RestaurantManagerDto> {
 
     private final RestaurantManagerRepo restaurantManagerRepo;
@@ -40,7 +44,7 @@ public class RestaurantManagerService implements ValidUser<RestaurantManagerDto>
     }
 
     @Transactional(readOnly = true)
-    public RestaurantManagerDto getRestaurantManager(Long id) {
+    public RestaurantManagerDto getRestaurantManager(@Min(1) Long id) {
         return restManagerConverter.convertToModel(restaurantManagerRepo.findById(id)
                         .orElseThrow(() -> new RuntimeException("Manager not found")),
                 new RestaurantManagerDto());
@@ -48,7 +52,7 @@ public class RestaurantManagerService implements ValidUser<RestaurantManagerDto>
 
     @Override
     @Transactional
-    public void addUser(RestaurantManagerDto restaurantManagerDto) throws NoSuchAlgorithmException {
+    public void addUser(@Valid RestaurantManagerDto restaurantManagerDto) throws NoSuchAlgorithmException {
         Optional<RestaurantManager> existingUser = restaurantManagerRepo.findByUsername(restaurantManagerDto.getUsername());
         if (existingUser.isPresent()) {
             throw new RuntimeException("Email has already been used");
@@ -79,7 +83,7 @@ public class RestaurantManagerService implements ValidUser<RestaurantManagerDto>
     }
 
     @Transactional
-    public void updateRestaurantManager(Long id, RestaurantManagerDto restaurantManagerDto) {
+    public void updateRestaurantManager(@Min(1) Long id, @Valid RestaurantManagerDto restaurantManagerDto) {
         RestaurantManager restaurantManager = restaurantManagerRepo.findById(id)
                .orElseThrow(() -> new RuntimeException("Manager not found"));
         restaurantManager.setUsername(restaurantManagerDto.getUsername());
@@ -100,7 +104,7 @@ public class RestaurantManagerService implements ValidUser<RestaurantManagerDto>
     }
 
     @Transactional
-    public void approveManager(Long managerId) {
+    public void approveManager(@Min(1) Long managerId) {
         RestaurantManager restaurantManager = restaurantManagerRepo.findById(managerId)
                 .orElseThrow(() -> new EntityNotFoundException("Driver not found"));
         restaurantManager.setStatus(RegistrationStatus.APPROVED);
@@ -108,7 +112,7 @@ public class RestaurantManagerService implements ValidUser<RestaurantManagerDto>
     }
 
     @Transactional
-    public void rejectedManager(Long managerId) {
+    public void rejectedManager(@Min(1) Long managerId) {
         RestaurantManager restaurantManager = restaurantManagerRepo.findById(managerId)
                 .orElseThrow(() -> new EntityNotFoundException("Driver not found"));
         restaurantManager.setStatus(RegistrationStatus.REJECTED);
@@ -123,7 +127,7 @@ public class RestaurantManagerService implements ValidUser<RestaurantManagerDto>
     }
 
     @Transactional
-    public void deleteRestaurantManager(Long id) {
+    public void deleteRestaurantManager(@Min(1) Long id) {
         restaurantManagerRepo.deleteById(id);
     }
 

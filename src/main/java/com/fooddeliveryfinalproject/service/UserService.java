@@ -6,6 +6,9 @@ import com.fooddeliveryfinalproject.model.AddressDto;
 import com.fooddeliveryfinalproject.model.AllUserDto;
 import com.fooddeliveryfinalproject.repository.*;
 import jakarta.persistence.EntityNotFoundException;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -13,6 +16,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.validation.annotation.Validated;
 
 import java.util.Collections;
 import java.util.List;
@@ -22,6 +26,7 @@ import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 @Service
+@Validated
 public class UserService implements UserDetailsService {
 
     private final CustomerRepo customerRepo;
@@ -56,7 +61,7 @@ public class UserService implements UserDetailsService {
     }
 
     @Override
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+    public UserDetails loadUserByUsername(@NotNull String username) throws UsernameNotFoundException {
         User user = findUserByUsername(username)
                 .orElseThrow(() -> new UsernameNotFoundException("User not found with username: " + username));
 
@@ -77,7 +82,7 @@ public class UserService implements UserDetailsService {
     }
 
 
-    protected Optional<? extends User> findUserByUsername(String username) {
+    protected Optional<? extends User> findUserByUsername(@NotNull String username) {
         Optional<Customer> customer = customerRepo.findByUsername(username);
         if (customer.isPresent()) {
             return customer;
@@ -102,12 +107,12 @@ public class UserService implements UserDetailsService {
     }
 
     @Transactional(readOnly = true)
-    public Optional<? extends User> getProfile(String username) {
+    public Optional<? extends User> getProfile(@NotNull String username) {
         return findUserByUsername(username);
     }
 
     @Transactional
-    public Optional<? extends User> updateProfile(String username, AllUserDto updatedUser) {
+    public Optional<? extends User> updateProfile(@NotNull String username, @Valid AllUserDto updatedUser) {
         Optional<? extends User> userOptional = findUserByUsername(username);
         if (userOptional.isPresent()) {
             User user = userOptional.get();
@@ -129,7 +134,7 @@ public class UserService implements UserDetailsService {
     }
 
     @Transactional(readOnly = true)
-    public List<Address> getCustomerAddressesList(String username) {
+    public List<Address> getCustomerAddressesList(@NotNull String username) {
         return findUserByUsername(username)
                 .filter(user -> user instanceof Customer)
                 .map(user -> {
@@ -143,7 +148,7 @@ public class UserService implements UserDetailsService {
     }
 
     @Transactional(readOnly = true)
-    public Optional<Address> getAddress(String username, Long addressId) {
+    public Optional<Address> getAddress(@NotNull String username, @Min(1) Long addressId) {
         Optional<Customer> customer = customerRepo.findByUsername(username);
         return customer.flatMap(c ->
                 c.getAddresses().stream()
@@ -154,7 +159,7 @@ public class UserService implements UserDetailsService {
     }
 
     @Transactional
-    public Address addAddress(String username, AddressDto newAddress) {
+    public Address addAddress(@NotNull String username, @Valid AddressDto newAddress) {
         Optional<Customer> customerOptional = customerRepo.findByUsername(username);
 
         if (customerOptional.isPresent()) {
@@ -174,7 +179,7 @@ public class UserService implements UserDetailsService {
     }
 
     @Transactional
-    public void updateAddress(String username, Long addressId, AddressDto updatedAddress) {
+    public void updateAddress(@NotNull String username, @Min(1) Long addressId, @Valid AddressDto updatedAddress) {
         Optional<Address> addressOptional = getAddress(username, addressId);
 
         addressOptional.ifPresent(address -> {
@@ -205,7 +210,7 @@ public class UserService implements UserDetailsService {
         }
     }
 
-    private boolean isEmailValid(String email) {
+    private boolean isEmailValid(@NotNull String email) {
         String regex = "^(?=.{1,64}@)[A-Za-z0-9_-]+(\\.[A-Za-z0-9_-]+)*@"
                 + "[^-][A-Za-z0-9-]+(\\.[A-Za-z0-9-]+)*(\\.[A-Za-z]{2,})$";
         Pattern pattern = Pattern.compile(regex);
@@ -213,7 +218,7 @@ public class UserService implements UserDetailsService {
         return matcher.matches();
     }
 
-    private boolean isPasswordValid(String password) {
+    private boolean isPasswordValid(@NotNull String password) {
         if (password.length() < 6) {
             throw new RuntimeException("Password must be at least 6 characters long");
         }
