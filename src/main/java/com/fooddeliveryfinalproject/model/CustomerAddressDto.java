@@ -10,9 +10,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class CustomerAddressDto {
 
-    @NotNull
     private Long customerId;
 
-    @NotNull
     private Long addressId;
 }

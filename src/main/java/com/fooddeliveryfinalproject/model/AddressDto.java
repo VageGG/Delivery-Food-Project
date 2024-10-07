@@ -23,6 +23,7 @@ public class AddressDto {
     @NotNull
     private String street;
 
+    @NotNull
     private String houseNumber;
 
     private String apartmentNumber;

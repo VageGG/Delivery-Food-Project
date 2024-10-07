@@ -12,9 +12,7 @@ import lombok.NoArgsConstructor;
 @EqualsAndHashCode
 public class CartItemDto {
 
-    @NotNull
     private Long cartId;
 
-    @NotNull
     private Long menuItemId;
 }
