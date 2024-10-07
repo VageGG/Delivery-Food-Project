@@ -4,12 +4,15 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fooddeliveryfinalproject.converter.OrderConverter;
 import com.fooddeliveryfinalproject.entity.*;
 import com.fooddeliveryfinalproject.model.*;
+import com.fooddeliveryfinalproject.repository.CartRepo;
+import com.fooddeliveryfinalproject.repository.CustomerRepo;
 import com.fooddeliveryfinalproject.service.BlacklistService;
 import com.fooddeliveryfinalproject.service.JWTUtilService;
 import com.fooddeliveryfinalproject.service.OrderService;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.BDDMockito;
+import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import static org.mockito.Mockito.when;
@@ -30,6 +33,7 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 
@@ -55,16 +59,27 @@ class OrderControllerTest {
     @Autowired
     private ObjectMapper objectMapper;
 
+    @MockBean
+    private CustomerRepo customerRepo;
+
+    @MockBean
+    private CartRepo cartRepo;
+
     @Test
     void createOrder() throws Exception {
-        List<OrderItem> items = new ArrayList<>();
-        items.add(new OrderItem());
+        AddressDto address = new AddressDto();
+        address.setApartmentNumber("1");
+        address.setCity("Yerevan");
+        address.setState("Yerevan");
+        address.setStreet("Halabyan 2");
+        address.setCountry("Armenia");
 
         Order order = new Order();
         order.setOrderId(1L);
 
         Customer customer = new Customer();
         customer.setId(1L);
+        customer.setCart(new Cart());
         order.setCustomer(customer);
 
         Delivery delivery = new Delivery();
@@ -72,32 +87,23 @@ class OrderControllerTest {
         order.setDelivery(delivery);
 
         order.setStatus(Order.OrderStatus.PENDING);
-        order.setItems(items);
-
-        List<OrderItemDto> orderItemDtos = new ArrayList<>();
-
-        orderItemDtos.add(new OrderItemDto());
+        order.setItems(new ArrayList<>());
+        order.getItems().add(new OrderItem());
 
         OrderDto orderDto = new OrderDto();
         orderDto.setOrderId(1L);
 
-        CustomerDto customerDto = new CustomerDto();
-        customerDto.setId(1L);
-
-        DeliveryDto deliveryDto = new DeliveryDto();
-        deliveryDto.setId(1L);
-
         orderDto.setStatus(Order.OrderStatus.PENDING);
 
+        when(customerRepo.findById(1L)).thenReturn(Optional.of(customer));
+        when(cartRepo.findById(1L)).thenReturn(Optional.ofNullable(customer.getCart()));
         when(orderConverter.convertToModel(order, new OrderDto())).thenReturn(orderDto);
         when(orderConverter.convertToEntity(orderDto, new Order())).thenReturn(order);
-        BDDMockito.given(orderService.createOrder(order))
-                .willAnswer(invocation -> invocation.getArgument(0));
 
-        ResultActions response = mockMvc.perform(post("/order/create")
-                .contentType(MediaType.APPLICATION_JSON)
-                .accept(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(orderDto))
+        ResultActions response = mockMvc.perform(post("/order/create?cartId=1&&customerId=1&&restaurantBranchId=1")
+                .accept(MediaType.APPLICATION_JSON_VALUE)
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .content(objectMapper.writeValueAsString(address))
         );
 
         response.andExpect(MockMvcResultMatchers.status().isCreated());

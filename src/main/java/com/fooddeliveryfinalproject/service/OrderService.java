@@ -1,11 +1,11 @@
 package com.fooddeliveryfinalproject.service;
 
 import com.fooddeliveryfinalproject.converter.OrderConverter;
-import com.fooddeliveryfinalproject.entity.Order;
-import com.fooddeliveryfinalproject.entity.OrderItem;
+import com.fooddeliveryfinalproject.entity.*;
+import com.fooddeliveryfinalproject.model.AddressDto;
+import com.fooddeliveryfinalproject.model.DeliveryDto;
 import com.fooddeliveryfinalproject.model.OrderDto;
-import com.fooddeliveryfinalproject.repository.DeliveryRepo;
-import com.fooddeliveryfinalproject.repository.OrderRepo;
+import com.fooddeliveryfinalproject.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -28,33 +28,64 @@ public class OrderService {
 
     private final OrderConverter converter;
 
+    private final CustomerRepo customerRepo;
+
+    private final MenuItemRepo menuItemRepo;
+
+    private final DeliveryService deliveryService;
+
+    private final OrderItemRepo orderItemRepo;
+
     @Autowired
     public OrderService(OrderRepo orderRepo,
                         DeliveryRepo deliveryRepo,
                         DateTimeService dateTimeService,
-                        OrderConverter converter) {
+                        OrderConverter converter,
+                        CustomerRepo customerRepo,
+                        MenuItemRepo menuItemRepo,
+                        DeliveryService deliveryService,
+                        OrderItemRepo orderItemRepo) {
         this.orderRepo = orderRepo;
         this.deliveryRepo = deliveryRepo;
         this.dateTimeService = dateTimeService;
         this.converter = converter;
+        this.customerRepo = customerRepo;
+        this.menuItemRepo = menuItemRepo;
+        this.deliveryService = deliveryService;
+        this.orderItemRepo = orderItemRepo;
     }
 
     @Transactional
-    public Order createOrder(Order order) {
-        LocalDateTime dateTime = LocalDateTime.now();
+    public Order createOrder(Order order, AddressDto addressDto, Long restaurantBranchId) {
+        Order savedOrder = orderRepo.save(order);
 
-        if (order == null) {
-            throw new NullPointerException("order can't be null");
+        if (order.getCustomer() == null) {
+            orderRepo.delete(savedOrder);
+            throw new NullPointerException("customer not found");
         }
 
-        if (order.getItems().isEmpty()) {
-            throw new RuntimeException("no items to order");
+        if (order.getCustomer().getCart() == null) {
+            orderRepo.delete(savedOrder);
+            throw new NullPointerException("cart not found");
         }
 
-        order.getDelivery().setOrderTime(dateTime);
-        order.setStatus(Order.OrderStatus.PENDING);
+        List<CartItem> cartItems = order.getCustomer().getCart().getItems();
 
-        return this.orderRepo.save(order);
+        if (cartItems.isEmpty()) {
+            orderRepo.delete(savedOrder);
+            throw new NullPointerException("no items to order");
+        }
+
+        savedOrder.setStatus(Order.OrderStatus.PENDING);
+
+        List<OrderItem> orderItems = cartItems.stream()
+                .map(cartItem -> orderItemRepo.save(new OrderItem(savedOrder, menuItemRepo.findById(cartItem.getMenuItemId()).get())))
+                .toList();
+
+        savedOrder.setDelivery(deliveryService.createDelivery(addressDto, restaurantBranchId));
+
+        return this.orderRepo.save(savedOrder);
+
     }
 
     @Transactional(readOnly = true)

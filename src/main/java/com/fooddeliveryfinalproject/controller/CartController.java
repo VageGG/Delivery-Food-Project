@@ -27,30 +27,25 @@ public class CartController {
     @GetMapping("/")
     @ResponseStatus(HttpStatus.CREATED)
     @PreAuthorize("hasRole('CUSTOMER')")
-    public CartDto createCart() {
+    public CartDto createCart(@RequestParam long customerId) {
         Cart cart = new Cart();
-
-        return cartConverter.convertToModel(cartService.createOrderCart(cart), new CartDto());
+        return cartConverter.convertToModel(cartService.createOrderCart(cart, customerId), new CartDto());
     }
 
     @PostMapping("/{cartId}/menuItem/{menuItemId}/add")
     @ResponseStatus(HttpStatus.ACCEPTED)
     @PreAuthorize("hasRole('CUSTOMER')")
-    public CartDto addItemToCart(@PathVariable Long cartId, @PathVariable Long menuItemId) {
-        return cartConverter.convertToModel (
-                cartService.addItemToCart(cartId, menuItemId),
-                new CartDto()
-        );
+    public String addItemToCart(@PathVariable Long cartId, @PathVariable Long menuItemId) {
+        return cartService.addItemToCart(cartId, menuItemId);
+
     }
 
     @DeleteMapping("/{cartId}/menuItem/{menuItemId}/remove")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @PreAuthorize("hasRole('CUSTOMER')")
-    public CartDto removeItemFromCart(@PathVariable Long cartId, @PathVariable Long menuItemId) {
-        return cartConverter.convertToModel (
-                cartService.removeItemFromCart(cartId, menuItemId),
-                new CartDto()
-        );
+    public String removeItemFromCart(@PathVariable Long cartId, @PathVariable Long menuItemId) {
+        cartService.removeItemFromCart(cartId, menuItemId);
+        return "item has been removed from cart";
     }
 
     @DeleteMapping("/{cartId}/delete")

@@ -1,11 +1,14 @@
 package com.fooddeliveryfinalproject.service;
 
+import com.fooddeliveryfinalproject.converter.AddressConverter;
 import com.fooddeliveryfinalproject.converter.DeliveryConverter;
-import com.fooddeliveryfinalproject.entity.Delivery;
-import com.fooddeliveryfinalproject.entity.Driver;
+import com.fooddeliveryfinalproject.entity.*;
+import com.fooddeliveryfinalproject.model.AddressDto;
 import com.fooddeliveryfinalproject.model.DeliveryDto;
 import com.fooddeliveryfinalproject.model.DriverDto;
+import com.fooddeliveryfinalproject.repository.AddressRepo;
 import com.fooddeliveryfinalproject.repository.DeliveryRepo;
+import com.fooddeliveryfinalproject.repository.RestaurantBranchRepo;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -29,9 +32,58 @@ class DeliveryServiceTest {
     @Mock
     private DeliveryConverter deliveryConverter;
 
+    @Mock
+    private RestaurantBranchRepo restaurantBranchRepo;
+
+    @Mock
+    private AddressRepo addressRepo;
+
+    @Mock
+    private AddressConverter addressConverter;
+
     @BeforeEach
     void setUp() {
         MockitoAnnotations.openMocks(this);
+    }
+
+    @Test
+    void createDelivery() {
+        //given
+        AddressDto addressDto = new AddressDto();
+        addressDto.setId(1L);
+        addressDto.setApartmentNumber("1");
+        addressDto.setCity("Yerevan");
+        addressDto.setState("Yerevan");
+        addressDto.setStreet("Halabyan 2");
+        addressDto.setCountry("Armenia");
+
+        Address address = new Address();
+        address.setId(1L);
+        address.setApartmentNumber("1");
+        address.setCity("Yerevan");
+        address.setState("Yerevan");
+        address.setStreet("Halabyan 2");
+        address.setCountry("Armenia");
+
+        RestaurantBranch restaurantBranch = new RestaurantBranch();
+        restaurantBranch.setRestBranchId(1L);
+
+        Delivery delivery = new Delivery();
+        delivery.setDeliveryId(1L);
+        delivery.setOrder(new Order());
+        delivery.getOrder().setOrderId(1L);
+
+        when(restaurantBranchRepo.findById(1L)).thenReturn(Optional.of(restaurantBranch));
+        when(deliveryRepo.save(delivery)).thenReturn(delivery);
+        when(addressRepo.save(address)).thenReturn(address);
+        when(addressConverter.convertToEntity(addressDto, new Address())).thenReturn(address);
+        when(deliveryRepo.save(delivery)).thenReturn(delivery);
+
+        //when
+        Delivery response = deliveryService.createDelivery(addressDto, 1L);
+
+        //then
+        assertEquals(delivery, response);
     }
 
     @Test

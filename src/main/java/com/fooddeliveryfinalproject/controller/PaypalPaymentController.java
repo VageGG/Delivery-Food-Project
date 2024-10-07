@@ -22,8 +22,6 @@ public class PaypalPaymentController {
 
     private long id;
 
-
-
     @PostMapping("/order/{orderId}/pay")
     @ResponseStatus(HttpStatus.TEMPORARY_REDIRECT)
     @PreAuthorize("hasRole('CUSTOMER')")
