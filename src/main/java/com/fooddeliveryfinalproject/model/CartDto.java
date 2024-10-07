@@ -13,7 +13,6 @@ import lombok.NoArgsConstructor;
 @EqualsAndHashCode
 public class CartDto {
 
-    @NotNull
     private Long cartId;
 
     @Min(1)

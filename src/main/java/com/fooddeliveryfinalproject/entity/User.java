@@ -2,6 +2,8 @@ package com.fooddeliveryfinalproject.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -25,19 +27,24 @@ public abstract class User implements Serializable, UserDetails {
     private Long id;
 
     @Column(name = "username", nullable = false, unique = true)
+    @NotNull
     private String username;
 
+    @NotNull
     @Column(name = "password", nullable = false)
     private String password;
 
     @Column(name = "email", nullable = false, unique = true)
+    @Email
     private String email;
 
     @Column(name = "phone_number", nullable = false)
+    @NotNull
     private String phoneNumber;
 
     @Column(name = "role", nullable = false)
     @Enumerated(EnumType.STRING)
+    @NotNull
     private Role role;
 
 

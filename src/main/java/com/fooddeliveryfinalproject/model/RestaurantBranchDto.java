@@ -1,6 +1,7 @@
 package com.fooddeliveryfinalproject.model;
 
 
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -18,5 +19,6 @@ public class RestaurantBranchDto {
 
     private AddressDto addressDto;
 
+    @NotNull
     private String phoneNumber;
 }
