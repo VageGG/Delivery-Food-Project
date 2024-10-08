@@ -11,11 +11,13 @@ import jakarta.validation.constraints.Min;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.validation.annotation.Validated;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
+@Validated
 public class ReviewService {
 
     private final ReviewRepo repo;
@@ -32,7 +34,7 @@ public class ReviewService {
     }
 
     @Transactional
-    public Review createReview(Review review) {
+    public Review createReview(@Valid Review review) {
         if (review.getRating() > 5 || review.getRating() < 1) {
             throw new RuntimeException("rating must be between 1 and 5");
         }
@@ -44,7 +46,7 @@ public class ReviewService {
     }
 
     @Transactional(readOnly = true)
-    public Review getReviewById(long id) {
+    public Review getReviewById(@Min(1) long id) {
         Review review = this.repo.getReferenceById(id);
         if (review == null) {
             throw new RuntimeException("review not found");
@@ -54,7 +56,7 @@ public class ReviewService {
     }
 
     @Transactional
-    public Review updateReview(Review review) {
+    public Review updateReview(@Valid Review review) {
         getReviewById(review.getReviewId());
 
         if (review.getComment().length() > 200 || review.getComment().length() < 5) {
@@ -65,7 +67,7 @@ public class ReviewService {
     }
 
     @Transactional
-    public void deleteReview(long id) {
+    public void deleteReview(@Min(1) long id) {
         Review review = getReviewById(id);
         this.repo.delete(review);
     }

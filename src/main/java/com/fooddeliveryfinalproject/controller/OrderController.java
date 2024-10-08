@@ -9,6 +9,8 @@ import com.fooddeliveryfinalproject.repository.CartRepo;
 import com.fooddeliveryfinalproject.repository.CustomerRepo;
 import com.fooddeliveryfinalproject.service.OrderService;
 
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -46,10 +48,10 @@ public class OrderController {
     @PostMapping("/create")
     @ResponseStatus(HttpStatus.CREATED)
     @PreAuthorize("hasRole('CUSTOMER')")
-    public OrderDto createOrder(@RequestParam("cartId") Long cartId,
-                                @RequestParam("customerId") Long customerId,
-                                @RequestParam("restaurantBranchId") Long restaurantBranchId,
-                                @RequestBody AddressDto addressDto) {
+    public OrderDto createOrder(@RequestParam("cartId") @Min(1) Long cartId,
+                                @RequestParam("customerId") @Min(1) Long customerId,
+                                @RequestParam("restaurantBranchId") @Min(1) Long restaurantBranchId,
+                                @RequestBody @NotNull AddressDto addressDto) {
         Order order = new Order();
         order.setCustomer(customerRepo.findById(customerId).get());
         order.getCustomer().setCart(cartRepo.findById(cartId).get());
@@ -59,7 +61,7 @@ public class OrderController {
     @GetMapping("/list")
     @ResponseStatus(HttpStatus.OK)
     @PreAuthorize("hasRole('CUSTOMER')")
-    public Page<OrderDto> getOrderList(@RequestParam Long customerId) { // ask how to get customerId
+    public Page<OrderDto> getOrderList(@RequestParam @Min(1) Long customerId) { // ask how to get customerId
         Pageable pageable = PageRequest.of (
                 0,
                 2
@@ -70,7 +72,7 @@ public class OrderController {
     @GetMapping("/{orderId}")
     @ResponseStatus(HttpStatus.OK)
     @PreAuthorize("hasRole('CUSTOMER')")
-    public OrderDto getOrderById(@PathVariable Long orderId) {
+    public OrderDto getOrderById(@PathVariable @Min(1) Long orderId) {
         return orderConverter.convertToModel(orderService.getOrderById(orderId), new OrderDto());
     }
 
@@ -84,7 +86,7 @@ public class OrderController {
     @PostMapping("/{orderId}/take")
     @ResponseStatus(HttpStatus.OK)
     @PreAuthorize("hasRole('DRIVER')")
-    public OrderDto takeOrder(@PathVariable Long orderId) {
+    public OrderDto takeOrder(@PathVariable @Min(1) Long orderId) {
         return orderConverter.convertToModel(orderService.takeOrder(orderId), new OrderDto());
     }
 }

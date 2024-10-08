@@ -4,6 +4,7 @@ import com.fooddeliveryfinalproject.converter.CartConverter;
 import com.fooddeliveryfinalproject.entity.Cart;
 import com.fooddeliveryfinalproject.model.CartDto;
 import com.fooddeliveryfinalproject.service.CartService;
+import jakarta.validation.constraints.Min;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -27,7 +28,7 @@ public class CartController {
     @GetMapping("/")
     @ResponseStatus(HttpStatus.CREATED)
     @PreAuthorize("hasRole('CUSTOMER')")
-    public CartDto createCart(@RequestParam long customerId) {
+    public CartDto createCart(@RequestParam @Min(1) long customerId) {
         Cart cart = new Cart();
         return cartConverter.convertToModel(cartService.createOrderCart(cart, customerId), new CartDto());
     }
@@ -35,7 +36,7 @@ public class CartController {
     @PostMapping("/{cartId}/menuItem/{menuItemId}/add")
     @ResponseStatus(HttpStatus.ACCEPTED)
     @PreAuthorize("hasRole('CUSTOMER')")
-    public String addItemToCart(@PathVariable Long cartId, @PathVariable Long menuItemId) {
+    public String addItemToCart(@PathVariable @Min(1) Long cartId, @PathVariable @Min(1) Long menuItemId) {
         return cartService.addItemToCart(cartId, menuItemId);
 
     }
@@ -43,7 +44,7 @@ public class CartController {
     @DeleteMapping("/{cartId}/menuItem/{menuItemId}/remove")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @PreAuthorize("hasRole('CUSTOMER')")
-    public String removeItemFromCart(@PathVariable Long cartId, @PathVariable Long menuItemId) {
+    public String removeItemFromCart(@PathVariable @Min(1) Long cartId, @PathVariable @Min(1) Long menuItemId) {
         cartService.removeItemFromCart(cartId, menuItemId);
         return "item has been removed from cart";
     }
@@ -51,7 +52,7 @@ public class CartController {
     @DeleteMapping("/{cartId}/delete")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @PreAuthorize("hasRole('CUSTOMER')")
-    public String deleteCart(@PathVariable Long cartId) {
+    public String deleteCart(@PathVariable @Min(1) Long cartId) {
         return cartService.deleteOrderCart(cartId);
     }
 }
