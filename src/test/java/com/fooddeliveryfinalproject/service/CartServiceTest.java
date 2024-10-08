@@ -9,7 +9,9 @@ import com.fooddeliveryfinalproject.entity.MenuItem;
 import com.fooddeliveryfinalproject.model.CartDto;
 import com.fooddeliveryfinalproject.model.CustomerDto;
 import com.fooddeliveryfinalproject.model.MenuItemDto;
+import com.fooddeliveryfinalproject.repository.CartItemRepo;
 import com.fooddeliveryfinalproject.repository.CartRepo;
+import com.fooddeliveryfinalproject.repository.CustomerRepo;
 import com.fooddeliveryfinalproject.repository.MenuItemRepo;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -43,6 +45,12 @@ class CartServiceTest {
     @Mock
     private MenuItemConverter menuItemConverter;
 
+    @Mock
+    private CustomerRepo customerRepo;
+
+    @Mock
+    private CartItemRepo cartItemRepo;
+
     @BeforeEach
     void setUp() {
         MockitoAnnotations.openMocks(this);
@@ -53,11 +61,14 @@ class CartServiceTest {
         // given
         Cart cart = new Cart();
         cart.setCartId(1L);
+        cart.setCustomer(new Customer());
+        cart.getCustomer().setId(1L);
 
         when(cartRepo.save(cart)).thenReturn(cart);
 
         // when
-        Cart savedCart = cartService.createOrderCart(cart);
+        when(customerRepo.findById(1L)).thenReturn(Optional.ofNullable(cart.getCustomer()));
+        Cart savedCart = cartService.createOrderCart(cart, 1L);
 
         // then
         assertEquals(cart.getCartId(), savedCart.getCartId());
@@ -65,7 +76,7 @@ class CartServiceTest {
 
     @Test
     void createOrderCartShouldThrowNullPointerException() {
-        assertThrows(NullPointerException.class, () -> cartService.createOrderCart(null));
+        assertThrows(NullPointerException.class, () -> cartService.createOrderCart(null, 1L));
     }
 
     @Test
@@ -79,24 +90,20 @@ class CartServiceTest {
         cart.setItems(new ArrayList<>());
 
         MenuItem item = new MenuItem();
+        item.setMenuItemId(1L);
         item.setMenuItemId(itemId);
 
+        CartItem cartItem = new CartItem(cart, item);
+
         when(cartRepo.findById(cartId)).thenReturn(Optional.of(cart));
-        when(menuItemConverter.convertToEntity(
-                    menuItemService.getMenuItemById(itemId),
-                    new MenuItem()
-                )
-        ).thenReturn(item);
-
-        cart.getItems().add(new CartItem(cart, item));
-
-        when(cartRepo.save(cart)).thenReturn(cart);
+        when(menuItemRepo.findById(1L)).thenReturn(Optional.of(item));
+        when(cartItemRepo.save(new CartItem(cart, item))).thenReturn(cartItem);
 
         // when
-        Cart savedCart = cartService.addItemToCart(cart.getCartId(), item.getMenuItemId());
+        String response = cartService.addItemToCart(cart.getCartId(), item.getMenuItemId());
 
         // then
-        assertEquals(cart.getItems().size(), savedCart.getItems().size());
+        assertEquals(response, "item has been added to cart");
 
     }
 
@@ -113,18 +120,14 @@ class CartServiceTest {
         item.setMenuItemId(1L);
 
         when(cartRepo.findById(1L)).thenReturn(Optional.of(cart));
-        when(menuItemConverter.convertToEntity(
-                menuItemService.getMenuItemById(1L),
-                new MenuItem())
-        ).thenReturn(item);
-
-        when(cartRepo.save(cart)).thenReturn(cart);
+        when(!menuItemRepo.existsById(1L)).thenReturn(true);
+        when(cartItemRepo.findByMenuItemId(1L)).thenReturn(new CartItem(cart, item));
 
         // when
-        Cart savedCart = cartService.removeItemFromCart(1L, 1L);
+        String response = cartService.removeItemFromCart(1L, 1L);
 
         // then
-        assertEquals(cart.getItems().size(), savedCart.getItems().size());
+        assertEquals(response, "item has been removed");
     }
 
     @Test

@@ -22,18 +22,15 @@ public class ReviewService {
 
     private final ReviewRepo repo;
 
-    private final RestaurantRepo restaurantRepo;
-
     private final ReviewConverter reviewConverter;
 
+    private final RestaurantRepo restaurantRepo;
 
     @Autowired
-    public ReviewService(ReviewRepo repo,
-                         ReviewConverter reviewConverter,
-                         RestaurantRepo restaurantRepo) {
+    public ReviewService(ReviewRepo repo, ReviewConverter reviewConverter, RestaurantRepo restaurantRepo) {
         this.repo = repo;
-        this.restaurantRepo = restaurantRepo;
         this.reviewConverter = reviewConverter;
+        this.restaurantRepo = restaurantRepo;
     }
 
     @Transactional

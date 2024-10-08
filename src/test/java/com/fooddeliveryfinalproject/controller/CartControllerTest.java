@@ -4,10 +4,12 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fooddeliveryfinalproject.converter.CartConverter;
 import com.fooddeliveryfinalproject.entity.Cart;
 import com.fooddeliveryfinalproject.entity.CartItem;
+import com.fooddeliveryfinalproject.entity.Customer;
 import com.fooddeliveryfinalproject.entity.MenuItem;
 import com.fooddeliveryfinalproject.model.CartDto;
 import com.fooddeliveryfinalproject.model.CartItemDto;
 import com.fooddeliveryfinalproject.model.MenuItemDto;
+import com.fooddeliveryfinalproject.repository.CustomerRepo;
 import com.fooddeliveryfinalproject.service.BlacklistService;
 import com.fooddeliveryfinalproject.service.CartService;
 import com.fooddeliveryfinalproject.service.JWTUtilService;
@@ -24,6 +26,7 @@ import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
 import java.util.ArrayList;
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.when;
@@ -53,21 +56,29 @@ class CartControllerTest {
     @Autowired
     private ObjectMapper objectMapper;
 
+    @MockBean
+    private CustomerRepo customerRepo;
+
     @Test
     void createCart() throws Exception {
         Cart cart = new Cart();
         cart.setCartId(1L);
+        Customer customer = new Customer();
+        customer.setId(1L);
+        cart.setCustomer(customer);
 
         CartDto cartDto = new CartDto();
         cartDto.setCartId(1L);
 
         when(cartConverter.convertToModel(
-                    cartService.createOrderCart(cart),
+                    cartService.createOrderCart(cart, 1L),
                     new CartDto()
                 )
         ).thenReturn(cartDto);
 
-        ResultActions response = mockMvc.perform(get("/cart/")
+        when(customerRepo.findById(1L)).thenReturn(Optional.of(customer));
+
+        ResultActions response = mockMvc.perform(get("/cart/?customerId=1")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(cartDto))
         );
@@ -96,7 +107,7 @@ class CartControllerTest {
         cartItemDto.setCartId(1L);
         cartItemDto.setMenuItemId(1L);
 
-        when(cartService.addItemToCart(1L, 1L)).thenReturn(cart);
+        when(cartService.addItemToCart(1L, 1L)).thenReturn("item has been added to cart");
 
         ResultActions response = mockMvc.perform(post("/cart/1/menuItem/1/add")
                 .contentType(MediaType.APPLICATION_JSON)
@@ -125,7 +136,7 @@ class CartControllerTest {
         cartItemDto.setCartId(1L);
         cartItemDto.setMenuItemId(1L);
 
-        when(cartService.removeItemFromCart(1L, 1L)).thenReturn(cart);
+        when(cartService.removeItemFromCart(1L, 1L)).thenReturn("item has been removed");
 
         ResultActions response = mockMvc.perform(delete("/cart/1/menuItem/1/remove")
                 .contentType(MediaType.APPLICATION_JSON)

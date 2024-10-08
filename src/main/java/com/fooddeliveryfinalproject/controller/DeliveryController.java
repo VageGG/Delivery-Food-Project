@@ -7,8 +7,12 @@ import com.fooddeliveryfinalproject.model.DeliveryDto;
 import com.fooddeliveryfinalproject.model.ReviewDto;
 import com.fooddeliveryfinalproject.service.DeliveryService;
 import com.fooddeliveryfinalproject.service.ReviewService;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.lang.NonNull;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
@@ -40,21 +44,21 @@ public class DeliveryController {
     @GetMapping("/list")
     @ResponseStatus(HttpStatus.OK)
     @PreAuthorize("hasRole('DRIVER')")
-    public List<DeliveryDto> getDeliveryList(@RequestParam Long driverId) {
+    public List<DeliveryDto> getDeliveryList(@RequestParam @Min(1) Long driverId) {
         return deliveryService.getDeliveryList(driverId);
     }
 
     @GetMapping("/current")
     @ResponseStatus(HttpStatus.OK)
     @PreAuthorize("hasRole('DRIVER')")
-    public DeliveryDto getCurrentDelivery(@RequestParam Long driverId) {
+    public DeliveryDto getCurrentDelivery(@RequestParam @Min(1) Long driverId) {
         return deliveryService.getCurrentDelivery(driverId);
     }
 
     @PutMapping("/update")
     @ResponseStatus(HttpStatus.ACCEPTED)
     @PreAuthorize("hasRole('DRIVER')")
-    public DeliveryDto updateDelivery(@RequestBody DeliveryDto deliveryDto) {
+    public DeliveryDto updateDelivery(@RequestBody @NotNull DeliveryDto deliveryDto) {
         return deliveryConverter.convertToModel (
                 deliveryService.updateDeliveryStatus(deliveryDto.getId(), deliveryDto.getStatus()),
                 new DeliveryDto()
@@ -64,21 +68,21 @@ public class DeliveryController {
     @GetMapping("/{deliveryId}")
     @ResponseStatus(HttpStatus.OK)
     @PreAuthorize("hasRole('DRIVER')")
-    public DeliveryDto getDeliveryById(@PathVariable Long deliveryId) {
+    public DeliveryDto getDeliveryById(@PathVariable @Min(1) Long deliveryId) {
         return deliveryConverter.convertToModel(deliveryService.getDeliveryById(deliveryId), new DeliveryDto());
     }
 
     @GetMapping("/trackingId/{trackingId}")
     @ResponseStatus(HttpStatus.OK)
     @PreAuthorize("hasRole('CUSTOMER')")
-    public DeliveryDto getDeliveryByTrackingId(@PathVariable String trackingId) {
+    public DeliveryDto getDeliveryByTrackingId(@PathVariable @NotNull String trackingId) {
         return deliveryConverter.convertToModel(deliveryService.getDeliveryByTrackingId(trackingId), new DeliveryDto());
     }
 
     @PostMapping("/feedback")
     @ResponseStatus(HttpStatus.CREATED)
     @PreAuthorize("hasRole('CUSTOMER')")
-    public ReviewDto createReview(@RequestBody ReviewDto reviewDto) {
+    public ReviewDto createReview(@RequestBody @NotNull ReviewDto reviewDto) {
         Review review = reviewConverter.convertToEntity(reviewDto, new Review());
         return reviewConverter.convertToModel (
                 reviewService.createReview(review),

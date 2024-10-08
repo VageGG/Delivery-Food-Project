@@ -4,7 +4,11 @@ import com.fooddeliveryfinalproject.converter.CartConverter;
 import com.fooddeliveryfinalproject.converter.MenuItemConverter;
 import com.fooddeliveryfinalproject.entity.*;
 import com.fooddeliveryfinalproject.model.CartDto;
+import com.fooddeliveryfinalproject.repository.CartItemRepo;
 import com.fooddeliveryfinalproject.repository.CartRepo;
+import com.fooddeliveryfinalproject.repository.CustomerRepo;
+import com.fooddeliveryfinalproject.repository.MenuItemRepo;
+import jakarta.persistence.EntityManager;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -20,65 +24,82 @@ public class CartService {
 
     private final MenuItemConverter menuItemConverter;
 
+    private final CustomerRepo customerRepo;
+
+    private final CartItemRepo cartItemRepo;
+
+    private final EntityManager entityManager;
+
+    private final MenuItemRepo menuItemRepo;
+
     @Autowired
     public CartService(CartRepo repo,
                        MenuItemService menuItemService,
                        CartConverter cartConverter,
-                       MenuItemConverter menuItemConverter) {
+                       MenuItemConverter menuItemConverter,
+                       CustomerRepo customerRepo,
+                       CartItemRepo cartItemRepo,
+                       EntityManager entityManager,
+                       MenuItemRepo menuItemRepo) {
         this.repo = repo;
         this.menuItemService = menuItemService;
         this.cartConverter = cartConverter;
         this.menuItemConverter = menuItemConverter;
+        this.customerRepo = customerRepo;
+        this.cartItemRepo = cartItemRepo;
+        this.entityManager = entityManager;
+        this.menuItemRepo = menuItemRepo;
     }
 
     @Transactional
-    public Cart createOrderCart(Cart cart) {
+    public Cart createOrderCart(Cart cart, long customerId) {
         if (cart == null) {
             throw new NullPointerException("cart is null");
         }
+
+        Customer customer = customerRepo.findById(customerId)
+                .orElseThrow(() -> new NullPointerException("customer not found"));
+
+        cart.setCustomer(customer);
 
         return this.repo.save(cart);
     }
 
     @Transactional
-    public Cart addItemToCart(Long cartId, Long menuItemId) {
+    public String addItemToCart(Long cartId, Long menuItemId) {
         Cart cart = getOrderCartById(cartId);
 
-        MenuItem menuItem =
-                menuItemConverter.convertToEntity (
-                    menuItemService.getMenuItemById(menuItemId),
-                    new MenuItem()
-                );
+        MenuItem menuItem = menuItemRepo.findById(menuItemId)
+                .orElseThrow(() -> new NullPointerException("item not found"));
 
-        cart.getItems().add(new CartItem(cart, menuItem));
+        cartItemRepo.save(new CartItem(cart, menuItem));
 
-        return repo.save(cart);
+        return "item has been added to cart";
     }
 
     @Transactional
-    public Cart removeItemFromCart(Long cartId, Long menuItemId) {
-        Cart cart = getOrderCartById(cartId);
+    public String removeItemFromCart(Long cartId, Long menuItemId) {
+        Cart cart = repo.findById(cartId)
+                .orElseThrow(() -> new NullPointerException("cart not found"));
+
 
         if (cart.getItems().isEmpty()) {
             throw new RuntimeException("cart is empty");
         }
 
-        MenuItem menuItem =
-                menuItemConverter.convertToEntity (
-                        menuItemService.getMenuItemById(menuItemId),
-                        new MenuItem()
-                );
-
-        CartItem cartItem;
-        for (int i = 0; i < cart.getItems().size(); i++) {
-            cartItem = cart.getItems().get(i);
-
-            if (cartItem.getMenuItem() == menuItem) {
-                cart.getItems().remove(cartItem);
-            }
+        if(!menuItemRepo.existsById(menuItemId)) {
+            throw new NullPointerException("menu item not found");
         }
 
-        return repo.save(cart);
+        CartItem cartItem = cartItemRepo.findByMenuItemId(menuItemId);
+
+        if (cartItem.getCart().getCartId() != cartId) {
+            throw new NullPointerException("item not in cart");
+        }
+
+        cartItemRepo.delete(cartItem);
+
+        return "item has been removed";
     }
 
     @Transactional(readOnly = true)

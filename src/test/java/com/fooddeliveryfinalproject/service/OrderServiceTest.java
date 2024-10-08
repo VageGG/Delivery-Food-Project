@@ -2,11 +2,8 @@ package com.fooddeliveryfinalproject.service;
 
 import com.fooddeliveryfinalproject.converter.OrderConverter;
 import com.fooddeliveryfinalproject.entity.*;
-import com.fooddeliveryfinalproject.model.CustomerDto;
-import com.fooddeliveryfinalproject.model.DeliveryDto;
-import com.fooddeliveryfinalproject.model.DriverDto;
-import com.fooddeliveryfinalproject.model.OrderDto;
-import com.fooddeliveryfinalproject.repository.OrderRepo;
+import com.fooddeliveryfinalproject.model.*;
+import com.fooddeliveryfinalproject.repository.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -34,6 +31,27 @@ class OrderServiceTest {
     @Mock
     private OrderConverter orderConverter;
 
+    @Mock
+    private CustomerRepo customerRepo;
+
+    @Mock
+    private RestaurantBranchRepo restaurantBranchRepo;
+
+    @Mock
+    private CartRepo cartRepo;
+
+    @Mock
+    private OrderItemRepo orderItemRepo;
+
+    @Mock
+    private MenuItemRepo menuItemRepo;
+
+    @Mock
+    private CartItemRepo cartItemRepo;
+
+    @Mock
+    private DeliveryService deliveryService;
+
     @BeforeEach
     void setUp() {
         MockitoAnnotations.openMocks(this);
@@ -44,14 +62,44 @@ class OrderServiceTest {
         // given
         Order order = new Order();
         order.setCustomer(new Customer());
+        order.getCustomer().setId(1L);
+        order.getCustomer().setCart(new Cart());
+        order.getCustomer().getCart().setItems(new ArrayList<>());
+        order.getCustomer().getCart().getItems().add(new CartItem());
+        order.getCustomer().getCart().getItems().get(0).setMenuItemId(1L);
         order.setItems(new ArrayList<OrderItem>());
         order.getItems().add(new OrderItem());
         order.setDelivery(new Delivery());
         order.setStatus(Order.OrderStatus.PENDING);
 
-        // when
+        MenuItem menuItem = new MenuItem();
+        menuItem.setMenuItemId(1L);
+
+        AddressDto address = new AddressDto();
+        address.setCity("Yerevan");
+        address.setCountry("Armenia");
+        address.setState("Yerevan");
+        address.setStreet("Halabyan 2");
+        address.setApartmentNumber("1");
+
+        Delivery delivery = new Delivery();
+
         when(orderRepo.save(order)).thenReturn(order);
-        Order savedOrder = orderService.createOrder(order);
+
+        when(cartRepo.findById(1L)).thenReturn(Optional.ofNullable(order.getCustomer().getCart()));
+
+        when(customerRepo.findById(1L)).thenReturn(Optional.ofNullable(order.getCustomer()));
+
+        when(restaurantBranchRepo.findById(1L)).thenReturn(Optional.of(new RestaurantBranch()));
+
+        when(menuItemRepo.findById(1L)).thenReturn(Optional.of(menuItem));
+
+        when(deliveryService.createDelivery(address, 1L)).thenReturn(delivery);
+
+        when(orderItemRepo.save(new OrderItem(order, menuItem))).thenReturn(new OrderItem());
+
+        // when
+        Order savedOrder = orderService.createOrder(order, address, 1L);
 
         // then
         assertEquals(order.getCustomer(), savedOrder.getCustomer());
@@ -61,14 +109,14 @@ class OrderServiceTest {
     @Test
     void createOrderShouldThrowNullPointerException() {
         Order order = null;
-        assertThrows(NullPointerException.class, () -> orderService.createOrder(order));
+        assertThrows(NullPointerException.class, () -> orderService.createOrder(order, new AddressDto(), 1L));
     }
 
     @Test
     void createOrderShouldReturnNoItemsToOrder() {
         Order order = new Order();
         order.setItems(new ArrayList<>());
-        assertThrows(RuntimeException.class, () -> orderService.createOrder(order));
+        assertThrows(RuntimeException.class, () -> orderService.createOrder(order, new AddressDto(), 1L));
     }
 
     @Test

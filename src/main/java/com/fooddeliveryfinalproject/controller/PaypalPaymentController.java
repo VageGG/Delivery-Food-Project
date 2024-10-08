@@ -5,6 +5,7 @@ import com.fooddeliveryfinalproject.service.PaypalPaymentService;
 import com.paypal.api.payments.Links;
 import com.paypal.api.payments.Payment;
 import com.paypal.base.rest.PayPalRESTException;
+import jakarta.validation.constraints.Min;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -22,12 +23,10 @@ public class PaypalPaymentController {
 
     private long id;
 
-
-
     @PostMapping("/order/{orderId}/pay")
     @ResponseStatus(HttpStatus.TEMPORARY_REDIRECT)
     @PreAuthorize("hasRole('CUSTOMER')")
-    public RedirectView createPayment(@PathVariable long orderId) throws PayPalRESTException {
+    public RedirectView createPayment(@PathVariable @Min(1) long orderId) throws PayPalRESTException {
         double total = this.orderService.calculateTotal(orderId);
 
         id = orderId;
