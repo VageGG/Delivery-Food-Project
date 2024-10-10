@@ -2,10 +2,7 @@ package com.fooddeliveryfinalproject.service;
 
 import com.fooddeliveryfinalproject.converter.CartConverter;
 import com.fooddeliveryfinalproject.converter.MenuItemConverter;
-import com.fooddeliveryfinalproject.entity.Cart;
-import com.fooddeliveryfinalproject.entity.CartItem;
-import com.fooddeliveryfinalproject.entity.Customer;
-import com.fooddeliveryfinalproject.entity.MenuItem;
+import com.fooddeliveryfinalproject.entity.*;
 import com.fooddeliveryfinalproject.model.CartDto;
 import com.fooddeliveryfinalproject.model.CustomerDto;
 import com.fooddeliveryfinalproject.model.MenuItemDto;
@@ -88,6 +85,8 @@ class CartServiceTest {
         Cart cart = new Cart();
         cart.setCartId(cartId);
         cart.setItems(new ArrayList<>());
+        cart.setCustomer(new Customer());
+        cart.getCustomer().setId(1L);
 
         MenuItem item = new MenuItem();
         item.setMenuItemId(1L);
@@ -100,7 +99,7 @@ class CartServiceTest {
         when(cartItemRepo.save(new CartItem(cart, item))).thenReturn(cartItem);
 
         // when
-        String response = cartService.addItemToCart(cart.getCartId(), item.getMenuItemId());
+        String response = cartService.addItemToCart(cart.getCartId(), item.getMenuItemId(), 1L);
 
         // then
         assertEquals(response, "item has been added to cart");
@@ -113,18 +112,21 @@ class CartServiceTest {
         Cart cart = new Cart();
         cart.setCartId(1L);
         cart.setItems(new ArrayList<>());
-
-        cart.getItems().add(new CartItem());
+        cart.setCustomer(new Customer());
+        cart.getCustomer().setId(1L);
 
         MenuItem item = new MenuItem();
         item.setMenuItemId(1L);
 
+        CartItem cartItem = new CartItem(cart, item);
+        cart.getItems().add(cartItem);
+
         when(cartRepo.findById(1L)).thenReturn(Optional.of(cart));
-        when(!menuItemRepo.existsById(1L)).thenReturn(true);
-        when(cartItemRepo.findByMenuItemId(1L)).thenReturn(new CartItem(cart, item));
+        when(cartItemRepo.findById(new CartItemId(1L, 1L)))
+                .thenReturn(Optional.of(cartItem));
 
         // when
-        String response = cartService.removeItemFromCart(1L, 1L);
+        String response = cartService.removeItemFromCart(1L, 1L, 1L);
 
         // then
         assertEquals(response, "item has been removed");
@@ -134,12 +136,14 @@ class CartServiceTest {
     void removeItemFromCartShouldReturnCartIsEmpty() {
         Cart cart = new Cart();
         cart.setItems(new ArrayList<>());
+        cart.setCustomer(new Customer());
+        cart.getCustomer().setId(2L);
 
         when(cartRepo.findById(1L)).thenReturn(Optional.of(cart));
 
         assertThrows(
                 RuntimeException.class,
-                () -> cartService.removeItemFromCart(1L, 1L)
+                () -> cartService.removeItemFromCart(1L, 1L, 1L)
         );
     }
 
@@ -169,11 +173,13 @@ class CartServiceTest {
         // given
         Cart cart = new Cart();
         cart.setCartId(1L);
+        cart.setCustomer(new Customer());
+        cart.getCustomer().setId(1L);
 
         when(cartRepo.findById(1L)).thenReturn(Optional.of(cart));
 
         // when
-        String message = cartService.deleteOrderCart(1L);
+        String message = cartService.deleteOrderCart(1L, 1L);
 
         // then
         assertEquals("cart has been deleted", message);

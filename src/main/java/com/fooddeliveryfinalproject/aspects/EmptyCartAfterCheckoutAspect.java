@@ -2,6 +2,7 @@ package com.fooddeliveryfinalproject.aspects;
 
 import com.fooddeliveryfinalproject.controller.PaypalPaymentController;
 import com.fooddeliveryfinalproject.entity.CartItem;
+import com.fooddeliveryfinalproject.entity.Order;
 import com.fooddeliveryfinalproject.entity.OrderItem;
 import com.fooddeliveryfinalproject.repository.CartItemRepo;
 import com.fooddeliveryfinalproject.repository.CartRepo;
@@ -45,5 +46,11 @@ public class EmptyCartAfterCheckoutAspect {
         for (CartItem cartItem: cartItems) {
             cartItemRepo.delete(cartItem);
         }
+
+        Order order = orderRepo.findById(paypalPaymentController.getId()).get();
+
+        order.setStatus(Order.OrderStatus.PAID);
+
+        orderRepo.save(order);
     }
 }

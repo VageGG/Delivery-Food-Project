@@ -1,9 +1,11 @@
 package com.fooddeliveryfinalproject.service;
 
 import com.fooddeliveryfinalproject.converter.ReviewConverter;
+import com.fooddeliveryfinalproject.entity.Customer;
 import com.fooddeliveryfinalproject.entity.Restaurant;
 import com.fooddeliveryfinalproject.entity.Review;
 import com.fooddeliveryfinalproject.model.ReviewDto;
+import com.fooddeliveryfinalproject.repository.CustomerRepo;
 import com.fooddeliveryfinalproject.repository.RestaurantRepo;
 import com.fooddeliveryfinalproject.repository.ReviewRepo;
 import jakarta.validation.Valid;
@@ -26,11 +28,17 @@ public class ReviewService {
 
     private final RestaurantRepo restaurantRepo;
 
+    private final CustomerRepo customerRepo;
+
     @Autowired
-    public ReviewService(ReviewRepo repo, ReviewConverter reviewConverter, RestaurantRepo restaurantRepo) {
+    public ReviewService(ReviewRepo repo,
+                         ReviewConverter reviewConverter,
+                         RestaurantRepo restaurantRepo,
+                         CustomerRepo customerRepo) {
         this.repo = repo;
         this.reviewConverter = reviewConverter;
         this.restaurantRepo = restaurantRepo;
+        this.customerRepo = customerRepo;
     }
 
     @Transactional
@@ -42,6 +50,16 @@ public class ReviewService {
         if (review.getComment().length() > 200 || review.getComment().length() < 5) {
             throw new RuntimeException("comment must be at least 5 and less than 200 characters long");
         }
+        Restaurant restaurant = restaurantRepo.findById(review.getRestaurant().getRestId())
+                .orElseThrow(() -> new NullPointerException("restaurant not found"));
+
+        review.setRestaurant(restaurant);
+
+        Customer customer = customerRepo.findById(review.getCustomer().getId())
+                .orElseThrow(() -> new NullPointerException("customer not found"));
+
+        review.setCustomer(customer);
+
         return this.repo.save(review);
     }
 

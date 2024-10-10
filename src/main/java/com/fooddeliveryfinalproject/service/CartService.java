@@ -13,6 +13,8 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class CartService {
 
@@ -28,8 +30,6 @@ public class CartService {
 
     private final CartItemRepo cartItemRepo;
 
-    private final EntityManager entityManager;
-
     private final MenuItemRepo menuItemRepo;
 
     @Autowired
@@ -39,7 +39,6 @@ public class CartService {
                        MenuItemConverter menuItemConverter,
                        CustomerRepo customerRepo,
                        CartItemRepo cartItemRepo,
-                       EntityManager entityManager,
                        MenuItemRepo menuItemRepo) {
         this.repo = repo;
         this.menuItemService = menuItemService;
@@ -47,7 +46,6 @@ public class CartService {
         this.menuItemConverter = menuItemConverter;
         this.customerRepo = customerRepo;
         this.cartItemRepo = cartItemRepo;
-        this.entityManager = entityManager;
         this.menuItemRepo = menuItemRepo;
     }
 
@@ -66,8 +64,12 @@ public class CartService {
     }
 
     @Transactional
-    public String addItemToCart(Long cartId, Long menuItemId) {
+    public String addItemToCart(Long cartId, Long menuItemId, Long customerId) {
         Cart cart = getOrderCartById(cartId);
+
+        if (cart.getCustomer().getId() != customerId) {
+            throw new NullPointerException("cart not found");
+        }
 
         MenuItem menuItem = menuItemRepo.findById(menuItemId)
                 .orElseThrow(() -> new NullPointerException("item not found"));
@@ -78,24 +80,21 @@ public class CartService {
     }
 
     @Transactional
-    public String removeItemFromCart(Long cartId, Long menuItemId) {
+    public String removeItemFromCart(Long cartId, Long menuItemId, Long customerId) {
         Cart cart = repo.findById(cartId)
                 .orElseThrow(() -> new NullPointerException("cart not found"));
+
+        if (cart.getCustomer().getId() != customerId) {
+            throw new NullPointerException("cart not found");
+        }
 
 
         if (cart.getItems().isEmpty()) {
             throw new RuntimeException("cart is empty");
         }
 
-        if(!menuItemRepo.existsById(menuItemId)) {
-            throw new NullPointerException("menu item not found");
-        }
-
-        CartItem cartItem = cartItemRepo.findByMenuItemId(menuItemId);
-
-        if (cartItem.getCart().getCartId() != cartId) {
-            throw new NullPointerException("item not in cart");
-        }
+        CartItem cartItem = cartItemRepo.findById(new CartItemId(cartId, menuItemId))
+                .orElseThrow(() -> new NullPointerException("item is not in cart"));
 
         cartItemRepo.delete(cartItem);
 
@@ -109,8 +108,22 @@ public class CartService {
     }
 
     @Transactional
-    public String deleteOrderCart(long id) {
-        Cart cart = getOrderCartById(id);
+    public String deleteOrderCart(Long cartId, Long customerId) {
+        Cart cart = getOrderCartById(cartId);
+
+        if (cart.getCustomer().getId() != customerId) {
+            throw new NullPointerException("cart not found");
+        }
+
+        List<CartItem> cartItems = cartItemRepo.findAll().stream()
+                .filter(cartItem -> cartItem.getCart().equals(cart))
+                .toList();
+
+        for (CartItem cartItem: cartItems) {
+            cartItemRepo.delete(cartItem);
+        }
+
+
         this.repo.delete(cart);
         return "cart has been deleted";
     }

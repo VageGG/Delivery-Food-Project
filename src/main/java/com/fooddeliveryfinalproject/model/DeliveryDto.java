@@ -1,5 +1,6 @@
 package com.fooddeliveryfinalproject.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fooddeliveryfinalproject.entity.Delivery;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -16,6 +17,7 @@ public class DeliveryDto {
 
     private OrderDto orderDto;
 
+    @JsonIgnore
     private DriverDto driverDto;
 
     private String trackingNumber;
