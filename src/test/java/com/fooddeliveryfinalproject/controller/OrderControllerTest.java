@@ -130,8 +130,9 @@ class OrderControllerTest {
         );
 
         Page<OrderDto> page = new PageImpl<>(orderDtos);
+        PageDto<OrderDto> pageDto = new PageDto<>(page);
 
-        when(orderService.getOrdersByCustomer(1L, pageable)).thenReturn(page);
+        when(orderService.getOrdersByCustomer(1L, pageable)).thenReturn(pageDto);
 
         ResultActions response = mockMvc.perform(get("/order/list?customerId=1")
                 .contentType(MediaType.APPLICATION_JSON)
@@ -212,15 +213,18 @@ class OrderControllerTest {
         Order order = new Order();
         order.setOrderId(1L);
         order.setStatus(Order.OrderStatus.PICKED_UP);
+        order.setDelivery(new Delivery());
+        order.getDelivery().setDriver(new Driver());
+        order.getDelivery().getDriver().setId(1L);
 
         OrderDto orderDto = new OrderDto();
         orderDto.setOrderId(1L);
         orderDto.setStatus(Order.OrderStatus.PICKED_UP);
 
-        when(orderService.takeOrder(1L)).thenReturn(order);
+        when(orderService.takeOrder(1L, 1L)).thenReturn(order);
         when(orderConverter.convertToModel(order, new OrderDto())).thenReturn(orderDto);
 
-        ResultActions response = mockMvc.perform(post("/order/1/take")
+        ResultActions response = mockMvc.perform(post("/order/1/take?driverId=1")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(orderDto))
         );

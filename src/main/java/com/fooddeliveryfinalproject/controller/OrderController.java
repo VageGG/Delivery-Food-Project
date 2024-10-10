@@ -3,8 +3,8 @@ package com.fooddeliveryfinalproject.controller;
 import com.fooddeliveryfinalproject.converter.OrderConverter;
 import com.fooddeliveryfinalproject.entity.Order;
 import com.fooddeliveryfinalproject.model.AddressDto;
-import com.fooddeliveryfinalproject.model.DeliveryDto;
 import com.fooddeliveryfinalproject.model.OrderDto;
+import com.fooddeliveryfinalproject.model.PageDto;
 import com.fooddeliveryfinalproject.repository.CartRepo;
 import com.fooddeliveryfinalproject.repository.CustomerRepo;
 import com.fooddeliveryfinalproject.service.OrderService;
@@ -12,11 +12,9 @@ import com.fooddeliveryfinalproject.service.OrderService;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
@@ -61,7 +59,7 @@ public class OrderController {
     @GetMapping("/list")
     @ResponseStatus(HttpStatus.OK)
     @PreAuthorize("hasRole('CUSTOMER')")
-    public Page<OrderDto> getOrderList(@RequestParam @Min(1) Long customerId) { // ask how to get customerId
+    public PageDto<OrderDto> getOrderList(@RequestParam @Min(1) Long customerId) {
         Pageable pageable = PageRequest.of (
                 0,
                 2
@@ -86,7 +84,7 @@ public class OrderController {
     @PostMapping("/{orderId}/take")
     @ResponseStatus(HttpStatus.OK)
     @PreAuthorize("hasRole('DRIVER')")
-    public OrderDto takeOrder(@PathVariable @Min(1) Long orderId) {
-        return orderConverter.convertToModel(orderService.takeOrder(orderId), new OrderDto());
+    public OrderDto takeOrder(@PathVariable @Min(1) Long orderId, @RequestParam Long driverId) {
+        return orderConverter.convertToModel(orderService.takeOrder(orderId, driverId), new OrderDto());
     }
 }

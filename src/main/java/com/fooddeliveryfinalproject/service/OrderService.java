@@ -3,8 +3,8 @@ package com.fooddeliveryfinalproject.service;
 import com.fooddeliveryfinalproject.converter.OrderConverter;
 import com.fooddeliveryfinalproject.entity.*;
 import com.fooddeliveryfinalproject.model.AddressDto;
-import com.fooddeliveryfinalproject.model.DeliveryDto;
 import com.fooddeliveryfinalproject.model.OrderDto;
+import com.fooddeliveryfinalproject.model.PageDto;
 import com.fooddeliveryfinalproject.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -13,7 +13,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -36,6 +35,8 @@ public class OrderService {
 
     private final OrderItemRepo orderItemRepo;
 
+    private final DriverRepo driverRepo;
+
     @Autowired
     public OrderService(OrderRepo orderRepo,
                         DeliveryRepo deliveryRepo,
@@ -44,7 +45,8 @@ public class OrderService {
                         CustomerRepo customerRepo,
                         MenuItemRepo menuItemRepo,
                         DeliveryService deliveryService,
-                        OrderItemRepo orderItemRepo) {
+                        OrderItemRepo orderItemRepo,
+                        DriverRepo driverRepo) {
         this.orderRepo = orderRepo;
         this.deliveryRepo = deliveryRepo;
         this.dateTimeService = dateTimeService;
@@ -53,6 +55,7 @@ public class OrderService {
         this.menuItemRepo = menuItemRepo;
         this.deliveryService = deliveryService;
         this.orderItemRepo = orderItemRepo;
+        this.driverRepo = driverRepo;
     }
 
     @Transactional
@@ -82,7 +85,7 @@ public class OrderService {
                 .map(cartItem -> orderItemRepo.save(new OrderItem(savedOrder, menuItemRepo.findById(cartItem.getMenuItemId()).get())))
                 .toList();
 
-        savedOrder.setDelivery(deliveryService.createDelivery(addressDto, restaurantBranchId));
+        savedOrder.setDelivery(deliveryService.createDelivery(addressDto, restaurantBranchId, savedOrder));
 
         return this.orderRepo.save(savedOrder);
 
@@ -120,10 +123,7 @@ public class OrderService {
     }
 
     @Transactional
-    public Page<OrderDto> getOrdersByCustomer(Long customerId, Pageable pageable) {
-        // TODO: implement logic to fetch orders by customer and map to OrderDto
-        // Placeholder for actual implementation
-
+    public PageDto<OrderDto> getOrdersByCustomer(Long customerId, Pageable pageable) {
         List<OrderDto> orders = orderRepo.findByCustomerId(customerId).stream()
                 .map(order -> converter.convertToModel(order, new OrderDto()))
                 .collect(Collectors.toList());
@@ -136,7 +136,8 @@ public class OrderService {
                 pageable,
                 orders.size()
         );
-        return page;
+
+        return new PageDto<>(page);
     }
 
     @Transactional
@@ -149,10 +150,19 @@ public class OrderService {
     }
 
     @Transactional
-    public Order takeOrder(Long orderId) {
-        Order order = getOrderById(orderId);
+    public Order takeOrder(Long orderId, Long driverId) {
+        Order order = orderRepo.findById(orderId)
+                .orElseThrow(() -> new NullPointerException("order not found"));
 
-        order.setStatus(Order.OrderStatus.PICKED_UP);
+        Driver driver = driverRepo.findById(driverId)
+                .orElseThrow(() -> new NullPointerException("driver not found"));
+
+        if (driverRepo.findByDeliveries(deliveryRepo.findByOrder(order)) != null) {
+            throw new RuntimeException("this order has already been taken by another driver");
+        }
+
+        order.getDelivery().setDriver(driver);
+
         return orderRepo.save(order);
     }
 }

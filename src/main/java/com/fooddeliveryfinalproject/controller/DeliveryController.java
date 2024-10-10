@@ -2,8 +2,13 @@ package com.fooddeliveryfinalproject.controller;
 
 import com.fooddeliveryfinalproject.converter.DeliveryConverter;
 import com.fooddeliveryfinalproject.converter.ReviewConverter;
+import com.fooddeliveryfinalproject.entity.Customer;
+import com.fooddeliveryfinalproject.entity.Delivery;
+import com.fooddeliveryfinalproject.entity.Restaurant;
 import com.fooddeliveryfinalproject.entity.Review;
+import com.fooddeliveryfinalproject.model.CreateReviewDto;
 import com.fooddeliveryfinalproject.model.DeliveryDto;
+import com.fooddeliveryfinalproject.model.DeliveryStatusDto;
 import com.fooddeliveryfinalproject.model.ReviewDto;
 import com.fooddeliveryfinalproject.service.DeliveryService;
 import com.fooddeliveryfinalproject.service.ReviewService;
@@ -55,12 +60,12 @@ public class DeliveryController {
         return deliveryService.getCurrentDelivery(driverId);
     }
 
-    @PutMapping("/update")
+    @PutMapping("/{deliveryId}/update")
     @ResponseStatus(HttpStatus.ACCEPTED)
     @PreAuthorize("hasRole('DRIVER')")
-    public DeliveryDto updateDelivery(@RequestBody @NotNull DeliveryDto deliveryDto) {
+    public DeliveryDto updateDelivery(@PathVariable @Min(1) Long deliveryId, @RequestBody DeliveryStatusDto deliveryStatusDto) {
         return deliveryConverter.convertToModel (
-                deliveryService.updateDeliveryStatus(deliveryDto.getId(), deliveryDto.getStatus()),
+                deliveryService.updateDeliveryStatus(deliveryId, deliveryStatusDto.getStatus()),
                 new DeliveryDto()
         );
     }
@@ -82,8 +87,15 @@ public class DeliveryController {
     @PostMapping("/feedback")
     @ResponseStatus(HttpStatus.CREATED)
     @PreAuthorize("hasRole('CUSTOMER')")
-    public ReviewDto createReview(@RequestBody @NotNull ReviewDto reviewDto) {
-        Review review = reviewConverter.convertToEntity(reviewDto, new Review());
+    public ReviewDto createReview(@RequestBody @NotNull CreateReviewDto reviewDto) {
+        Review review =  new Review();
+        review.setRating(reviewDto.getRating());
+        review.setComment(reviewDto.getComment());
+        review.setRestaurant(new Restaurant());
+        review.getRestaurant().setRestId(reviewDto.getRestaurantId());
+        review.setCustomer(new Customer());
+        review.getCustomer().setId(reviewDto.getCustomerId());
+
         return reviewConverter.convertToModel (
                 reviewService.createReview(review),
                 new ReviewDto()

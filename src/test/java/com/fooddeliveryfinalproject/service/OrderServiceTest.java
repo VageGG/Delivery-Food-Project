@@ -52,6 +52,12 @@ class OrderServiceTest {
     @Mock
     private DeliveryService deliveryService;
 
+    @Mock
+    private DriverRepo driverRepo;
+
+    @Mock
+    private DeliveryRepo deliveryRepo;
+
     @BeforeEach
     void setUp() {
         MockitoAnnotations.openMocks(this);
@@ -94,7 +100,7 @@ class OrderServiceTest {
 
         when(menuItemRepo.findById(1L)).thenReturn(Optional.of(menuItem));
 
-        when(deliveryService.createDelivery(address, 1L)).thenReturn(delivery);
+        when(deliveryService.createDelivery(address, 1L, order)).thenReturn(delivery);
 
         when(orderItemRepo.save(new OrderItem(order, menuItem))).thenReturn(new OrderItem());
 
@@ -255,10 +261,10 @@ class OrderServiceTest {
         ).thenReturn(orderDto2);
 
         // when
-        Page<OrderDto> page = orderService.getOrdersByCustomer(customerId, pageable);
+        PageDto<OrderDto> page = orderService.getOrdersByCustomer(customerId, pageable);
 
         // then
-        assertEquals(orderDtos.size(), page.getTotalElements());
+        assertEquals(orderDtos.size(), page.getSize());
         assertEquals(orderDtos.get(0), page.getContent().get(0));
         assertEquals(orderDtos.get(1), page.getContent().get(1));
     }
@@ -320,12 +326,22 @@ class OrderServiceTest {
         Order order = new Order();
         order.setOrderId(1L);
         order.setStatus(Order.OrderStatus.PICKED_UP);
+        order.setDelivery(new Delivery());
+
+        Driver driver = new Driver();
+        driver.setId(1L);
+
+        Delivery delivery = new Delivery();
+        delivery.setOrder(order);
 
         when(orderRepo.findById(order.getOrderId())).thenReturn(Optional.of(order));
+        when(driverRepo.findById(1L)).thenReturn(Optional.of(driver));
+        when(driverRepo.findByDeliveries(delivery)).thenReturn(delivery.getDriver());
+        when(deliveryRepo.findByOrder(order)).thenReturn(delivery);
         when(orderRepo.save(order)).thenReturn(order);
 
         // when
-        Order response = orderService.takeOrder(order.getOrderId());
+        Order response = orderService.takeOrder(order.getOrderId(), driver.getId());
 
         // then
         assertEquals(order.getOrderId(), response.getOrderId());

@@ -4,6 +4,7 @@ import com.fooddeliveryfinalproject.converter.AddressConverter;
 import com.fooddeliveryfinalproject.converter.DeliveryConverter;
 import com.fooddeliveryfinalproject.entity.Address;
 import com.fooddeliveryfinalproject.entity.Delivery;
+import com.fooddeliveryfinalproject.entity.Order;
 import com.fooddeliveryfinalproject.entity.RestaurantBranch;
 import com.fooddeliveryfinalproject.model.AddressDto;
 import com.fooddeliveryfinalproject.model.DeliveryDto;
@@ -45,7 +46,7 @@ public class DeliveryService {
     }
 
     @Transactional
-    public Delivery createDelivery(AddressDto addressDto, Long restaurantBranchId) {
+    public Delivery createDelivery(AddressDto addressDto, Long restaurantBranchId, Order order) {
         if (addressDto == null) {
             throw new NullPointerException("drop off location must be specified");
         }
@@ -86,6 +87,8 @@ public class DeliveryService {
 
         delivery.setStatus(Delivery.DeliveryStatus.PREPARING);
 
+        delivery.setOrder(order);
+
         return repo.save(delivery);
     }
 
@@ -105,17 +108,20 @@ public class DeliveryService {
                 Delivery.DeliveryStatus.DELIVERING
         };
 
-        List<DeliveryDto> list = getDeliveryList(driverId).stream()
-                .filter(deliveryDto ->
-                        (
-                                deliveryDto.getStatus()
+        List<DeliveryDto> list = repo.findByDriverId(driverId).stream()
+                .filter(delivery -> (
+                                delivery.getStatus()
                                         .equals(deliveryStatuses[0]) ||
-                                deliveryDto.getStatus()
+                                delivery.getStatus()
                                         .equals(deliveryStatuses[1])
-                        ) &&
-                            deliveryDto.getDriverDto().getId().equals(driverId)
+                        )
                 )
-                .collect(Collectors.toList());
+                .map(delivery -> deliveryConverter.convertToModel(delivery, new DeliveryDto()))
+                .toList();
+
+        if (list.size() == 0) {
+            throw new RuntimeException("you currently don't have any delivery with picked up or delivering status");
+        }
 
         return list.get(0);
     }
@@ -125,8 +131,28 @@ public class DeliveryService {
         Delivery delivery = repo.findById(deliveryId)
                 .orElseThrow(() -> new NullPointerException("delivery not found"));
 
-        delivery.setStatus(deliveryStatus);
-        return repo.save(delivery);
+        Delivery.DeliveryStatus[] deliveryStatuses = {
+                Delivery.DeliveryStatus.DELIVERED,
+                Delivery.DeliveryStatus.DELIVERING
+        };
+
+        if (
+                    (deliveryStatus.equals(deliveryStatuses[0])) ||
+                    (deliveryStatus.equals(deliveryStatuses[1]))
+        ) {
+            if (deliveryStatus.equals(deliveryStatuses[0])) {
+                delivery.setDropoffTime(LocalDateTime.now());
+            }
+
+            else {
+                delivery.setPickupTime(LocalDateTime.now());
+            }
+
+            delivery.setStatus(deliveryStatus);
+
+            return repo.save(delivery);
+        }
+        throw new RuntimeException("Invalid status");
     }
 
     @Transactional(readOnly = true)

@@ -32,7 +32,7 @@ public class CartItem {
     @JsonBackReference
     private Cart cart;
 
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne
     @MapsId("menuItemId")
     @JoinColumn(name = "menu_item_id")
     @JsonManagedReference

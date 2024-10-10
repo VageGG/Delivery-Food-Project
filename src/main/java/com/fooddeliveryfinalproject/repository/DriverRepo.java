@@ -1,5 +1,6 @@
 package com.fooddeliveryfinalproject.repository;
 
+import com.fooddeliveryfinalproject.entity.Delivery;
 import com.fooddeliveryfinalproject.entity.Driver;
 import com.fooddeliveryfinalproject.entity.RegistrationStatus;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -12,4 +13,6 @@ public interface DriverRepo extends JpaRepository<Driver,Long> {
     Optional<Driver> findByUsername(String username);
 
     Optional<Driver> findAllByStatus(RegistrationStatus registrationStatus);
+
+    Driver findByDeliveries(Delivery delivery);
 }

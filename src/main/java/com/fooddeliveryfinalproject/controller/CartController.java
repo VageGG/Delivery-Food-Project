@@ -36,23 +36,28 @@ public class CartController {
     @PostMapping("/{cartId}/menuItem/{menuItemId}/add")
     @ResponseStatus(HttpStatus.ACCEPTED)
     @PreAuthorize("hasRole('CUSTOMER')")
-    public String addItemToCart(@PathVariable @Min(1) Long cartId, @PathVariable @Min(1) Long menuItemId) {
-        return cartService.addItemToCart(cartId, menuItemId);
+    public String addItemToCart(@PathVariable @Min(1) Long cartId,
+                                @PathVariable @Min(1) Long menuItemId,
+                                @RequestParam @Min(1) Long customerId
+    ) {
+        return cartService.addItemToCart(cartId, menuItemId, customerId);
 
     }
 
     @DeleteMapping("/{cartId}/menuItem/{menuItemId}/remove")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @PreAuthorize("hasRole('CUSTOMER')")
-    public String removeItemFromCart(@PathVariable @Min(1) Long cartId, @PathVariable @Min(1) Long menuItemId) {
-        cartService.removeItemFromCart(cartId, menuItemId);
-        return "item has been removed from cart";
+    public String removeItemFromCart(@PathVariable @Min(1) Long cartId,
+                                     @PathVariable @Min(1) Long menuItemId,
+                                     @RequestParam @Min(1) Long customerId
+    ) {
+        return cartService.removeItemFromCart(cartId, menuItemId, customerId);
     }
 
     @DeleteMapping("/{cartId}/delete")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @PreAuthorize("hasRole('CUSTOMER')")
-    public String deleteCart(@PathVariable @Min(1) Long cartId) {
-        return cartService.deleteOrderCart(cartId);
+    public String deleteCart(@PathVariable @Min(1) Long cartId, @RequestParam @Min(1) Long customerId) {
+        return cartService.deleteOrderCart(cartId, customerId);
     }
 }

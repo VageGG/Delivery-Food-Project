@@ -109,18 +109,21 @@ class DeliveryControllerTest {
         DeliveryDto deliveryDto = new DeliveryDto();
         deliveryDto.setId(1L);
         deliveryDto.setStatus(Delivery.DeliveryStatus.PICKED_UP);
-
-        when(deliveryService.updateDeliveryStatus(
-                deliveryDto.getId(),
-                Delivery.DeliveryStatus.PICKED_UP
-            )
-        ).thenReturn(delivery);
+        DeliveryStatusDto deliveryStatusDto = new DeliveryStatusDto();
+        deliveryStatusDto.setStatus(Delivery.DeliveryStatus.DELIVERING);
 
         when(deliveryConverter.convertToModel(delivery, new DeliveryDto())).thenReturn(deliveryDto);
 
-        ResultActions response = mockMvc.perform(put("/delivery/update")
+        when(deliveryService.updateDeliveryStatus(
+                deliveryDto.getId(),
+                Delivery.DeliveryStatus.DELIVERING
+            )
+        ).thenReturn(delivery);
+
+
+        ResultActions response = mockMvc.perform(put("/delivery/1/update")
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .content(objectMapper.writeValueAsString(deliveryDto))
+                .content(objectMapper.writeValueAsString(deliveryStatusDto))
         );
 
         response.andExpect(MockMvcResultMatchers.status().isAccepted());

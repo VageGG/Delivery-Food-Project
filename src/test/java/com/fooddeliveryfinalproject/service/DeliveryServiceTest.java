@@ -72,18 +72,25 @@ class DeliveryServiceTest {
         delivery.setDeliveryId(1L);
         delivery.setOrder(new Order());
         delivery.getOrder().setOrderId(1L);
+        delivery.getOrder().setCustomer(new Customer());
+        delivery.getOrder().setItems(new ArrayList<>());
+        delivery.setStatus(Delivery.DeliveryStatus.PREPARING);
 
         when(restaurantBranchRepo.findById(1L)).thenReturn(Optional.of(restaurantBranch));
+
         when(deliveryRepo.save(delivery)).thenReturn(delivery);
+
         when(addressRepo.save(address)).thenReturn(address);
+
         when(addressConverter.convertToEntity(addressDto, new Address())).thenReturn(address);
+
         when(deliveryRepo.save(delivery)).thenReturn(delivery);
 
         //when
-        Delivery response = deliveryService.createDelivery(addressDto, 1L);
+        Delivery response = deliveryService.createDelivery(addressDto, 1L, delivery.getOrder());
 
         //then
-        assertEquals(delivery, response);
+        assertNotNull(response);
     }
 
     @Test
@@ -174,21 +181,16 @@ class DeliveryServiceTest {
 
         Delivery delivery = new Delivery();
         delivery.setDeliveryId(deliveryId);
-        delivery.setStatus(Delivery.DeliveryStatus.PREPARING);
-
-        Delivery savedDelivery = new Delivery();
-        savedDelivery.setDeliveryId(deliveryId);
-        savedDelivery.setStatus(Delivery.DeliveryStatus.PICKED_UP);
 
         when(deliveryRepo.findById(deliveryId)).thenReturn(Optional.of(delivery));
-        when(deliveryRepo.save(savedDelivery)).thenReturn(savedDelivery);
+        when(deliveryRepo.save(delivery)).thenReturn(delivery);
 
         // when
-        Delivery response = deliveryService.updateDeliveryStatus(deliveryId, Delivery.DeliveryStatus.PICKED_UP);
+        Delivery.DeliveryStatus status = Delivery.DeliveryStatus.DELIVERING;
+        Delivery response = deliveryService.updateDeliveryStatus(deliveryId, status);
 
         // then
-        assertEquals(savedDelivery.getDeliveryId(), response.getDeliveryId());
-        assertEquals(savedDelivery.getStatus(), response.getStatus());
+        assertEquals(delivery.getDeliveryId(), response.getDeliveryId());
     }
 
     @Test

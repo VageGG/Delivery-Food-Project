@@ -91,6 +91,8 @@ class CartControllerTest {
         Cart cart = new Cart();
         cart.setCartId(1L);
         cart.setItems(new ArrayList<>());
+        cart.setCustomer(new Customer());
+        cart.getCustomer().setId(1L);
 
         MenuItem menuItem = new MenuItem();
         menuItem.setMenuItemId(1L);
@@ -107,9 +109,9 @@ class CartControllerTest {
         cartItemDto.setCartId(1L);
         cartItemDto.setMenuItemId(1L);
 
-        when(cartService.addItemToCart(1L, 1L)).thenReturn("item has been added to cart");
+        when(cartService.addItemToCart(1L, 1L, 1L)).thenReturn("item has been added to cart");
 
-        ResultActions response = mockMvc.perform(post("/cart/1/menuItem/1/add")
+        ResultActions response = mockMvc.perform(post("/cart/1/menuItem/1/add?customerId=1")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(cartDto))
         );
@@ -136,9 +138,9 @@ class CartControllerTest {
         cartItemDto.setCartId(1L);
         cartItemDto.setMenuItemId(1L);
 
-        when(cartService.removeItemFromCart(1L, 1L)).thenReturn("item has been removed");
+        when(cartService.removeItemFromCart(1L, 1L, 1L)).thenReturn("item has been removed");
 
-        ResultActions response = mockMvc.perform(delete("/cart/1/menuItem/1/remove")
+        ResultActions response = mockMvc.perform(delete("/cart/1/menuItem/1/remove?customerId=1")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(cartDto))
         );
@@ -152,9 +154,9 @@ class CartControllerTest {
         cart.setCartId(1L);
 
         when(cartService.getOrderCartById(1L)).thenReturn(cart);
-        when(cartService.deleteOrderCart(1L)).thenReturn("cart has been deleted");
+        when(cartService.deleteOrderCart(1L, 1L)).thenReturn("cart has been deleted");
 
-        ResultActions response = mockMvc.perform(delete("/cart/1/delete")
+        ResultActions response = mockMvc.perform(delete("/cart/1/delete?customerId=1")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content("cart has been deleted")
         );
