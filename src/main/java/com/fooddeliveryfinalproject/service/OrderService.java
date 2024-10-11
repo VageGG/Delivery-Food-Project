@@ -23,11 +23,7 @@ public class OrderService {
 
     private final DeliveryRepo deliveryRepo;
 
-    private final DateTimeService dateTimeService;
-
     private final OrderConverter converter;
-
-    private final CustomerRepo customerRepo;
 
     private final MenuItemRepo menuItemRepo;
 
@@ -40,18 +36,14 @@ public class OrderService {
     @Autowired
     public OrderService(OrderRepo orderRepo,
                         DeliveryRepo deliveryRepo,
-                        DateTimeService dateTimeService,
                         OrderConverter converter,
-                        CustomerRepo customerRepo,
                         MenuItemRepo menuItemRepo,
                         DeliveryService deliveryService,
                         OrderItemRepo orderItemRepo,
                         DriverRepo driverRepo) {
         this.orderRepo = orderRepo;
         this.deliveryRepo = deliveryRepo;
-        this.dateTimeService = dateTimeService;
         this.converter = converter;
-        this.customerRepo = customerRepo;
         this.menuItemRepo = menuItemRepo;
         this.deliveryService = deliveryService;
         this.orderItemRepo = orderItemRepo;

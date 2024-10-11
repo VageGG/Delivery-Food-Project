@@ -1,7 +1,9 @@
 package com.fooddeliveryfinalproject.model;
 
 import com.fooddeliveryfinalproject.entity.Payment;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
 @AllArgsConstructor

@@ -1,8 +1,6 @@
 package com.fooddeliveryfinalproject.converter;
 
-import com.fooddeliveryfinalproject.entity.Cart;
 import com.fooddeliveryfinalproject.entity.CartItem;
-import com.fooddeliveryfinalproject.entity.MenuItem;
 import com.fooddeliveryfinalproject.model.CartItemDto;
 import com.fooddeliveryfinalproject.repository.CartRepo;
 import com.fooddeliveryfinalproject.repository.MenuItemRepo;

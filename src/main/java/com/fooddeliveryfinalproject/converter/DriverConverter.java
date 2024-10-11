@@ -1,15 +1,9 @@
 package com.fooddeliveryfinalproject.converter;
 
-import com.fooddeliveryfinalproject.entity.Delivery;
-import com.fooddeliveryfinalproject.entity.Driver;
-import com.fooddeliveryfinalproject.model.DeliveryDto;
-import com.fooddeliveryfinalproject.model.DriverDto;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Lazy;
-import org.springframework.stereotype.Component;
 
-import java.util.ArrayList;
-import java.util.List;
+import com.fooddeliveryfinalproject.entity.Driver;
+import com.fooddeliveryfinalproject.model.DriverDto;
+import org.springframework.stereotype.Component;
 
 @Component
 public class DriverConverter implements Converter<Driver, DriverDto> {

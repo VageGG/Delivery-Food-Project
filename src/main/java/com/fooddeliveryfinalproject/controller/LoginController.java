@@ -3,7 +3,6 @@ package com.fooddeliveryfinalproject.controller;
 import com.fooddeliveryfinalproject.model.AllUserDto;
 import com.fooddeliveryfinalproject.service.JWTUtilService;
 import com.fooddeliveryfinalproject.service.UserService;
-import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
