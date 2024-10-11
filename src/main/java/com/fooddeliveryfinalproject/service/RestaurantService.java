@@ -1,13 +1,9 @@
 package com.fooddeliveryfinalproject.service;
 
 import com.fooddeliveryfinalproject.converter.RestaurantConverter;
-import com.fooddeliveryfinalproject.converter.ReviewConverter;
 import com.fooddeliveryfinalproject.entity.Restaurant;
-import com.fooddeliveryfinalproject.entity.Review;
 import com.fooddeliveryfinalproject.model.RestaurantDto;
-import com.fooddeliveryfinalproject.model.ReviewDto;
 import com.fooddeliveryfinalproject.repository.RestaurantRepo;
-import com.fooddeliveryfinalproject.repository.ReviewRepo;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
@@ -28,20 +24,13 @@ public class RestaurantService {
 
     private final RestaurantConverter restaurantConverter;
 
-    private final ReviewConverter reviewConverter;
-
-    private final ReviewRepo reviewRepo;
-
 
     @Autowired
     public RestaurantService(RestaurantRepo restaurantRepo,
-                             RestaurantConverter restaurantConverter,
-                             ReviewConverter reviewConverter,
-                             ReviewRepo reviewRepo) {
+                             RestaurantConverter restaurantConverter
+                             ) {
         this.restaurantRepo = restaurantRepo;
         this.restaurantConverter = restaurantConverter;
-        this.reviewConverter = reviewConverter;
-        this.reviewRepo = reviewRepo;
     }
 
 

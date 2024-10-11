@@ -1,9 +1,7 @@
 package com.fooddeliveryfinalproject.controller;
 
 import com.fooddeliveryfinalproject.entity.Customer;
-import com.fooddeliveryfinalproject.entity.User;
 import com.fooddeliveryfinalproject.model.AddressDto;
-import com.fooddeliveryfinalproject.model.AllUserDto;
 import com.fooddeliveryfinalproject.service.UserService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -12,14 +10,11 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.test.context.support.WithMockUser;
 
-import java.util.Optional;
-
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
 class ProfileControllerTest {

@@ -3,7 +3,10 @@ package com.fooddeliveryfinalproject.controller;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fooddeliveryfinalproject.converter.OrderConverter;
 import com.fooddeliveryfinalproject.entity.*;
-import com.fooddeliveryfinalproject.model.*;
+import com.fooddeliveryfinalproject.model.AddressDto;
+import com.fooddeliveryfinalproject.model.CustomerDto;
+import com.fooddeliveryfinalproject.model.OrderDto;
+import com.fooddeliveryfinalproject.model.PageDto;
 import com.fooddeliveryfinalproject.repository.CartRepo;
 import com.fooddeliveryfinalproject.repository.CustomerRepo;
 import com.fooddeliveryfinalproject.service.BlacklistService;
@@ -11,13 +14,7 @@ import com.fooddeliveryfinalproject.service.JWTUtilService;
 import com.fooddeliveryfinalproject.service.OrderService;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.BDDMockito;
-import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
-
-import static org.mockito.Mockito.when;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -35,6 +32,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 
 @WebMvcTest(OrderController.class)

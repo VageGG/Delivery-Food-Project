@@ -1,13 +1,8 @@
 package com.fooddeliveryfinalproject.converter;
 
-import com.fooddeliveryfinalproject.entity.*;
-import com.fooddeliveryfinalproject.model.*;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Lazy;
+import com.fooddeliveryfinalproject.entity.Cart;
+import com.fooddeliveryfinalproject.model.CartDto;
 import org.springframework.stereotype.Component;
-
-import java.util.ArrayList;
-import java.util.List;
 
 @Component
 public class CartConverter implements Converter<Cart, CartDto> {

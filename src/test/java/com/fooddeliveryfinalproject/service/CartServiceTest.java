@@ -4,8 +4,6 @@ import com.fooddeliveryfinalproject.converter.CartConverter;
 import com.fooddeliveryfinalproject.converter.MenuItemConverter;
 import com.fooddeliveryfinalproject.entity.*;
 import com.fooddeliveryfinalproject.model.CartDto;
-import com.fooddeliveryfinalproject.model.CustomerDto;
-import com.fooddeliveryfinalproject.model.MenuItemDto;
 import com.fooddeliveryfinalproject.repository.CartItemRepo;
 import com.fooddeliveryfinalproject.repository.CartRepo;
 import com.fooddeliveryfinalproject.repository.CustomerRepo;
@@ -19,7 +17,8 @@ import org.mockito.MockitoAnnotations;
 import java.util.ArrayList;
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 

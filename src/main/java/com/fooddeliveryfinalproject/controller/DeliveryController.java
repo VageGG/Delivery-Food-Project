@@ -3,7 +3,6 @@ package com.fooddeliveryfinalproject.controller;
 import com.fooddeliveryfinalproject.converter.DeliveryConverter;
 import com.fooddeliveryfinalproject.converter.ReviewConverter;
 import com.fooddeliveryfinalproject.entity.Customer;
-import com.fooddeliveryfinalproject.entity.Delivery;
 import com.fooddeliveryfinalproject.entity.Restaurant;
 import com.fooddeliveryfinalproject.entity.Review;
 import com.fooddeliveryfinalproject.model.CreateReviewDto;
@@ -12,14 +11,13 @@ import com.fooddeliveryfinalproject.model.DeliveryStatusDto;
 import com.fooddeliveryfinalproject.model.ReviewDto;
 import com.fooddeliveryfinalproject.service.DeliveryService;
 import com.fooddeliveryfinalproject.service.ReviewService;
-import jakarta.validation.Valid;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.lang.NonNull;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+
 import java.util.List;
 
 @RestController

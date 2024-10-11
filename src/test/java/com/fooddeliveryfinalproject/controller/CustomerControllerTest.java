@@ -1,6 +1,5 @@
 package com.fooddeliveryfinalproject.controller;
 
-import com.fooddeliveryfinalproject.controller.CustomerController;
 import com.fooddeliveryfinalproject.entity.User;
 import com.fooddeliveryfinalproject.model.AddressDto;
 import com.fooddeliveryfinalproject.model.CustomerDto;

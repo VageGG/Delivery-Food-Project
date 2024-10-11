@@ -4,7 +4,6 @@ import com.fooddeliveryfinalproject.converter.AddressConverter;
 import com.fooddeliveryfinalproject.entity.Address;
 import com.fooddeliveryfinalproject.model.AddressDto;
 import com.fooddeliveryfinalproject.repository.AddressRepo;
-import com.fooddeliveryfinalproject.service.AddressService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -16,7 +15,6 @@ import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
 class AddressServiceTest {

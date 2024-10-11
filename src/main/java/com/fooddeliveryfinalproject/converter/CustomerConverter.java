@@ -1,13 +1,8 @@
 package com.fooddeliveryfinalproject.converter;
 
-import com.fooddeliveryfinalproject.entity.*;
-import com.fooddeliveryfinalproject.model.*;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Lazy;
+import com.fooddeliveryfinalproject.entity.Customer;
+import com.fooddeliveryfinalproject.model.CustomerDto;
 import org.springframework.stereotype.Component;
-
-import java.util.ArrayList;
-import java.util.List;
 
 @Component
 public class CustomerConverter implements Converter<Customer, CustomerDto> {

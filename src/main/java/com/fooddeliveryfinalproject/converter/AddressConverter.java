@@ -1,17 +1,8 @@
 package com.fooddeliveryfinalproject.converter;
 
 import com.fooddeliveryfinalproject.entity.Address;
-import com.fooddeliveryfinalproject.entity.CustomerAddress;
-import com.fooddeliveryfinalproject.entity.Delivery;
-import com.fooddeliveryfinalproject.entity.RestaurantBranch;
 import com.fooddeliveryfinalproject.model.AddressDto;
-import com.fooddeliveryfinalproject.model.CustomerAddressDto;
-import com.fooddeliveryfinalproject.model.DeliveryDto;
-import com.fooddeliveryfinalproject.model.RestaurantBranchDto;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-
-import java.util.List;
 
 @Component
 public class AddressConverter implements Converter<Address, AddressDto> {

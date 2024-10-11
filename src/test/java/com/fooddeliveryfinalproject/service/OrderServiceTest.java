@@ -2,14 +2,16 @@ package com.fooddeliveryfinalproject.service;
 
 import com.fooddeliveryfinalproject.converter.OrderConverter;
 import com.fooddeliveryfinalproject.entity.*;
-import com.fooddeliveryfinalproject.model.*;
+import com.fooddeliveryfinalproject.model.AddressDto;
+import com.fooddeliveryfinalproject.model.CustomerDto;
+import com.fooddeliveryfinalproject.model.OrderDto;
+import com.fooddeliveryfinalproject.model.PageDto;
 import com.fooddeliveryfinalproject.repository.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 

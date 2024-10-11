@@ -1,8 +1,6 @@
 package com.fooddeliveryfinalproject.converter;
 
-import com.fooddeliveryfinalproject.entity.Order;
 import com.fooddeliveryfinalproject.entity.Payment;
-import com.fooddeliveryfinalproject.model.OrderDto;
 import com.fooddeliveryfinalproject.model.PaymentDto;
 import org.springframework.stereotype.Component;
 

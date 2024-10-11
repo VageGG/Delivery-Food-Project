@@ -2,7 +2,6 @@ package com.fooddeliveryfinalproject.service;
 
 import com.fooddeliveryfinalproject.converter.AddressConverter;
 import com.fooddeliveryfinalproject.entity.Address;
-import com.fooddeliveryfinalproject.entity.Customer;
 import com.fooddeliveryfinalproject.model.AddressDto;
 import com.fooddeliveryfinalproject.repository.AddressRepo;
 import jakarta.validation.Valid;

@@ -1,12 +1,6 @@
 package com.fooddeliveryfinalproject.converter;
 
-import com.fooddeliveryfinalproject.entity.Customer;
-import com.fooddeliveryfinalproject.entity.Driver;
-import com.fooddeliveryfinalproject.entity.Restaurant;
 import com.fooddeliveryfinalproject.entity.Review;
-import com.fooddeliveryfinalproject.model.CustomerDto;
-import com.fooddeliveryfinalproject.model.DriverDto;
-import com.fooddeliveryfinalproject.model.RestaurantDto;
 import com.fooddeliveryfinalproject.model.ReviewDto;
 import org.springframework.stereotype.Component;
 

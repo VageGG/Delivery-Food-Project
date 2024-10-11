@@ -8,10 +8,9 @@ import com.fooddeliveryfinalproject.repository.CartItemRepo;
 import com.fooddeliveryfinalproject.repository.CartRepo;
 import com.fooddeliveryfinalproject.repository.CustomerRepo;
 import com.fooddeliveryfinalproject.repository.MenuItemRepo;
-import jakarta.persistence.EntityManager;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -20,11 +19,7 @@ public class CartService {
 
     private final CartRepo repo;
 
-    private final MenuItemService menuItemService;
-
     private final CartConverter cartConverter;
-
-    private final MenuItemConverter menuItemConverter;
 
     private final CustomerRepo customerRepo;
 
@@ -34,16 +29,12 @@ public class CartService {
 
     @Autowired
     public CartService(CartRepo repo,
-                       MenuItemService menuItemService,
                        CartConverter cartConverter,
-                       MenuItemConverter menuItemConverter,
                        CustomerRepo customerRepo,
                        CartItemRepo cartItemRepo,
                        MenuItemRepo menuItemRepo) {
         this.repo = repo;
-        this.menuItemService = menuItemService;
         this.cartConverter = cartConverter;
-        this.menuItemConverter = menuItemConverter;
         this.customerRepo = customerRepo;
         this.cartItemRepo = cartItemRepo;
         this.menuItemRepo = menuItemRepo;

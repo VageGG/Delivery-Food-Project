@@ -1,7 +1,10 @@
 package com.fooddeliveryfinalproject.service;
 
 import com.fooddeliveryfinalproject.converter.AddressConverter;
-import com.fooddeliveryfinalproject.entity.*;
+import com.fooddeliveryfinalproject.entity.Address;
+import com.fooddeliveryfinalproject.entity.Customer;
+import com.fooddeliveryfinalproject.entity.CustomerAddress;
+import com.fooddeliveryfinalproject.entity.User;
 import com.fooddeliveryfinalproject.model.AddressDto;
 import com.fooddeliveryfinalproject.model.AllUserDto;
 import com.fooddeliveryfinalproject.repository.*;
