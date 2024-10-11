@@ -1,4 +1,4 @@
-package com.fooddeliveryfinalproject.config;
+package com.fooddeliveryfinalproject.exceptions;
 
 public class DeliveryFoodException extends RuntimeException {
 

@@ -1,6 +1,6 @@
 package com.fooddeliveryfinalproject.service;
 
-import com.fooddeliveryfinalproject.config.DeliveryFoodException;
+import com.fooddeliveryfinalproject.exceptions.DeliveryFoodException;
 import com.fooddeliveryfinalproject.converter.MenuConverter;
 import com.fooddeliveryfinalproject.entity.Menu;
 import com.fooddeliveryfinalproject.model.MenuDto;
