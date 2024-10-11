@@ -1,12 +1,10 @@
 package com.fooddeliveryfinalproject.service;
 
-import com.fooddeliveryfinalproject.config.DeliveryFoodException;
+import com.fooddeliveryfinalproject.exceptions.DeliveryFoodException;
 import com.fooddeliveryfinalproject.converter.MenuConverter;
 import com.fooddeliveryfinalproject.entity.Menu;
-import com.fooddeliveryfinalproject.entity.RestaurantBranch;
 import com.fooddeliveryfinalproject.model.MenuDto;
 import com.fooddeliveryfinalproject.repository.MenuRepo;
-import com.fooddeliveryfinalproject.repository.RestaurantBranchRepo;
 import jakarta.validation.constraints.Min;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
