@@ -6,25 +6,42 @@
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
         <version>3.3.3</version>
-        <relativePath/> <!-- lookup parent from repository -->
+        <relativePath/>
     </parent>
     <groupId>com</groupId>
     <artifactId>FoodDeliveryFinalProject</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <name>FoodDeliveryFinalProject</name>
-    <description>FoodDeliveryFinalProject</description>
-    <url/>
+    <name>Food Delivery Final Project</name>
+    <description>Проект для управления доставкой еды с поддержкой различных ролей пользователей.</description>
+    <url>https://github.com/VageGG/Delivery-Food-Project</url>
     <licenses>
-        <license/>
+        <license>
+            <name>MIT License</name>
+            <url>https://opensource.org/licenses/MIT</url>
+        </license>
     </licenses>
     <developers>
-        <developer/>
+        <developer>
+            <id>VageGG</id>
+            <name>Gevorgian Vage</name>
+            <email>gvage1313@gmail.com</email>
+        </developer>
+        <developer>
+            <id>G-Sargsyan</id>
+            <name>Sargsyan Gor</name>
+            <email>GorSargsyan807@gmail.com</email>
+        </developer>
+        <developer>
+            <id>ShantKasbarian</id>
+            <name>Kasbarian Shant</name>
+            <email>shantkasbarian06@gmail.com</email>
+        </developer>
     </developers>
     <scm>
-        <connection/>
-        <developerConnection/>
-        <tag/>
-        <url/>
+        <connection>scm:git:https://github.com/VageGG/Delivery-Food-Project.git</connection>
+        <developerConnection>scm:git:git@github.com:VageGG/Delivery-Food-Project.git</developerConnection>
+        <tag>HEAD</tag>
+        <url>https://github.com/VageGG/Delivery-Food-Project</url>
     </scm>
     <properties>
         <java.version>17</java.version>
@@ -104,20 +121,13 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-thymeleaf</artifactId>
         </dependency>
-        <!--TEST jUnit spring dependency-->
-        <dependency>
-            <groupId>org.springframework.security</groupId>
-            <artifactId>spring-security-test</artifactId>
-            <scope>test</scope>
-        </dependency>
-
+        <!-- Mockito JUnit Integration -->
         <dependency>
             <groupId>org.mockito</groupId>
             <artifactId>mockito-core</artifactId>
             <version>5.12.0</version>
             <scope>test</scope>
         </dependency>
-        <!-- Mockito JUnit Integration -->
         <dependency>
             <groupId>org.mockito</groupId>
             <artifactId>mockito-junit-jupiter</artifactId>
