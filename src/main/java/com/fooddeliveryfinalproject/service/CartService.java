@@ -94,8 +94,12 @@ public class CartService {
 
     @Transactional(readOnly = true)
     public Cart getOrderCartById(long id) {
-        return this.repo.findById(id)
+        Cart cart = this.repo.findById(id)
                 .orElseThrow(() -> new NullPointerException("cart not found"));
+
+        cart.setItems(cartItemRepo.findByCartId(id));
+
+        return cart;
     }
 
     @Transactional

@@ -20,6 +20,7 @@ import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
 class DeliveryServiceTest {
@@ -47,7 +48,7 @@ class DeliveryServiceTest {
     }
 
     @Test
-    void createDelivery() { // fix later
+    void createDelivery() {
         //given
         AddressDto addressDto = new AddressDto();
         addressDto.setId(1L);
@@ -84,7 +85,7 @@ class DeliveryServiceTest {
 
         when(addressConverter.convertToEntity(addressDto, new Address())).thenReturn(address);
 
-        when(deliveryRepo.save(delivery)).thenReturn(delivery);
+        when(deliveryRepo.save(any(Delivery.class))).thenReturn(delivery);
 
         //when
         Delivery response = deliveryService.createDelivery(addressDto, 1L, delivery.getOrder());

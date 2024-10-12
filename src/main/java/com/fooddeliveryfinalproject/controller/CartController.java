@@ -25,12 +25,19 @@ public class CartController {
         this.cartConverter = cartConverter;
     }
 
-    @GetMapping("/")
+    @PostMapping("/")
     @ResponseStatus(HttpStatus.CREATED)
     @PreAuthorize("hasRole('CUSTOMER')")
     public CartDto createCart(@RequestParam @Min(1) long customerId) {
         Cart cart = new Cart();
         return cartConverter.convertToModel(cartService.createOrderCart(cart, customerId), new CartDto());
+    }
+
+    @GetMapping("/{cartId}")
+    @ResponseStatus(HttpStatus.OK)
+    @PreAuthorize("hasRole('CUSTOMER')")
+    public CartDto getCartById(@PathVariable Long cartId) {
+        return cartConverter.convertToModel(cartService.getOrderCartById(cartId), new CartDto());
     }
 
     @PostMapping("/{cartId}/menuItem/{menuItemId}/add")
