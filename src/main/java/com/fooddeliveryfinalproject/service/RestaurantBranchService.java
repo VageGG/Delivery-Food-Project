@@ -84,6 +84,7 @@ public class RestaurantBranchService {
         return restaurantBranchConverter.convertToModel(restaurantBranch, new RestaurantBranchDto());
     }
 
+
     @Transactional(readOnly = true)
     public Page<RestaurantBranchDto> getAllRestaurantBranches(@Min(1) Long restaurantId, Pageable pageable) {
         if (restaurantId == null) {
@@ -91,7 +92,20 @@ public class RestaurantBranchService {
         }
 
         Page<RestaurantBranch> branches = restaurantBranchRepo.findAllByRestaurant_RestId(restaurantId, pageable);
-        return branches.map(restaurantBranch -> restaurantBranchConverter.convertToModel(restaurantBranch, new RestaurantBranchDto()));
+
+        return branches.map(restaurantBranch -> {
+            RestaurantBranchDto restaurantBranchDto = restaurantBranchConverter.convertToModel(restaurantBranch, new RestaurantBranchDto());
+
+            if (restaurantBranch.getAddress() != null) {
+                restaurantBranchDto.setAddressDto(addressConverter.convertToModel(restaurantBranch.getAddress(), new AddressDto()));
+            }
+
+            if (restaurantBranch.getRestaurant() != null) {
+                restaurantBranchDto.setRestaurantDto(restaurantConverter.convertToModel(restaurantBranch.getRestaurant(), new RestaurantDto()));
+            }
+
+            return restaurantBranchDto;
+        });
     }
 
 
@@ -174,7 +188,7 @@ public class RestaurantBranchService {
             throw new RuntimeException("No menu found for branch with ID " + branchId);
         }
 
-        MenuCategory menuCategory =  new MenuCategory();
+        MenuCategory menuCategory = new MenuCategory();
         menuCategory.setName(menuCategoryDto.getName());
         menuCategory.setMenu(menu);
         menuCategoryRepo.save(menuCategory);
