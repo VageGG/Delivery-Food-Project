@@ -75,6 +75,12 @@ public class RestaurantBranchService {
         RestaurantBranch restaurantBranch = restaurantBranchRepo.findById(id)
                 .orElseThrow(() -> new RuntimeException("Could not find RestaurantBranch"));
 
+        RestaurantBranchDto restaurantBranchDto = new RestaurantBranchDto();
+        restaurantBranchDto.setBranchId(restaurantBranchDto.getBranchId());
+        restaurantBranchDto.setAddressDto(addressConverter.convertToModel(restaurantBranch.getAddress(), new AddressDto()));
+        restaurantBranchDto.setPhoneNumber(restaurantBranch.getPhoneNumber());
+        restaurantBranchDto.setRestaurantDto(restaurantConverter.convertToModel(restaurantBranch.getRestaurant(), new RestaurantDto()));
+
         return restaurantBranchConverter.convertToModel(restaurantBranch, new RestaurantBranchDto());
     }
 
