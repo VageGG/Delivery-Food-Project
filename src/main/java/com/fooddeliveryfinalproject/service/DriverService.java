@@ -53,7 +53,7 @@ public class DriverService implements ValidUser<DriverDto> {
 
     @Override
     @Transactional
-    public void addUser(@Valid DriverDto driverDto) throws NoSuchAlgorithmException {
+    public void addUser(DriverDto driverDto) throws NoSuchAlgorithmException {
         Optional<Driver> existingUser = driverRepo.findByUsername(driverDto.getUsername());
         if (existingUser.isPresent()) {
             throw new RuntimeException("Username has already been used");

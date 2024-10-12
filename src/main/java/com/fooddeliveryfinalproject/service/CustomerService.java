@@ -58,7 +58,7 @@ public class CustomerService implements ValidUser<CustomerDto> {
 
     @Override
     @Transactional
-    public void addUser(@Valid CustomerDto customerDto) throws NoSuchAlgorithmException {
+    public void addUser(CustomerDto customerDto) throws NoSuchAlgorithmException {
         Optional<Customer> existingUser = customerRepo.findByUsername(customerDto.getUsername());
         if (existingUser.isPresent()) {
             throw new RuntimeException("Username has already been used");
