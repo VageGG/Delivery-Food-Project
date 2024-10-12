@@ -71,9 +71,11 @@ public class RestaurantBranchService {
     }
 
     @Transactional(readOnly = true)
-    public RestaurantBranch getRestaurantBranch(@Min(1) Long id) {
-        return restaurantBranchRepo.findById(id)
-                        .orElseThrow(() -> new RuntimeException("Could not find RestaurantBranch"));
+    public RestaurantBranchDto getRestaurantBranchDto(@Min(1) Long id) {
+        RestaurantBranch restaurantBranch = restaurantBranchRepo.findById(id)
+                .orElseThrow(() -> new RuntimeException("Could not find RestaurantBranch"));
+
+        return restaurantBranchConverter.convertToModel(restaurantBranch, new RestaurantBranchDto());
     }
 
     @Transactional(readOnly = true)

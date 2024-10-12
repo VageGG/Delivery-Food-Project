@@ -59,8 +59,8 @@ public class RestaurantBranchController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<RestaurantBranch> getRestaurantBranch(@PathVariable("id") @Min(1) Long id) {
-        return new ResponseEntity<>(restaurantBranchService.getRestaurantBranch(id), HttpStatus.OK);
+    public ResponseEntity<RestaurantBranchDto> getRestaurantBranch(@PathVariable("id") @Min(1) Long id) {
+        return new ResponseEntity<>(restaurantBranchService.getRestaurantBranchDto(id), HttpStatus.OK);
     }
 
     @PreAuthorize("hasRole('RESTAURANT_MANAGER')")
