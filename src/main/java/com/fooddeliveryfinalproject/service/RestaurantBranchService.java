@@ -81,7 +81,7 @@ public class RestaurantBranchService {
         restaurantBranchDto.setPhoneNumber(restaurantBranch.getPhoneNumber());
         restaurantBranchDto.setRestaurantDto(restaurantConverter.convertToModel(restaurantBranch.getRestaurant(), new RestaurantDto()));
 
-        return restaurantBranchConverter.convertToModel(restaurantBranch, new RestaurantBranchDto());
+        return restaurantBranchDto;
     }
 
     @Transactional(readOnly = true)
