@@ -120,6 +120,19 @@ public class OrderService {
                 .map(order -> converter.convertToModel(order, new OrderDto()))
                 .collect(Collectors.toList());
 
+        if (orders.size() == 1) {
+            Page<OrderDto> page =
+                    new PageImpl<>(orders.subList (
+                            pageable.getPageNumber(),
+                            1
+                    ),
+                            pageable,
+                            orders.size()
+                    );
+
+            return new PageDto<>(page);
+        }
+
         Page<OrderDto> page =
                 new PageImpl<>(orders.subList (
                         pageable.getPageNumber(),

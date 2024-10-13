@@ -39,9 +39,8 @@ public class EmptyCartAfterCheckoutAspect {
     public void emptyCart(Object success) throws Throwable {
         List<OrderItem> orderItems = orderRepo.findById(paypalPaymentController.getId()).get().getItems();
 
-        List<CartItem> cartItems = orderItems.stream()
-                .map(orderItem -> cartItemRepo.findByCartId(orderItem.getOrder().getCustomer().getCart().getCartId()))
-                .toList();
+        List<CartItem> cartItems = cartItemRepo
+                .findByCartId(orderItems.get(0).getOrder().getCustomer().getCart().getCartId());
 
         for (CartItem cartItem: cartItems) {
             cartItemRepo.delete(cartItem);

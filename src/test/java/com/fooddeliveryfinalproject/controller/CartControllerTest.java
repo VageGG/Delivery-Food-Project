@@ -78,7 +78,7 @@ class CartControllerTest {
 
         when(customerRepo.findById(1L)).thenReturn(Optional.of(customer));
 
-        ResultActions response = mockMvc.perform(get("/cart/?customerId=1")
+        ResultActions response = mockMvc.perform(post("/cart/?customerId=1")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(cartDto))
         );
