@@ -180,7 +180,7 @@ public class RestaurantBranchService {
     }
 
     @Transactional
-    public void addMenuCategoryToBranch(@Min(1) Long branchId, @Valid MenuCategoryDto menuCategoryDto) {
+    public void addMenuCategoryToBranch(@Min(1) Long branchId, MenuCategoryDto menuCategoryDto) {
 
         Menu menu = menuRepo.findByRestaurantBranch_RestBranchId(branchId);
 

@@ -91,7 +91,7 @@ public class RestaurantBranchController {
 
     @PreAuthorize("hasRole('RESTAURANT_MANAGER')")
     @PostMapping("/add-category/{branchId}")
-    public ResponseEntity<HttpStatus> addMenuCategoryToBranch(@PathVariable @Min(1) Long branchId, @RequestBody @Valid MenuCategoryDto menuCategoryDto) {
+    public ResponseEntity<HttpStatus> addMenuCategoryToBranch(@PathVariable @Min(1) Long branchId, @RequestBody MenuCategoryDto menuCategoryDto) {
         restaurantBranchService.addMenuCategoryToBranch(branchId, menuCategoryDto);
         return new ResponseEntity<>(HttpStatus.OK);
     }
