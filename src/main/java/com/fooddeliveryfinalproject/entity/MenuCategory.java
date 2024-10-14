@@ -20,7 +20,6 @@ public class MenuCategory {
     @Column(name = "category_id")
     private long categoryId;
 
-    @NotNull
     private String name;
 
     @OneToMany(mappedBy = "menuCategory")

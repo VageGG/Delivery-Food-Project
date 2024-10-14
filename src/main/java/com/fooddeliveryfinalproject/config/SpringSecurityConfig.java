@@ -61,7 +61,7 @@ public class SpringSecurityConfig {
         return http
                 .csrf(customizer -> customizer.disable())
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/customers/register", "/login").permitAll()
+                        .requestMatchers("/customers/register", "/login", "/logout").permitAll()
                         .requestMatchers("/admins/register").permitAll()
                         .requestMatchers("/managers/register").permitAll()
                         .requestMatchers("/drivers/register").permitAll()

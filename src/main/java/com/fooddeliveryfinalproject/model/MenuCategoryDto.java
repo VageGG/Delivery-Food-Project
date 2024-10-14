@@ -14,7 +14,6 @@ public class MenuCategoryDto {
 
     private Long categoryId;
 
-    @NotNull
     private String name;
 
     private List<MenuItemDto> items;
