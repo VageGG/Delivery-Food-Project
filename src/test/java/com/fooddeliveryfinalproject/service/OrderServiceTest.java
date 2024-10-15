@@ -12,6 +12,8 @@ import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 
@@ -226,11 +228,13 @@ class OrderServiceTest {
     void getOrdersPageByCustomer() {
         // given
         Long customerId = 1L;
-        Pageable pageable = PageRequest.of(0, 2);
+        Pageable pageable = PageRequest.of(0, 10);
 
         List<Order> orders = new ArrayList<>();
         Customer customer = new Customer();
         customer.setId(customerId);
+
+        Page<Order> page = new PageImpl<>(orders);
 
         Order order1 = new Order();
         order1.setCustomer(customer);
@@ -250,12 +254,18 @@ class OrderServiceTest {
         orderDtos.add(orderDto1);
         orderDtos.add(orderDto2);
 
+        when(customerRepo.findById(1L)).thenReturn(Optional.of(customer));
+
+        when(orderRepo.findByCustomer(customer, pageable)).thenReturn(page);
+
         when(orderRepo.findByCustomerId(1L)).thenReturn(orders);
+
         when(orderConverter.convertToModel(
                     order1,
                     new OrderDto()
                 )
         ).thenReturn(orderDto1);
+
         when(orderConverter.convertToModel(
                     order2,
                     new OrderDto()
@@ -263,12 +273,12 @@ class OrderServiceTest {
         ).thenReturn(orderDto2);
 
         // when
-        PageDto<OrderDto> page = orderService.getOrdersByCustomer(customerId, pageable);
+        PageDto<OrderDto> response = orderService.getOrdersByCustomer(customerId, pageable);
 
         // then
-        assertEquals(orderDtos.size(), page.getSize());
-        assertEquals(orderDtos.get(0), page.getContent().get(0));
-        assertEquals(orderDtos.get(1), page.getContent().get(1));
+        assertEquals(orderDtos.size(), response.getContent().size());
+        assertEquals(orderDtos.get(0), response.getContent().get(0));
+        assertEquals(orderDtos.get(1), response.getContent().get(1));
     }
 
     @Test
