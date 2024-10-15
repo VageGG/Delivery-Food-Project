@@ -58,11 +58,22 @@ public class OrderController {
     @GetMapping("/list")
     @ResponseStatus(HttpStatus.OK)
     @PreAuthorize("hasRole('CUSTOMER')")
-    public PageDto<OrderDto> getOrderList(@RequestParam @Min(1) Long customerId) {
-        Pageable pageable = PageRequest.of (
-                0,
-                2
-        );
+    public PageDto<OrderDto> getOrderList(@RequestParam @Min(1) Long customerId,
+                                          @RequestParam(
+                                                  value = "page",
+                                                  defaultValue = "0",
+                                                  required = false
+                                          ) Integer page,
+
+                                          @RequestParam(
+                                                  value = "size",
+                                                  defaultValue = "10",
+                                                  required = false
+                                          ) Integer size
+    ) {
+
+        Pageable pageable = PageRequest.of (page, size);
+
         return orderService.getOrdersByCustomer(customerId, pageable);
     }
 

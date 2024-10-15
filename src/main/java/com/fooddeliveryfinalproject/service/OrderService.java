@@ -2,13 +2,10 @@ package com.fooddeliveryfinalproject.service;
 
 import com.fooddeliveryfinalproject.converter.OrderConverter;
 import com.fooddeliveryfinalproject.entity.*;
-import com.fooddeliveryfinalproject.model.AddressDto;
-import com.fooddeliveryfinalproject.model.OrderDto;
-import com.fooddeliveryfinalproject.model.PageDto;
+import com.fooddeliveryfinalproject.model.*;
 import com.fooddeliveryfinalproject.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -33,6 +30,8 @@ public class OrderService {
 
     private final DriverRepo driverRepo;
 
+    private final CustomerRepo customerRepo;
+
     @Autowired
     public OrderService(OrderRepo orderRepo,
                         DeliveryRepo deliveryRepo,
@@ -40,7 +39,9 @@ public class OrderService {
                         MenuItemRepo menuItemRepo,
                         DeliveryService deliveryService,
                         OrderItemRepo orderItemRepo,
-                        DriverRepo driverRepo) {
+                        DriverRepo driverRepo,
+                        OrderConverter orderConverter,
+                        CustomerRepo customerRepo) {
         this.orderRepo = orderRepo;
         this.deliveryRepo = deliveryRepo;
         this.converter = converter;
@@ -48,6 +49,7 @@ public class OrderService {
         this.deliveryService = deliveryService;
         this.orderItemRepo = orderItemRepo;
         this.driverRepo = driverRepo;
+        this.customerRepo = customerRepo;
     }
 
     @Transactional
@@ -116,33 +118,23 @@ public class OrderService {
 
     @Transactional
     public PageDto<OrderDto> getOrdersByCustomer(Long customerId, Pageable pageable) {
+        Customer customer = customerRepo.findById(customerId)
+                .orElseThrow(() -> new NullPointerException("customer not found"));
+
+        Page<Order> page = orderRepo.findByCustomer(customer, pageable);
+
         List<OrderDto> orders = orderRepo.findByCustomerId(customerId).stream()
                 .map(order -> converter.convertToModel(order, new OrderDto()))
-                .collect(Collectors.toList());
+                .toList();
 
-        if (orders.size() == 1) {
-            Page<OrderDto> page =
-                    new PageImpl<>(orders.subList (
-                            pageable.getPageNumber(),
-                            1
-                    ),
-                            pageable,
-                            orders.size()
-                    );
+        PageDto<OrderDto> pageDto = new PageDto<>();
+        pageDto.setContent(orders);
+        pageDto.setPageNo(pageable.getPageSize());
+        pageDto.setPageSize(page.getSize());
+        pageDto.setTotalPages(page.getTotalPages());
+        pageDto.setEmpty(page.isEmpty());
 
-            return new PageDto<>(page);
-        }
-
-        Page<OrderDto> page =
-                new PageImpl<>(orders.subList (
-                        pageable.getPageNumber(),
-                        pageable.getPageSize()
-                ),
-                pageable,
-                orders.size()
-        );
-
-        return new PageDto<>(page);
+        return pageDto;
     }
 
     @Transactional
