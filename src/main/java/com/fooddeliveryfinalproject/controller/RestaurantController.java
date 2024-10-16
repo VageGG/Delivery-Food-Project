@@ -81,18 +81,21 @@ public class RestaurantController {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
+    @PreAuthorize("hasRole('CUSTOMER')")
     @PostMapping("/add-review/{restaurantId}")
     public ResponseEntity<HttpStatus> addReview(@PathVariable @Min(1) Long restaurantId, @RequestBody @Valid ReviewDto reviewDto) {
         reviewService.addReview(restaurantId, reviewDto);
         return new ResponseEntity<>( HttpStatus.CREATED);
     }
 
+    @PreAuthorize("hasAnyRole('ADMIN','RESTAURANT_MANAGER','CUSTOMER')")
     @DeleteMapping("/delete-review/{reviewId}")
     public ResponseEntity<HttpStatus> deleteReview(@PathVariable @Min(1) Long reviewId) {
         reviewService.deleteReview(reviewId);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
+    @PreAuthorize("hasRole('CUSTOMER')")
     @PutMapping("/update-review/{reviewId}")
     public ResponseEntity<HttpStatus> updateReview(@PathVariable @Min(1) Long reviewId, @RequestBody @Valid ReviewDto reviewDto) {
         reviewService.updateReview(reviewId, reviewDto);
