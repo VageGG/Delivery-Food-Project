@@ -273,7 +273,7 @@ class OrderServiceTest {
         ).thenReturn(orderDto2);
 
         // when
-        PageDto<OrderDto> response = orderService.getOrdersByCustomer(customerId, pageable);
+        PageDto<OrderDto> response = orderService.getOrdersByCustomer(customer, pageable);
 
         // then
         assertEquals(orderDtos.size(), response.getContent().size());
@@ -353,7 +353,7 @@ class OrderServiceTest {
         when(orderRepo.save(order)).thenReturn(order);
 
         // when
-        Order response = orderService.takeOrder(order.getOrderId(), driver.getId());
+        Order response = orderService.takeOrder(order.getOrderId(), driver);
 
         // then
         assertEquals(order.getOrderId(), response.getOrderId());

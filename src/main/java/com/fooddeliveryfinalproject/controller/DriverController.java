@@ -52,7 +52,7 @@ public class DriverController extends RegisterImplController<DriverService, Driv
     }
 
     @PreAuthorize("hasRole('ADMIN')")
-    @PostMapping("/approve-driver/{driverId}") // throwing access denied exception
+    @PostMapping("/approve-driver/{driverId}")
     public ResponseEntity<?> approveDriver(@PathVariable("driverId") @Min(1) Long driverId) {
         service.approveDriver(driverId);
         return ResponseEntity.ok("Driver approved");

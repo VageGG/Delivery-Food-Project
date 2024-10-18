@@ -3,6 +3,7 @@ package com.fooddeliveryfinalproject.controller;
 import com.fooddeliveryfinalproject.converter.DeliveryConverter;
 import com.fooddeliveryfinalproject.converter.ReviewConverter;
 import com.fooddeliveryfinalproject.entity.Customer;
+import com.fooddeliveryfinalproject.entity.Driver;
 import com.fooddeliveryfinalproject.entity.Restaurant;
 import com.fooddeliveryfinalproject.entity.Review;
 import com.fooddeliveryfinalproject.model.CreateReviewDto;
@@ -16,6 +17,7 @@ import jakarta.validation.constraints.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -23,7 +25,6 @@ import java.util.List;
 @RestController
 @RequestMapping("/delivery")
 public class DeliveryController {
-
 
     private final DeliveryService deliveryService;
 
@@ -47,23 +48,29 @@ public class DeliveryController {
     @GetMapping("/list")
     @ResponseStatus(HttpStatus.OK)
     @PreAuthorize("hasRole('DRIVER')")
-    public List<DeliveryDto> getDeliveryList(@RequestParam @Min(1) Long driverId) {
-        return deliveryService.getDeliveryList(driverId);
+    public List<DeliveryDto> getDeliveryList(Authentication authentication) {
+        Driver driver = (Driver) authentication.getPrincipal();
+        return deliveryService.getDeliveryList(driver.getId());
     }
 
     @GetMapping("/current")
     @ResponseStatus(HttpStatus.OK)
     @PreAuthorize("hasRole('DRIVER')")
-    public DeliveryDto getCurrentDelivery(@RequestParam @Min(1) Long driverId) {
-        return deliveryService.getCurrentDelivery(driverId);
+    public DeliveryDto getCurrentDelivery(Authentication authentication) {
+        Driver driver = (Driver) authentication.getPrincipal();
+        return deliveryService.getCurrentDelivery(driver.getId());
     }
 
     @PutMapping("/{deliveryId}/update")
     @ResponseStatus(HttpStatus.ACCEPTED)
     @PreAuthorize("hasRole('DRIVER')")
-    public DeliveryDto updateDelivery(@PathVariable @Min(1) Long deliveryId, @RequestBody DeliveryStatusDto deliveryStatusDto) {
+    public DeliveryDto updateDelivery(@PathVariable @Min(1) Long deliveryId,
+                                      @RequestBody DeliveryStatusDto deliveryStatusDto,
+                                      Authentication authentication) {
+        Driver driver = (Driver) authentication.getPrincipal();
+
         return deliveryConverter.convertToModel (
-                deliveryService.updateDeliveryStatus(deliveryId, deliveryStatusDto.getStatus()),
+                deliveryService.updateDeliveryStatus(deliveryId, deliveryStatusDto.getStatus(), driver),
                 new DeliveryDto()
         );
     }

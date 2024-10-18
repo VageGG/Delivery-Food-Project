@@ -30,8 +30,6 @@ public class OrderService {
 
     private final DriverRepo driverRepo;
 
-    private final CustomerRepo customerRepo;
-
     @Autowired
     public OrderService(OrderRepo orderRepo,
                         DeliveryRepo deliveryRepo,
@@ -41,7 +39,8 @@ public class OrderService {
                         OrderItemRepo orderItemRepo,
                         DriverRepo driverRepo,
                         OrderConverter orderConverter,
-                        CustomerRepo customerRepo) {
+                        CustomerRepo customerRepo
+    ) {
         this.orderRepo = orderRepo;
         this.deliveryRepo = deliveryRepo;
         this.converter = converter;
@@ -49,17 +48,11 @@ public class OrderService {
         this.deliveryService = deliveryService;
         this.orderItemRepo = orderItemRepo;
         this.driverRepo = driverRepo;
-        this.customerRepo = customerRepo;
     }
 
     @Transactional
     public Order createOrder(Order order, AddressDto addressDto, Long restaurantBranchId) {
         Order savedOrder = orderRepo.save(order);
-
-        if (order.getCustomer() == null) {
-            orderRepo.delete(savedOrder);
-            throw new NullPointerException("customer not found");
-        }
 
         if (order.getCustomer().getCart() == null) {
             orderRepo.delete(savedOrder);
@@ -87,15 +80,14 @@ public class OrderService {
 
     @Transactional(readOnly = true)
     public Order getOrderById(long id) {
-        Order order = this.orderRepo.findById(id)
+        return this.orderRepo.findById(id)
                 .orElseThrow(() -> new NullPointerException("order not found"));
-        
-        return order;
     }
 
     @Transactional
-    public Double calculateTotal(long orderId) {
-        List<OrderItem> items = getOrderById(orderId).getItems();
+    public Double calculateTotal(Long orderId) {
+        List<OrderItem> items = orderRepo.findById(orderId)
+                .orElseThrow(() -> new NullPointerException("order not found")).getItems();
 
         if (items.isEmpty()) {
             throw new RuntimeException("cart is empty");
@@ -117,13 +109,11 @@ public class OrderService {
     }
 
     @Transactional
-    public PageDto<OrderDto> getOrdersByCustomer(Long customerId, Pageable pageable) {
-        Customer customer = customerRepo.findById(customerId)
-                .orElseThrow(() -> new NullPointerException("customer not found"));
+    public PageDto<OrderDto> getOrdersByCustomer(Customer customer, Pageable pageable) {
 
         Page<Order> page = orderRepo.findByCustomer(customer, pageable);
 
-        List<OrderDto> orders = orderRepo.findByCustomerId(customerId).stream()
+        List<OrderDto> orders = orderRepo.findByCustomerId(customer.getId()).stream()
                 .map(order -> converter.convertToModel(order, new OrderDto()))
                 .toList();
 
@@ -139,20 +129,15 @@ public class OrderService {
 
     @Transactional
     public List<OrderDto> getPendingOrdersList() {
-        List<OrderDto> orderDtos = orderRepo.findByStatus(Order.OrderStatus.PENDING).stream()
+        return orderRepo.findByStatus(Order.OrderStatus.PENDING).stream()
                 .map(order -> converter.convertToModel(order, new OrderDto()))
                 .collect(Collectors.toList());
-
-        return orderDtos;
     }
 
     @Transactional
-    public Order takeOrder(Long orderId, Long driverId) {
+    public Order takeOrder(Long orderId, Driver driver) {
         Order order = orderRepo.findById(orderId)
                 .orElseThrow(() -> new NullPointerException("order not found"));
-
-        Driver driver = driverRepo.findById(driverId)
-                .orElseThrow(() -> new NullPointerException("driver not found"));
 
         if (driverRepo.findByDeliveries(deliveryRepo.findByOrder(order)) != null) {
             throw new RuntimeException("this order has already been taken by another driver");

@@ -26,7 +26,7 @@ public class CartItem {
     @JsonIgnore
     private Long menuItemId;
 
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne
     @MapsId("cartId")
     @JoinColumn(name = "cart_id")
     @JsonBackReference

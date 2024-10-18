@@ -64,7 +64,7 @@ class CartServiceTest {
 
         // when
         when(customerRepo.findById(1L)).thenReturn(Optional.ofNullable(cart.getCustomer()));
-        Cart savedCart = cartService.createOrderCart(cart, 1L);
+        Cart savedCart = cartService.createOrderCart(cart, new Customer());
 
         // then
         assertEquals(cart.getCartId(), savedCart.getCartId());
@@ -72,7 +72,7 @@ class CartServiceTest {
 
     @Test
     void createOrderCartShouldThrowNullPointerException() {
-        assertThrows(NullPointerException.class, () -> cartService.createOrderCart(null, 1L));
+        assertThrows(NullPointerException.class, () -> cartService.createOrderCart(null, new Customer()));
     }
 
     @Test
@@ -151,11 +151,13 @@ class CartServiceTest {
         // given
         Cart cart = new Cart();
         cart.setCartId(1L);
+        cart.setCustomer(new Customer());
+        cart.getCustomer().setId(1L);
 
         when(cartRepo.findById(1L)).thenReturn(Optional.of(cart));
 
         // when
-        Cart savedCart = cartService.getOrderCartById(1L);
+        Cart savedCart = cartService.getOrderCartById(1L, 1L);
 
         // then
         assertEquals(cart.getCartId(), savedCart.getCartId());
@@ -164,7 +166,7 @@ class CartServiceTest {
     @Test
     void getOrderCartByIdShouldThrowNullPointerException() {
         when(cartRepo.findById(1L)).thenReturn(null);
-        assertThrows(NullPointerException.class, () -> cartService.getOrderCartById(1L));
+        assertThrows(NullPointerException.class, () -> cartService.getOrderCartById(1L, 1L));
     }
 
     @Test
@@ -181,7 +183,7 @@ class CartServiceTest {
         String message = cartService.deleteOrderCart(1L, 1L);
 
         // then
-        assertEquals("cart has been deleted", message);
+        assertEquals("all cart items have been removed", message);
     }
 
     @Test
