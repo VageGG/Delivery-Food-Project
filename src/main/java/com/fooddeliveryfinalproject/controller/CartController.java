@@ -2,12 +2,14 @@ package com.fooddeliveryfinalproject.controller;
 
 import com.fooddeliveryfinalproject.converter.CartConverter;
 import com.fooddeliveryfinalproject.entity.Cart;
+import com.fooddeliveryfinalproject.entity.Customer;
 import com.fooddeliveryfinalproject.model.CartDto;
 import com.fooddeliveryfinalproject.service.CartService;
 import jakarta.validation.constraints.Min;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -28,16 +30,19 @@ public class CartController {
     @PostMapping("/")
     @ResponseStatus(HttpStatus.CREATED)
     @PreAuthorize("hasRole('CUSTOMER')")
-    public CartDto createCart(@RequestParam @Min(1) long customerId) {
+    public CartDto createCart(Authentication authentication) {
         Cart cart = new Cart();
-        return cartConverter.convertToModel(cartService.createOrderCart(cart, customerId), new CartDto());
+        Customer customer = (Customer) authentication.getPrincipal();
+        return cartConverter.convertToModel(cartService.createOrderCart(cart, customer), new CartDto());
     }
 
     @GetMapping("/{cartId}")
     @ResponseStatus(HttpStatus.OK)
     @PreAuthorize("hasRole('CUSTOMER')")
-    public CartDto getCartById(@PathVariable Long cartId) {
-        return cartConverter.convertToModel(cartService.getOrderCartById(cartId), new CartDto());
+    public CartDto getCartById(@PathVariable Long cartId, Authentication authentication) {
+        Customer customer = (Customer) authentication.getPrincipal();
+
+        return cartConverter.convertToModel(cartService.getOrderCartById(cartId, customer.getId()), new CartDto());
     }
 
     @PostMapping("/{cartId}/menuItem/{menuItemId}/add")
@@ -45,9 +50,11 @@ public class CartController {
     @PreAuthorize("hasRole('CUSTOMER')")
     public String addItemToCart(@PathVariable @Min(1) Long cartId,
                                 @PathVariable @Min(1) Long menuItemId,
-                                @RequestParam @Min(1) Long customerId
+                                Authentication authentication
     ) {
-        return cartService.addItemToCart(cartId, menuItemId, customerId);
+        Customer customer = (Customer) authentication.getPrincipal();
+
+        return cartService.addItemToCart(cartId, menuItemId, customer.getId());
 
     }
 
@@ -56,15 +63,17 @@ public class CartController {
     @PreAuthorize("hasRole('CUSTOMER')")
     public String removeItemFromCart(@PathVariable @Min(1) Long cartId,
                                      @PathVariable @Min(1) Long menuItemId,
-                                     @RequestParam @Min(1) Long customerId
+                                     Authentication authentication
     ) {
-        return cartService.removeItemFromCart(cartId, menuItemId, customerId);
+        Customer customer = (Customer) authentication.getPrincipal();
+        return cartService.removeItemFromCart(cartId, menuItemId, customer.getId());
     }
 
     @DeleteMapping("/{cartId}/delete")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @PreAuthorize("hasRole('CUSTOMER')")
-    public String deleteCart(@PathVariable @Min(1) Long cartId, @RequestParam @Min(1) Long customerId) {
-        return cartService.deleteOrderCart(cartId, customerId);
+    public String deleteCart(@PathVariable @Min(1) Long cartId, Authentication authentication) {
+        Customer customer = (Customer) authentication.getPrincipal();
+        return cartService.deleteOrderCart(cartId, customer.getId());
     }
 }

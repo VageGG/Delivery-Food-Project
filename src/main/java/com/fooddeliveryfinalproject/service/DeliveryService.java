@@ -2,10 +2,7 @@ package com.fooddeliveryfinalproject.service;
 
 import com.fooddeliveryfinalproject.converter.AddressConverter;
 import com.fooddeliveryfinalproject.converter.DeliveryConverter;
-import com.fooddeliveryfinalproject.entity.Address;
-import com.fooddeliveryfinalproject.entity.Delivery;
-import com.fooddeliveryfinalproject.entity.Order;
-import com.fooddeliveryfinalproject.entity.RestaurantBranch;
+import com.fooddeliveryfinalproject.entity.*;
 import com.fooddeliveryfinalproject.model.AddressDto;
 import com.fooddeliveryfinalproject.model.DeliveryDto;
 import com.fooddeliveryfinalproject.repository.AddressRepo;
@@ -97,11 +94,9 @@ public class DeliveryService {
 
     @Transactional(readOnly = true)
     public List<DeliveryDto> getDeliveryList(Long driverId) {
-        List<DeliveryDto> deliveries = repo.findByDriverId(driverId).stream()
+        return repo.findByDriverId(driverId).stream()
                 .map(delivery -> deliveryConverter.convertToModel(delivery, new DeliveryDto()))
                 .collect(Collectors.toList());
-
-        return deliveries;
     }
 
     @Transactional(readOnly = true)
@@ -113,16 +108,16 @@ public class DeliveryService {
 
         List<DeliveryDto> list = repo.findByDriverId(driverId).stream()
                 .filter(delivery -> (
-                                delivery.getStatus()
-                                        .equals(deliveryStatuses[0]) ||
-                                delivery.getStatus()
-                                        .equals(deliveryStatuses[1])
+                            delivery.getStatus()
+                                    .equals(deliveryStatuses[0]) ||
+                            delivery.getStatus()
+                                    .equals(deliveryStatuses[1])
                         )
                 )
                 .map(delivery -> deliveryConverter.convertToModel(delivery, new DeliveryDto()))
                 .toList();
 
-        if (list.size() == 0) {
+        if (list.isEmpty()) {
             throw new RuntimeException("you currently don't have any delivery with picked up or delivering status");
         }
 
@@ -130,9 +125,13 @@ public class DeliveryService {
     }
 
     @Transactional
-    public Delivery updateDeliveryStatus(Long deliveryId, Delivery.DeliveryStatus deliveryStatus) {
+    public Delivery updateDeliveryStatus(Long deliveryId, Delivery.DeliveryStatus deliveryStatus, Driver driver) {
         Delivery delivery = repo.findById(deliveryId)
                 .orElseThrow(() -> new NullPointerException("delivery not found"));
+
+        if (!delivery.getDriver().getId().equals(driver.getId())) {
+            throw new RuntimeException("delivery not found");
+        }
 
         Delivery.DeliveryStatus[] deliveryStatuses = {
                 Delivery.DeliveryStatus.DELIVERED,
@@ -140,8 +139,8 @@ public class DeliveryService {
         };
 
         if (
-                    (deliveryStatus.equals(deliveryStatuses[0])) ||
-                    (deliveryStatus.equals(deliveryStatuses[1]))
+                (deliveryStatus.equals(deliveryStatuses[0])) ||
+                (deliveryStatus.equals(deliveryStatuses[1]))
         ) {
             if (deliveryStatus.equals(deliveryStatuses[0])) {
                 delivery.setDropoffTime(LocalDateTime.now());

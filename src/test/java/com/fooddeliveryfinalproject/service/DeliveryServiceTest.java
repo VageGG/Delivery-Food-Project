@@ -182,13 +182,15 @@ class DeliveryServiceTest {
 
         Delivery delivery = new Delivery();
         delivery.setDeliveryId(deliveryId);
+        delivery.setDriver(new Driver());
+        delivery.getDriver().setId(1L);
 
         when(deliveryRepo.findById(deliveryId)).thenReturn(Optional.of(delivery));
         when(deliveryRepo.save(delivery)).thenReturn(delivery);
 
         // when
         Delivery.DeliveryStatus status = Delivery.DeliveryStatus.DELIVERING;
-        Delivery response = deliveryService.updateDeliveryStatus(deliveryId, status);
+        Delivery response = deliveryService.updateDeliveryStatus(deliveryId, status, delivery.getDriver());
 
         // then
         assertEquals(delivery.getDeliveryId(), response.getDeliveryId());
@@ -200,8 +202,10 @@ class DeliveryServiceTest {
         assertThrows(
                 NullPointerException.class,
                 () -> deliveryService.updateDeliveryStatus(
+
                         1L,
-                        Delivery.DeliveryStatus.PICKED_UP
+                        Delivery.DeliveryStatus.PICKED_UP,
+                        new Driver()
                 )
         );
     }

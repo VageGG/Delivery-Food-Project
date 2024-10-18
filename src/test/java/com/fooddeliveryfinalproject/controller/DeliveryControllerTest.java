@@ -1,24 +1,29 @@
 package com.fooddeliveryfinalproject.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fooddeliveryfinalproject.config.JWTRequestFilter;
 import com.fooddeliveryfinalproject.converter.DeliveryConverter;
 import com.fooddeliveryfinalproject.converter.ReviewConverter;
 import com.fooddeliveryfinalproject.entity.*;
-import com.fooddeliveryfinalproject.model.DeliveryDto;
-import com.fooddeliveryfinalproject.model.DeliveryStatusDto;
-import com.fooddeliveryfinalproject.model.DriverDto;
-import com.fooddeliveryfinalproject.model.ReviewDto;
+import com.fooddeliveryfinalproject.model.*;
 import com.fooddeliveryfinalproject.service.BlacklistService;
 import com.fooddeliveryfinalproject.service.DeliveryService;
 import com.fooddeliveryfinalproject.service.JWTUtilService;
 import com.fooddeliveryfinalproject.service.ReviewService;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
@@ -28,11 +33,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static org.mockito.Mockito.when;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.jwt;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 
 @WebMvcTest(DeliveryController.class)
 @ExtendWith(SpringExtension.class)
-@AutoConfigureMockMvc(addFilters = false)
+@AutoConfigureMockMvc
 class DeliveryControllerTest {
     @Autowired
     private MockMvc mockMvc;
@@ -58,6 +64,18 @@ class DeliveryControllerTest {
     @MockBean
     private ReviewConverter reviewConverter;
 
+    @MockBean
+    private SecurityContext securityContext;
+
+    @MockBean
+    private Authentication authentication;
+
+    @MockBean
+    private UserDetailsService userDetailsService;
+
+    @MockBean
+    private JWTRequestFilter jwtRequestFilter;
+
 
     @Test
     void getDeliveryList() throws Exception {
@@ -77,7 +95,10 @@ class DeliveryControllerTest {
 
         when(deliveryService.getDeliveryList(1L)).thenReturn(deliveryDtos);
 
-        ResultActions response = mockMvc.perform(get("/delivery/list?driverId=1")
+        ResultActions response = mockMvc.perform(get("/delivery/list")
+                .with(jwt())
+                .with(SecurityMockMvcRequestPostProcessors.user("John")
+                        .password("Password123+").roles("DRIVER"))
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(deliveryDtos))
         );
@@ -95,7 +116,10 @@ class DeliveryControllerTest {
 
         when(deliveryService.getCurrentDelivery(1L)).thenReturn(deliveryDto);
 
-        ResultActions response = mockMvc.perform(get("/delivery/current?driverId=1")
+        ResultActions response = mockMvc.perform(get("/delivery/current")
+                .with(jwt())
+                .with(SecurityMockMvcRequestPostProcessors.user("John")
+                        .password("Password123+").roles("DRIVER"))
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(deliveryDto))
         );
@@ -119,17 +143,21 @@ class DeliveryControllerTest {
 
         when(deliveryService.updateDeliveryStatus(
                 deliveryDto.getId(),
-                Delivery.DeliveryStatus.DELIVERING
+                Delivery.DeliveryStatus.DELIVERING,
+                new Driver()
             )
         ).thenReturn(delivery);
 
 
         ResultActions response = mockMvc.perform(put("/delivery/1/update")
+                .with(jwt())
+                .with(SecurityMockMvcRequestPostProcessors.user("John")
+                        .password("Password123+").roles("DRIVER"))
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .content(objectMapper.writeValueAsString(deliveryStatusDto))
         );
 
-        response.andExpect(MockMvcResultMatchers.status().isAccepted());
+        response.andExpect(MockMvcResultMatchers.status().isOk());
     }
 
     @Test
@@ -144,8 +172,11 @@ class DeliveryControllerTest {
         when(deliveryConverter.convertToModel(delivery, new DeliveryDto())).thenReturn(deliveryDto);
 
         ResultActions response = mockMvc.perform(get("/delivery/1")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(deliveryDto))
+                .with(jwt())
+                .with(SecurityMockMvcRequestPostProcessors.user("John")
+                        .password("Password123+").roles("DRIVER"))
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(deliveryDto))
         );
         response.andExpect(MockMvcResultMatchers.status().isOk());
     }
@@ -164,6 +195,9 @@ class DeliveryControllerTest {
         when(deliveryConverter.convertToModel(delivery, new DeliveryDto())).thenReturn(deliveryDto);
 
         ResultActions response = mockMvc.perform(get("/delivery/trackingId/" + trackingNumber)
+                .with(jwt())
+                .with(SecurityMockMvcRequestPostProcessors.user("John")
+                        .password("Password123+").roles("CUSTOMER"))
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(deliveryDto))
         );
@@ -190,10 +224,13 @@ class DeliveryControllerTest {
                 .thenReturn(reviewDto);
 
         ResultActions response = mockMvc.perform(post("/delivery/feedback")
+                .with(jwt())
+                .with(SecurityMockMvcRequestPostProcessors.user("John")
+                        .password("Password123+").roles("CUSTOMER"))
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(reviewDto))
         );
 
-        response.andExpect(MockMvcResultMatchers.status().isCreated());
+        response.andExpect(MockMvcResultMatchers.status().isOk());
     }
 }
