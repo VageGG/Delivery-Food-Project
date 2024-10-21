@@ -101,7 +101,7 @@ public class PaymentMethodService {
     }
 
     @Transactional(readOnly = true)
-    public Optional<PaymentMethodDto> getPaymentMethods(@NotNull String username, @Valid Long paymentMethodId) {
+    public Optional<PaymentMethodDto> getPaymentMethods(String username, Long paymentMethodId) {
         return customerRepo.findByUsername(username)
                 .flatMap(customer -> customer.getPaymentMethods().stream()
                         .map(pm -> paymentMethodConverter.convertToModel(pm, new PaymentMethodDto()))
