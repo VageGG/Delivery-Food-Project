@@ -10,4 +10,6 @@ import java.util.List;
 public interface RestaurantRepo extends JpaRepository<Restaurant,Long> {
 
     List<Restaurant> findByNameContainingIgnoreCase(String name);
+
+    boolean existsRestaurantByRestaurantManagerId(Long managerId);
 }
