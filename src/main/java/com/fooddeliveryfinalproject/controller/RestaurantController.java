@@ -1,5 +1,7 @@
 package com.fooddeliveryfinalproject.controller;
 
+import com.fooddeliveryfinalproject.entity.Customer;
+import com.fooddeliveryfinalproject.entity.RestaurantManager;
 import com.fooddeliveryfinalproject.model.RestaurantDto;
 import com.fooddeliveryfinalproject.model.ReviewDto;
 import com.fooddeliveryfinalproject.service.RestaurantService;
@@ -13,6 +15,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -30,8 +33,8 @@ public class RestaurantController {
     private final ReviewService reviewService;
 
     @Autowired
-    public RestaurantController (RestaurantService restaurantService,
-                                 ReviewService reviewService) {
+    public RestaurantController(RestaurantService restaurantService,
+                                ReviewService reviewService) {
         this.restaurantService = restaurantService;
         this.reviewService = reviewService;
     }
@@ -45,7 +48,8 @@ public class RestaurantController {
         Pageable pageable = PageRequest.of(page, size);
         List<RestaurantDto> restaurantDtos = restaurantService.getAllRestaurants(pageable)
                 .stream()
-                .collect(Collectors.toList());;
+                .collect(Collectors.toList());
+        ;
         return ResponseEntity.ok(restaurantDtos);
     }
 
@@ -55,6 +59,7 @@ public class RestaurantController {
         List<RestaurantDto> restaurantDtos = restaurantService.searchRestaurantsByName(name);
         return new ResponseEntity<>(restaurantDtos, HttpStatus.OK);
     }
+
     @GetMapping("/{id}")
     public ResponseEntity<RestaurantDto> getRestaurant(@PathVariable("id") @Min(1) Long id) {
         return ResponseEntity.ok(restaurantService.getRestaurantById(id));
@@ -67,39 +72,73 @@ public class RestaurantController {
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
-    @PreAuthorize("hasAnyRole('ADMIN','RESTAURANT_MANAGER')")
-    @PutMapping("/update/{id}")
-    public ResponseEntity<HttpStatus> updateRestaurant(@PathVariable("id") @Min(1) Long id, @RequestBody @Valid RestaurantDto restaurantDto) {
-        restaurantService.updateRestaurant(id, restaurantDto);
+    @PreAuthorize("hasRole('ADMIN')")
+    @PutMapping("/{restId}/add-manager/{managerId}")
+    public ResponseEntity<HttpStatus> addManagerToRestaurant(@PathVariable @Min(1) Long restId, @PathVariable @Min(1) Long managerId) {
+        restaurantService.addOrChangedManagerToRestaurant(restId, managerId);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @PreAuthorize("hasAnyRole('ADMIN','RESTAURANT_MANAGER')")
+    @PutMapping("/update/{id}")
+    public ResponseEntity<HttpStatus> updateRestaurant(@PathVariable("id") @Min(1) Long id, @RequestBody @Valid RestaurantDto restaurantDto, Authentication authentication) {
+        if (authentication.getAuthorities().stream().anyMatch(r -> r.getAuthority().equals("ADMIN"))) {
+            restaurantService.updateRestaurant(id, restaurantDto);
+            return new ResponseEntity<>(HttpStatus.OK);
+        } else if (authentication.getAuthorities().stream().anyMatch(r -> r.getAuthority().equals("RESTAURANT_MANAGER"))) {
+            RestaurantManager restaurantManager = (RestaurantManager) authentication.getPrincipal();
+            if (restaurantService.getRest(id).getRestaurantManager().getId() == restaurantManager.getId()) {
+                restaurantService.updateRestaurant(id, restaurantDto);
+                return new ResponseEntity<>(HttpStatus.OK);
+            }
+        }
+        return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+    }
+
+    @PreAuthorize("hasAnyRole('ADMIN','RESTAURANT_MANAGER')")
     @DeleteMapping("/delete/{id}")
-    public ResponseEntity<HttpStatus> deleteRestaurant(@PathVariable("id") @Min(1) Long id) {
-        restaurantService.deleteRestaurant(id);
-        return new ResponseEntity<>(HttpStatus.OK);
+    public ResponseEntity<HttpStatus> deleteRestaurant(@PathVariable("id") @Min(1) Long id, Authentication authentication) {
+        if (authentication.getAuthorities().stream().anyMatch(r -> r.getAuthority().equals("ADMIN"))) {
+            restaurantService.deleteRestaurant(id);
+            return new ResponseEntity<>(HttpStatus.OK);
+        } else if (authentication.getAuthorities().stream().anyMatch(r -> r.getAuthority().equals("RESTAURANT_MANAGER"))) {
+            RestaurantManager restaurantManager = (RestaurantManager) authentication.getPrincipal();
+            if (restaurantService.getRest(id).getRestaurantManager().getId() == restaurantManager.getId()) {
+                restaurantService.deleteRestaurant(id);
+                return new ResponseEntity<>(HttpStatus.OK);
+            }
+        }
+        return new ResponseEntity<>(HttpStatus.FORBIDDEN);
     }
 
     @PreAuthorize("hasRole('CUSTOMER')")
     @PostMapping("/add-review/{restaurantId}")
     public ResponseEntity<HttpStatus> addReview(@PathVariable @Min(1) Long restaurantId, @RequestBody @Valid ReviewDto reviewDto) {
         reviewService.addReview(restaurantId, reviewDto);
-        return new ResponseEntity<>( HttpStatus.CREATED);
+        return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
     @PreAuthorize("hasAnyRole('ADMIN','RESTAURANT_MANAGER','CUSTOMER')")
     @DeleteMapping("/delete-review/{reviewId}")
-    public ResponseEntity<HttpStatus> deleteReview(@PathVariable @Min(1) Long reviewId) {
-        reviewService.deleteReview(reviewId);
-        return new ResponseEntity<>(HttpStatus.OK);
+    public ResponseEntity<HttpStatus> deleteReview(@PathVariable @Min(1) Long reviewId, Authentication authentication) {
+        if (authentication.getAuthorities().stream().anyMatch(r -> r.getAuthority().equals("ADMIN") || r.getAuthority().equals("RESTAURANT_MANAGER"))) {
+            reviewService.deleteReview(reviewId);
+            return new ResponseEntity<>(HttpStatus.OK);
+        } if (authentication.getAuthorities().stream().anyMatch(r -> r.getAuthority().equals("CUSTOMER"))) {
+            Customer customer = (Customer) authentication.getPrincipal();
+            if (reviewService.getReviewById(reviewId).getCustomer().getId() == customer.getId()) {
+                reviewService.deleteReview(reviewId);
+                return new ResponseEntity<>(HttpStatus.OK);
+            }
+        }
+        return new ResponseEntity<>(HttpStatus.FORBIDDEN);
     }
 
     @PreAuthorize("hasRole('CUSTOMER')")
     @PutMapping("/update-review/{reviewId}")
     public ResponseEntity<HttpStatus> updateReview(@PathVariable @Min(1) Long reviewId, @RequestBody @Valid ReviewDto reviewDto) {
         reviewService.updateReview(reviewId, reviewDto);
-        return new ResponseEntity<>( HttpStatus.OK);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @GetMapping("/average-rating/{restaurantId}")

@@ -2,7 +2,9 @@ package com.fooddeliveryfinalproject.service;
 
 import com.fooddeliveryfinalproject.converter.RestaurantConverter;
 import com.fooddeliveryfinalproject.entity.Restaurant;
+import com.fooddeliveryfinalproject.entity.RestaurantManager;
 import com.fooddeliveryfinalproject.model.RestaurantDto;
+import com.fooddeliveryfinalproject.repository.RestaurantManagerRepo;
 import com.fooddeliveryfinalproject.repository.RestaurantRepo;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Min;
@@ -24,13 +26,17 @@ public class RestaurantService {
 
     private final RestaurantConverter restaurantConverter;
 
+    private final RestaurantManagerRepo restaurantManagerRepo;
+
 
     @Autowired
     public RestaurantService(RestaurantRepo restaurantRepo,
-                             RestaurantConverter restaurantConverter
+                             RestaurantConverter restaurantConverter,
+                             RestaurantManagerRepo restaurantManagerRepo
                              ) {
         this.restaurantRepo = restaurantRepo;
         this.restaurantConverter = restaurantConverter;
+        this.restaurantManagerRepo = restaurantManagerRepo;
     }
 
 
@@ -41,6 +47,10 @@ public class RestaurantService {
                 new RestaurantDto());
     }
 
+    @Transactional(readOnly = true)
+    public Restaurant getRest(Long id) {
+        return restaurantRepo.findById(id).orElseThrow(() -> new RuntimeException("Restaurant not found"));
+    }
 
     @Transactional(readOnly = true)
     public Page<RestaurantDto> getAllRestaurants(Pageable pageable) {
@@ -58,6 +68,19 @@ public class RestaurantService {
     @Transactional
     public void createRestaurant (@Valid RestaurantDto restaurantDto){
         Restaurant restaurant = restaurantConverter.convertToEntity(restaurantDto, new Restaurant());
+        restaurantRepo.save(restaurant);
+    }
+
+    @Transactional
+    public void addOrChangedManagerToRestaurant(Long restId, Long managerId) {
+        Restaurant restaurant = restaurantRepo.findById(restId)
+                .orElseThrow(() -> new RuntimeException("Restaurants not found"));
+        if (!restaurantRepo.existsRestaurantByRestaurantManagerId(managerId)) {
+            RestaurantManager restaurantManager = restaurantManagerRepo.findById(managerId).get();
+            restaurant.setRestaurantManager(restaurantManager);
+        } else {
+            throw new RuntimeException("Manager already assigned to this restaurant");
+        }
         restaurantRepo.save(restaurant);
     }
 

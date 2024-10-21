@@ -84,6 +84,12 @@ public class RestaurantBranchService {
         return restaurantBranchDto;
     }
 
+    @Transactional(readOnly = true)
+    public RestaurantBranch getRestBranch(Long id) {
+        return restaurantBranchRepo.findById(id)
+               .orElseThrow(() -> new RuntimeException("Could not find RestaurantBranch"));
+    }
+
 
     @Transactional(readOnly = true)
     public Page<RestaurantBranchDto> getAllRestaurantBranches(@Min(1) Long restaurantId, Pageable pageable) {

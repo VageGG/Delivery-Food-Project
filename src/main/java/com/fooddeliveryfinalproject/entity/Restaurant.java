@@ -28,7 +28,7 @@ public class Restaurant {
     @Column(name = "restaurant_name", nullable = false, unique = true)
     private String name;
 
-    @OneToOne(cascade = CascadeType.ALL)
+    @OneToOne
     @JoinColumn(name = "manager_id")
     private RestaurantManager restaurantManager;
 
