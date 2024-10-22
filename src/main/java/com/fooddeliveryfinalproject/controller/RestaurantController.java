@@ -2,6 +2,8 @@ package com.fooddeliveryfinalproject.controller;
 
 import com.fooddeliveryfinalproject.entity.Customer;
 import com.fooddeliveryfinalproject.entity.RestaurantManager;
+import com.fooddeliveryfinalproject.entity.Review;
+import com.fooddeliveryfinalproject.entity.User;
 import com.fooddeliveryfinalproject.model.RestaurantDto;
 import com.fooddeliveryfinalproject.model.ReviewDto;
 import com.fooddeliveryfinalproject.model.SearchRestDto;
@@ -114,9 +116,18 @@ public class RestaurantController {
 
     @PreAuthorize("hasRole('CUSTOMER')")
     @PostMapping("/add-review/{restaurantId}")
-    public ResponseEntity<HttpStatus> addReview(@PathVariable @Min(1) Long restaurantId, @RequestBody @Valid ReviewDto reviewDto) {
-        reviewService.addReview(restaurantId, reviewDto);
-        return new ResponseEntity<>(HttpStatus.CREATED);
+    public ResponseEntity<HttpStatus> addReview(
+            @PathVariable @Min(1) Long restaurantId,
+            @RequestBody @Valid ReviewDto reviewDto,
+            Authentication authentication
+    ) {
+        Customer customer = (Customer) authentication.getPrincipal();
+
+        if (User.Role.CUSTOMER.equals(customer.getRole())) {
+            reviewService.addReview(restaurantId, reviewDto, customer);
+            return new ResponseEntity<>(HttpStatus.CREATED);
+        }
+        return new ResponseEntity<>(HttpStatus.FORBIDDEN);
     }
 
     @PreAuthorize("hasAnyRole('ADMIN','RESTAURANT_MANAGER','CUSTOMER')")
@@ -137,9 +148,19 @@ public class RestaurantController {
 
     @PreAuthorize("hasRole('CUSTOMER')")
     @PutMapping("/update-review/{reviewId}")
-    public ResponseEntity<HttpStatus> updateReview(@PathVariable @Min(1) Long reviewId, @RequestBody @Valid ReviewDto reviewDto) {
-        reviewService.updateReview(reviewId, reviewDto);
-        return new ResponseEntity<>(HttpStatus.OK);
+    public ResponseEntity<HttpStatus> updateReview(
+           @PathVariable @Min(1) Long reviewId,
+           @RequestBody @Valid ReviewDto reviewDto,
+           Authentication authentication
+    ) {
+
+        Customer customer = (Customer) authentication.getPrincipal();
+        Review review = reviewService.getReviewById(reviewId);
+        if(review.getCustomer().getId() == customer.getId()) {
+            reviewService.updateReview(reviewId, reviewDto);
+            return new ResponseEntity<>(HttpStatus.OK);
+        }
+        return new ResponseEntity<>(HttpStatus.FORBIDDEN);
     }
 
     @GetMapping("/average-rating/{restaurantId}")

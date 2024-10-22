@@ -48,18 +48,40 @@ public class CartService {
     }
 
     @Transactional
-    public String addItemToCart(Long cartId, Long menuItemId, Long customerId) {
-        Cart cart = repo.findById(cartId)
-                .orElseThrow(() -> new NullPointerException("cart not found"));
+    public String addItemToCart(Long cartId, Long menuItemId, Long customerId, Integer qty) {
+        CartItem cartItem;
+        CartItemId cartItemId = new CartItemId(cartId, menuItemId);
 
-        if (!cart.getCustomer().getId().equals(customerId)) {
-            throw new NullPointerException("cart not found");
+        if (cartItemRepo.existsById(cartItemId)) {
+            cartItem = cartItemRepo.findById(cartItemId).get();
+            int count = cartItem.getQty() + qty;
+            cartItem.setQty(count);
         }
 
-        MenuItem menuItem = menuItemRepo.findById(menuItemId)
-                .orElseThrow(() -> new NullPointerException("item not found"));
+        else {
 
-        cartItemRepo.save(new CartItem(cart, menuItem));
+            Cart cart = repo.findById(cartId)
+                    .orElseThrow(() -> new NullPointerException("cart not found"));
+
+            if (!cart.getCustomer().getId().equals(customerId)) {
+                throw new NullPointerException("cart not found");
+            }
+
+            MenuItem menuItem = menuItemRepo.findById(menuItemId)
+                    .orElseThrow(() -> new NullPointerException("item not found"));
+
+            cartItem = new CartItem(cart, menuItem);
+
+            if (qty == null) {
+                qty = 1;
+            }
+
+            cartItem.setQty(qty);
+
+        }
+
+
+        cartItemRepo.save(cartItem);
 
         return "item has been added to cart";
     }

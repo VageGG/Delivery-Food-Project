@@ -8,4 +8,6 @@ public class OrderItemDto {
     private Long orderId;
 
     private Long menuItemId;
+
+    private Integer quantity;
 }

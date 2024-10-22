@@ -25,6 +25,8 @@ public class CartItemConverter implements Converter<CartItem, CartItemDto> {
         entity.setMenuItem(menuItemRepo.findById(model.getMenuItemId())
                 .orElseThrow(() -> new EntityNotFoundException("Not found MenuItem")));
 
+        entity.setQty(model.getQty());
+
         return entity;
     }
 
@@ -32,6 +34,7 @@ public class CartItemConverter implements Converter<CartItem, CartItemDto> {
     public CartItemDto convertToModel(CartItem entity, CartItemDto model) {
         model.setCartId(entity.getCart().getCartId());
         model.setMenuItemId(entity.getMenuItem().getMenuItemId());
+        model.setQty(entity.getQty());
         return model;
     }
 }

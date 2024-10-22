@@ -98,7 +98,7 @@ class CartServiceTest {
         when(cartItemRepo.save(new CartItem(cart, item))).thenReturn(cartItem);
 
         // when
-        String response = cartService.addItemToCart(cart.getCartId(), item.getMenuItemId(), 1L);
+        String response = cartService.addItemToCart(cart.getCartId(), item.getMenuItemId(), 1L, 1);
 
         // then
         assertEquals(response, "item has been added to cart");
