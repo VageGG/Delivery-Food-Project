@@ -65,6 +65,11 @@ public class SpringSecurityConfig {
                         .requestMatchers("/admins/register").permitAll()
                         .requestMatchers("/managers/register").permitAll()
                         .requestMatchers("/drivers/register").permitAll()
+                        .requestMatchers("/restaurant/list", "/restaurant/search", "/restaurant/{id}",
+                                "/restaurant/average-rating/{restaurantId}", "/restaurant/all-reviews/{restaurantId}").permitAll()
+                        .requestMatchers("/restaurant-branch/menu/{restaurantBranchId}", "/restaurant-branch/list/{restaurantId}",
+                        "/restaurant-branch/{id}", "/restaurant-branch/categories/{branchId}",
+                                "/restaurant-branch/categories-with-menu-items/{branchId}", "/restaurant-branch/{branchId}/category/{categoryId}").permitAll()
                         .anyRequest().authenticated()
                 )
                 .httpBasic(withDefaults())

@@ -4,6 +4,7 @@ import com.fooddeliveryfinalproject.converter.RestaurantConverter;
 import com.fooddeliveryfinalproject.entity.Restaurant;
 import com.fooddeliveryfinalproject.entity.RestaurantManager;
 import com.fooddeliveryfinalproject.model.RestaurantDto;
+import com.fooddeliveryfinalproject.model.SearchRestDto;
 import com.fooddeliveryfinalproject.repository.RestaurantManagerRepo;
 import com.fooddeliveryfinalproject.repository.RestaurantRepo;
 import jakarta.validation.Valid;
@@ -59,9 +60,9 @@ public class RestaurantService {
     }
 
     @Transactional
-    public List<RestaurantDto> searchRestaurantsByName(@NotNull String name) {
+    public List<RestaurantDto> searchRestaurantsByName(SearchRestDto searchRestDto) {
 
-        List<Restaurant> restaurants = restaurantRepo.findByNameContainingIgnoreCase(name);
+        List<Restaurant> restaurants = restaurantRepo.findByNameContainingIgnoreCase(searchRestDto.getName());
         return restaurantConverter.convertToModelList(restaurants,RestaurantDto::new);
     }
 
