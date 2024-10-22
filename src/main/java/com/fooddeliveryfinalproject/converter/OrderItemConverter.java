@@ -25,6 +25,8 @@ public class OrderItemConverter implements Converter<OrderItem, OrderItemDto> {
         entity.setMenuItem(menuItemRepo.findById(model.getMenuItemId())
                 .orElseThrow(() -> new EntityNotFoundException("Not found menu item")));
 
+        entity.setQty(model.getQuantity());
+
         return entity;
     }
 
@@ -32,6 +34,7 @@ public class OrderItemConverter implements Converter<OrderItem, OrderItemDto> {
     public OrderItemDto convertToModel(OrderItem entity, OrderItemDto model) {
         model.setOrderId(entity.getOrder().getOrderId());
         model.setMenuItemId(entity.getMenuItem().getMenuItemId());
+        model.setQuantity(entity.getQty());
         return model;
     }
 }

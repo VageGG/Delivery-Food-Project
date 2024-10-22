@@ -7,6 +7,7 @@ import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.ColumnDefault;
 
 @Data
 @NoArgsConstructor
@@ -37,6 +38,10 @@ public class CartItem {
     @JoinColumn(name = "menu_item_id")
     @JsonManagedReference
     private MenuItem menuItem;
+
+    @Column(name = "quantity")
+    @ColumnDefault("1")
+    private Integer qty;
 
     public CartItem(Cart cart, MenuItem menuItem) {
         this.cart = cart;

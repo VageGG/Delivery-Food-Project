@@ -58,7 +58,7 @@ public class CustomerController extends RegisterImplController<CustomerService, 
     }
 
     @PreAuthorize("hasRole('ADMIN')")
-    @PutMapping(value = "/address/{customerId}")
+    @PostMapping(value = "/address/{customerId}")
     public ResponseEntity<HttpStatus> addAddress(@PathVariable("customerId") @Min(1) Long customerId, @RequestBody @Valid AddressDto addressDto) {
         service.addAddressForCustomer(customerId, addressDto);
         return new ResponseEntity<>(HttpStatus.OK);

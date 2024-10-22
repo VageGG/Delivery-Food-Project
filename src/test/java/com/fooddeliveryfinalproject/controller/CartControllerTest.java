@@ -139,7 +139,7 @@ class CartControllerTest {
         cartItemDto.setCartId(1L);
         cartItemDto.setMenuItemId(1L);
 
-        when(cartService.addItemToCart(1L, 1L, 1L)).thenReturn("item has been added to cart");
+        when(cartService.addItemToCart(1L, 1L, 1L, 1)).thenReturn("item has been added to cart");
 
         ResultActions response = mockMvc.perform(post("/cart/1/menuItem/1/add")
                 .with(jwt())

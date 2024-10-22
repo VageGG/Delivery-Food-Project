@@ -4,6 +4,7 @@ import com.fooddeliveryfinalproject.converter.ReviewConverter;
 import com.fooddeliveryfinalproject.entity.Customer;
 import com.fooddeliveryfinalproject.entity.Restaurant;
 import com.fooddeliveryfinalproject.entity.Review;
+import com.fooddeliveryfinalproject.model.CustomerDto;
 import com.fooddeliveryfinalproject.model.ReviewDto;
 import com.fooddeliveryfinalproject.repository.CustomerRepo;
 import com.fooddeliveryfinalproject.repository.RestaurantRepo;
@@ -91,7 +92,7 @@ public class ReviewService {
     }
 
     @Transactional
-    public void addReview(@Min(1) Long restaurantId, @Valid ReviewDto reviewDto) {
+    public void addReview(@Min(1) Long restaurantId, @Valid ReviewDto reviewDto, Customer customer) {
         Restaurant restaurant = restaurantRepo.findById(restaurantId)
                 .orElseThrow(() -> new RuntimeException("Restaurant not found"));
 
@@ -99,6 +100,7 @@ public class ReviewService {
         review.setComment(reviewDto.getComment());
         review.setRating(reviewDto.getRating());
         review.setRestaurant(restaurant);
+        review.setCustomer(customer);
 
         repo.save(review);
     }

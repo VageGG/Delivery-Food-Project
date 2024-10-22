@@ -11,7 +11,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.stream.Collectors;
+
+import static java.util.stream.Collectors.toList;
 
 @Service
 public class OrderService {
@@ -54,12 +55,12 @@ public class OrderService {
     public Order createOrder(Order order, AddressDto addressDto, Long restaurantBranchId) {
         Order savedOrder = orderRepo.save(order);
 
-        if (order.getCustomer().getCart() == null) {
+        if (savedOrder.getCustomer().getCart() == null) {
             orderRepo.delete(savedOrder);
             throw new NullPointerException("cart not found");
         }
 
-        List<CartItem> cartItems = order.getCustomer().getCart().getItems();
+        List<CartItem> cartItems = savedOrder.getCustomer().getCart().getItems();
 
         if (cartItems.isEmpty()) {
             orderRepo.delete(savedOrder);
@@ -68,11 +69,16 @@ public class OrderService {
 
         savedOrder.setStatus(Order.OrderStatus.PENDING);
 
+        savedOrder.setDelivery(deliveryService.createDelivery(addressDto, restaurantBranchId, savedOrder));
+
         List<OrderItem> orderItems = cartItems.stream()
-                .map(cartItem -> orderItemRepo.save(new OrderItem(savedOrder, menuItemRepo.findById(cartItem.getMenuItemId()).get())))
+                .map(cartItem -> new OrderItem(savedOrder, menuItemRepo.findById(cartItem.getMenuItemId()).get()))
                 .toList();
 
-        savedOrder.setDelivery(deliveryService.createDelivery(addressDto, restaurantBranchId, savedOrder));
+        for(int i = 0; i < orderItems.size(); i++) {
+            orderItems.get(i).setQty(cartItems.get(i).getQty());
+            orderItemRepo.save(orderItems.get(i));
+        }
 
         return this.orderRepo.save(savedOrder);
 
@@ -95,7 +101,7 @@ public class OrderService {
 
         double total = 0;
         for (OrderItem orderItem: items) {
-            total+= orderItem.getMenuItem().getPrice();
+            total+= orderItem.getMenuItem().getPrice() * orderItem.getQty();
         }
 
         return total;
@@ -131,7 +137,7 @@ public class OrderService {
     public List<OrderDto> getPendingOrdersList() {
         return orderRepo.findByStatus(Order.OrderStatus.PENDING).stream()
                 .map(order -> converter.convertToModel(order, new OrderDto()))
-                .collect(Collectors.toList());
+                .collect(toList());
     }
 
     @Transactional

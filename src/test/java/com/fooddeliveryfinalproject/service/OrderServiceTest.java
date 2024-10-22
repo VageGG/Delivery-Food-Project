@@ -176,6 +176,9 @@ class OrderServiceTest {
         orderItems.add(new OrderItem(order, menuItem1));
         orderItems.add(new OrderItem(order, menuItem2));
 
+        orderItems.get(0).setQty(1);
+        orderItems.get(1).setQty(2);
+
         order.setItems(orderItems);
 
         when(orderRepo.findById(order.getOrderId())).thenReturn(Optional.of(order));
@@ -183,12 +186,11 @@ class OrderServiceTest {
         // when
         Double total = orderService.calculateTotal(order.getOrderId());
 
+        Double expectedTotal = orderItems.get(0).getMenuItem().getPrice() * orderItems.get(0).getQty() +
+                orderItems.get(1).getMenuItem().getPrice() * orderItems.get(1).getQty();
+
         // then
-        assertEquals(
-                orderItems.get(0).getMenuItem().getPrice() +
-                        orderItems.get(1).getMenuItem().getPrice(),
-                total
-        );
+        assertEquals(expectedTotal, total);
     }
 
     @Test

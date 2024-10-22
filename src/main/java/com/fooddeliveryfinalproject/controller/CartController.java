@@ -7,6 +7,7 @@ import com.fooddeliveryfinalproject.model.CartDto;
 import com.fooddeliveryfinalproject.service.CartService;
 import jakarta.validation.constraints.Min;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.context.properties.bind.DefaultValue;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
@@ -50,11 +51,13 @@ public class CartController {
     @PreAuthorize("hasRole('CUSTOMER')")
     public String addItemToCart(@PathVariable @Min(1) Long cartId,
                                 @PathVariable @Min(1) Long menuItemId,
-                                Authentication authentication
+                                Authentication authentication,
+                                @RequestParam(required = false) @Min(1)
+                                    @DefaultValue("1") Integer qty
     ) {
         Customer customer = (Customer) authentication.getPrincipal();
 
-        return cartService.addItemToCart(cartId, menuItemId, customer.getId());
+        return cartService.addItemToCart(cartId, menuItemId, customer.getId(), qty);
 
     }
 
