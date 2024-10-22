@@ -4,6 +4,7 @@ import com.fooddeliveryfinalproject.entity.Customer;
 import com.fooddeliveryfinalproject.entity.RestaurantManager;
 import com.fooddeliveryfinalproject.model.RestaurantDto;
 import com.fooddeliveryfinalproject.model.ReviewDto;
+import com.fooddeliveryfinalproject.model.SearchRestDto;
 import com.fooddeliveryfinalproject.service.RestaurantService;
 import com.fooddeliveryfinalproject.service.ReviewService;
 import jakarta.validation.Valid;
@@ -55,8 +56,8 @@ public class RestaurantController {
 
     @GetMapping("/search")
     public ResponseEntity<List<RestaurantDto>> searchRestaurantsByName(
-            @RequestBody String name) {
-        List<RestaurantDto> restaurantDtos = restaurantService.searchRestaurantsByName(name);
+            @RequestBody SearchRestDto searchRestDto) {
+        List<RestaurantDto> restaurantDtos = restaurantService.searchRestaurantsByName(searchRestDto);
         return new ResponseEntity<>(restaurantDtos, HttpStatus.OK);
     }
 
